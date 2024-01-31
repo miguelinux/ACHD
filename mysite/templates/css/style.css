@@ -1,0 +1,88 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    background: url(../img/escuela.jpg) no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.main{
+    width: 400px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, .2);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    color: white;
+    border-radius: 10px;
+    padding: 30px 40px;
+}
+.main h1{
+    font-size: 35px;
+    text-align: center;
+}
+.main img{
+    width: 300px;
+    height: auto;
+}
+.main .input{
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+.input input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    border: solid 2px rgba(255, 255, 255, .2);
+    font-size: 15px;
+    color: white;
+    padding: 20px 45px 20px 20px;
+}
+
+.input input::placeholder{
+    color: white;
+}
+
+.main .btn{
+    width: 100%;
+    height: 45px;
+    background: white;
+    border: none;
+    azimuth: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    cursor: pointer;
+    font-size: 15px;
+    color: #333;
+    font-weight: 600px;
+}
+.main .btn:hover{
+    background-color: transparent;
+    background-color: rgba(78, 46, 129, 0.568);
+    color: white;
+}
+.main .recuperar{
+    font-size: 14px;
+    text-align: center;
+    margin: 20px;
+}
+.recuperar p a{
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.recuperar p a:hover{
+    text-decoration: underline;
+}

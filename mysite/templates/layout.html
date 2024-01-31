@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>
+    {% block title %}
+    {% endblock %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    {% block css %}
+    {% endblock %}
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        header{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            background: #37109b;
+            font-family:'Montserrat';
+            color: #fff;
+            border-bottom: 2px solid #e60122;
+        }
+        header a img{
+            width: 150px;
+            height: auto;
+        }
+        header nav {
+            font-family:'Montserrat';
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            flex-grow: 1;
+        }
+        header nav a{
+            color: #fff;
+            text-decoration: none;
+            display: inline-block;
+            padding: 5px 10px;
+            transition: .3s;
+            border-radius: 10px;
+            margin-right: 10px;
+            transition: .3s;
+        }
+        header nav a:hover{
+            background-color: #e60122;
+        }
+        .dropdown {
+            overflow: hidden;
+            float: right;
+        }
+
+        .dropdown .dropbtn {
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 16px;
+            background-color: inherit;
+            font-family: inherit;
+            margin: 0;
+            border-radius: 10px;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #e60122;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            left: auto;
+            right: 0;
+        }
+
+        .dropdown-content a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        body{
+            background-color: #d4eff3;
+        }
+        footer{
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            margin: 0;
+            background-color: #37109b;
+            min-width: 100%;
+            color:white;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+
+        }
+        footer a{
+            color: #fff;
+            text-decoration: none;
+            display: inline-block;
+            padding: 5px 10px;
+            transition: .3s;
+            border-radius: 10px;
+            margin-right: 10px;
+        }
+    </style>
+
+    </head>
+    <body class="{% block body_class %}{% endblock %}">
+        <header>
+            <a href="homeDocente"><img src="img/logo.jpg"></a>
+            <nav>
+                <a href="homeDocente">Vista Docente</a>
+                <a href="#">Vista Jefe de carrera</a>
+                <a href="#">Vista Administrador</a>
+            </nav>
+            <div class="dropdown">
+                <button class="dropbtn"> {{user.nombres}}</button>
+                <div class="dropdown-content">
+                    <a href="#">Perfil</a>
+                    <a href="/dashboard">Cambiar contraseña</a>
+                    <a href="/logout">Cerrar sesión</a>
+                </div>
+            </div>
+
+
+        </header>
+{% block content %}
+{% endblock %}
+        <footer>
+            <div>
+                <a href="#">Términos y Condiciones</a>
+            </div>
+            <div>
+                <a href="#">Privacidad</a>
+            </div>
+
+            <div>
+                <a href="#">Enviar solicitud al administrador</a>
+            </div>
+        </footer>
+    </body>
+</html>
