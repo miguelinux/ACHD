@@ -1,2 +1,2 @@
-Flask
-Flask-Orator
+flask
+flask-orator
