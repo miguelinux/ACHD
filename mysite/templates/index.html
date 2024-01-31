@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSJ Asistente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+    <div class="main">
+        <img src="img/logo.png" >
+        <h1>{{mensaje}}</h1>
+        <form action="/login" method="post">
+            <div class="input">
+                <input type="email" placeholder="Correo" name="email" required>
+            </div>
+            <div class="input">
+                <input type="password" placeholder="Contraseña" name="password" required>
+            </div>
+            <button class="btn" type="submit">Iniciar</button>
+            <div class="recuperar">
+                <p>Olvidaste tu contraseña?<a href="#">Recuperarla</a></p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
