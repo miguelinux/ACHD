@@ -43,6 +43,9 @@
         background-color: #a98bf5;
     }
 </style>
+
+<script src="https://kit.fontawesome.com/80905f653a.js" crossorigin="anonymous"></script>
+
 {% endblock %}
 
 {% block body_class %}Inicio{% endblock %}
@@ -52,8 +55,13 @@
 {% block content %}
 <div class="parent">
     <a href="#" class="box">
-        <img class="imge" src="img/weeklycalendar.png">Disponibilidad</a>
+        <i class="fa-regular fa-calendar-days"></i>
+        <span>Ver disponibilidad</span>
+        </a>
     <a href="#" class="box">
-        <img class="imge" src="img/time.png">Ver horario</a>
+        <i class="fa-regular fa-clock"></i>
+      <span>Ver horarios</span>
+
+        </a>
 </div>
 {% endblock %}
