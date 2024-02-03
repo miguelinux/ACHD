@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(234, 246, 248);
+            flex-direction: column;
+        }
+
+        table {
+            background-color: aquamarine;
+            width: 700px;
+            height: 700px;
+        }
+
+        table tr {
+            background-color: white;
+            margin: 0;
+        }
+
+        .encabezado {
+            user-select: none;
+            background-color: rgb(235, 243, 162);
+            text-decoration: none;
+        }
+
+        .hora {
+            user-select: none;
+            text-align: center;
+            text-decoration: none;
+            background-color: rgb(235, 243, 162);
+        }
+
+        .horas {
+            background-color: rgb(184, 188, 189);
+        }
+
+        .conteiner {
+            display: flex;
+            align-items: center;
+
+            
+        }
+
+        button {
+            background-color: rgb(103, 103, 247);
+            color: white;
+            border-radius: 15px;
+            height: 40px;
+            margin-top: 10px;
+            width: 100px; 
+            margin-right: 10px;
+            transition: .4s;
+        }
+        button:hover{
+            background-color: blue;
+        }
+        #selectionBox {
+            position: absolute;
+            border: 2px solid blue;
+            background-color: rgba(173, 216, 230, 0.5);
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <tr class="encabezado">
+            <th>Horas</th>
+            <th>Lunes</th>
+            <th>Martes</th>
+            <th>Miercoles</th>
+            <th>Jueves</th>
+            <th>Viernes</th>
+            <th>Sabado</th>
+        </tr>
+        <tr>
+            <td class="hora">7-8</td>
+            <td class="horas" id="L7"></td>
+            <td class="horas" id="Ma7"></td>
+            <td class="horas" id="Mi7"></td>
+            <td class="horas" id="J7"></td>
+            <td class="horas" id="V7"></td>
+            <td class="horas" id="S7"></td>
+        </tr>
+        <tr>
+            <td class="hora">8-9</td>
+            <td class="horas" id="L8"></td>
+            <td class="horas" id="Ma8"></td>
+            <td class="horas" id="Mi8"></td>
+            <td class="horas" id="J8"></td>
+            <td class="horas" id="V8"></td>
+            <td class="horas" id="S8"></td>
+        </tr>
+        <tr>
+            <td class="hora">9-10</td>
+            <td class="horas" id="L9"></td>
+            <td class="horas" id="Ma9"></td>
+            <td class="horas" id="Mi9"></td>
+            <td class="horas" id="J9"></td>
+            <td class="horas" id="V9"></td>
+            <td class="horas" id="S9"></td>
+        </tr>
+        <tr>
+            <td class="hora">10-11</td>
+            <td class="horas" id="L10"></td>
+            <td class="horas" id="Ma10"></td>
+            <td class="horas" id="Mi10"></td>
+            <td class="horas" id="J10"></td>
+            <td class="horas" id="V10"></td>
+            <td class="horas" id="S10"></td>
+        </tr>
+        <tr>
+            <td class="hora">11-12</td>
+            <td class="horas" id="L11"></td>
+            <td class="horas" id="Ma11"></td>
+            <td class="horas" id="Mi11"></td>
+            <td class="horas" id="J11"></td>
+            <td class="horas" id="V11"></td>
+            <td class="horas" id="S11"></td>
+        </tr>
+        <tr>
+            <td class="hora">12-13</td>
+            <td class="horas" id="L12"></td>
+            <td class="horas" id="Ma12"></td>
+            <td class="horas" id="Mi12"></td>
+            <td class="horas" id="J12"></td>
+            <td class="horas" id="V12"></td>
+            <td class="horas" id="S12"></td>
+        </tr>
+        <tr>
+            <td class="hora">13-14</td>
+            <td class="horas" id="L13"></td>
+            <td class="horas" id="Ma13"></td>
+            <td class="horas" id="Mi13"></td>
+            <td class="horas" id="J13"></td>
+            <td class="horas" id="V13"></td>
+            <td class="horas" id="S13"></td>
+        </tr>
+        <tr>
+            <td class="hora">14-15</td>
+            <td class="horas" id="L14"></td>
+            <td class="horas" id="Ma14"></td>
+            <td class="horas" id="Mi14"></td>
+            <td class="horas" id="J14"></td>
+            <td class="horas" id="V14"></td>
+            <td class="horas" id="S14"></td>
+        </tr>
+        <tr>
+            <td class="hora">15-16</td>
+            <td class="horas" id="L15"></td>
+            <td class="horas" id="Ma15"></td>
+            <td class="horas" id="Mi15"></td>
+            <td class="horas" id="J15"></td>
+            <td class="horas" id="V15"></td>
+            <td class="horas" id="S15"></td>
+        </tr>
+        <tr>
+            <td class="hora">16-17</td>
+            <td class="horas" id="L16"></td>
+            <td class="horas" id="Ma16"></td>
+            <td class="horas" id="Mi16"></td>
+            <td class="horas" id="J16"></td>
+            <td class="horas" id="V16"></td>
+            <td class="horas" id="S16"></td>
+        </tr>
+        <tr>
+            <td class="hora">17-18</td>
+            <td class="horas" id="L17"></td>
+            <td class="horas" id="Ma17"></td>
+            <td class="horas" id="Mi17"></td>
+            <td class="horas" id="J17"></td>
+            <td class="horas" id="V17"></td>
+            <td class="horas" id="S17"></td>
+        </tr>
+        <tr>
+            <td class="hora">18-19</td>
+            <td class="horas" id="L18"></td>
+            <td class="horas" id="Ma18"></td>
+            <td class="horas" id="Mi18"></td>
+            <td class="horas" id="J18"></td>
+            <td class="horas" id="V18"></td>
+            <td class="horas" id="S18"></td>
+        </tr>
+        <tr>
+            <td class="hora">19-20</td>
+            <td class="horas" id="L19"></td>
+            <td class="horas" id="Ma19"></td>
+            <td class="horas" id="Mi19"></td>
+            <td class="horas" id="J19"></td>
+            <td class="horas" id="V19"></td>
+            <td class="horas" id="S19"></td>
+        </tr>
+        <tr>
+            <td class="hora">20-21</td>
+            <td class="horas" id="L20"></td>
+            <td class="horas" id="Ma20"></td>
+            <td class="horas" id="Mi20"></td>
+            <td class="horas" id="J20"></td>
+            <td class="horas" id="V20"></td>
+            <td class="horas" id="S20"></td>
+        </tr>
+        <tr>
+            <td class="hora">21-22</td>
+            <td class="horas" id="L21"></td>
+            <td class="horas" id="Ma21"></td>
+            <td class="horas" id="Mi21"></td>
+            <td class="horas" id="J21"></td>
+            <td class="horas" id="V21"></td>
+            <td class="horas" id="S21"></td>
+        </tr>
+    </table>
+    <div class="conteiner">
+        <button class="reinicio" id="reinicio" onclick="reiniciarColor()">Reiniciar</button>
+        <button class="verificar">Verificar</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const horasCeldas = document.querySelectorAll(".horas");
+    const table = document.querySelector("table");
+
+    let isMouseDown = false;
+    let startCell = null;
+
+    horasCeldas.forEach(function (celda) {
+        celda.addEventListener("mousedown", function () {
+            isMouseDown = true;
+            startCell = celda;
+            cambiarColorVerde(celda);
+        });
+
+        celda.addEventListener("mouseenter", function () {
+            if (isMouseDown) {
+                cambiarColorVerde(celda);
+            }
+        });
+    });
+
+    document.addEventListener("mouseup", function () {
+        isMouseDown = false;
+        startCell = null;
+    });
+
+    function cambiarColorVerde(elemento) {
+        if (startCell) {
+            const startRowIndex = startCell.parentNode.rowIndex;
+            const startCellIndex = startCell.cellIndex;
+            const endRowIndex = elemento.parentNode.rowIndex;
+            const endCellIndex = elemento.cellIndex;
+
+            for (let i = Math.min(startRowIndex, endRowIndex); i <= Math.max(startRowIndex, endRowIndex); i++) {
+                for (let j = Math.min(startCellIndex, endCellIndex); j <= Math.max(startCellIndex, endCellIndex); j++) {
+                    const cell = table.rows[i].cells[j];
+                    cell.style.backgroundColor = "green";
+                }
+            }
+        }
+    }
+});
+
+function reiniciarColor() {
+    const horasCeldas = document.querySelectorAll(".horas");
+
+    horasCeldas.forEach(function (celda) {
+        celda.style.backgroundColor = "rgb(184, 188, 189)";
+    });
+}
+
+    </script>
+
+</body>
+
+</html>
