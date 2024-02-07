@@ -59,9 +59,11 @@
             margin-right: 10px;
             transition: .4s;
         }
-        button:hover{
+
+        button:hover {
             background-color: blue;
         }
+
         #selectionBox {
             position: absolute;
             border: 2px solid blue;
@@ -225,57 +227,84 @@
     </div>
 
     <script>
+        let isMouseDown = false;
+        let startCell = null;
+        let greenCells = new Set(); // Conjunto para mantener un seguimiento  delas celdas en verde
+        let permaCells = new Set(); // Conjunto para mantener un seguimiento  delas celdas en verde
+
         document.addEventListener("DOMContentLoaded", function () {
-    const horasCeldas = document.querySelectorAll(".horas");
-    const table = document.querySelector("table");
+            const horasCeldas = document.querySelectorAll(".horas");
+            const table = document.querySelector("table");
 
-    let isMouseDown = false;
-    let startCell = null;
 
-    horasCeldas.forEach(function (celda) {
-        celda.addEventListener("mousedown", function () {
-            isMouseDown = true;
-            startCell = celda;
-            cambiarColorVerde(celda);
-        });
+            horasCeldas.forEach(function (celda) {
+                celda.addEventListener("mousedown", function () {
+                    isMouseDown = true;
+                    startCell = celda;
+                    cambiarColorVerde(celda);
+                });
 
-        celda.addEventListener("mouseenter", function () {
-            if (isMouseDown) {
-                cambiarColorVerde(celda);
-            }
-        });
-    });
+                celda.addEventListener("mouseenter", function () {
+                    if (isMouseDown) {
+                        cambiarColorVerde(celda);
+                    }
+                });
+            });
 
-    document.addEventListener("mouseup", function () {
-        isMouseDown = false;
-        startCell = null;
-    });
+            document.addEventListener("mouseup", function () {
+                isMouseDown = false;
+                startCell = null;
+                permaCells = greenCells;
+            });
 
-    function cambiarColorVerde(elemento) {
-        if (startCell) {
-            const startRowIndex = startCell.parentNode.rowIndex;
-            const startCellIndex = startCell.cellIndex;
-            const endRowIndex = elemento.parentNode.rowIndex;
-            const endCellIndex = elemento.cellIndex;
+            function cambiarColorVerde(elemento) {
+                if (startCell) {
+                    const startRowIndex = startCell.parentNode.rowIndex;
+                    const startCellIndex = startCell.cellIndex;
+                    const endRowIndex = elemento.parentNode.rowIndex;
+                    const endCellIndex = elemento.cellIndex;
 
-            for (let i = Math.min(startRowIndex, endRowIndex); i <= Math.max(startRowIndex, endRowIndex); i++) {
-                for (let j = Math.min(startCellIndex, endCellIndex); j <= Math.max(startCellIndex, endCellIndex); j++) {
-                    const cell = table.rows[i].cells[j];
-                    cell.style.backgroundColor = "green";
+                    for (let i = 0; i < table.rows.length; i++) {
+                        for (let j = 0; j < table.rows[i].cells.length; j++) {
+                            const cell = table.rows[i].cells[j];
+                            const isWithinSelection = i >= Math.min(startRowIndex, endRowIndex) &&
+                                i <= Math.max(startRowIndex, endRowIndex) &&
+                                j >= Math.min(startCellIndex, endCellIndex) &&
+                                j <= Math.max(startCellIndex, endCellIndex);
+
+                            if (cell.tagName === "TD" && !cell.classList.contains("hora")) {
+                                if (isWithinSelection) {
+                                    // Cambiar color a verde solo si no estaba ya en verde
+                                    if (!greenCells.has(cell)) {
+                                        cell.style.backgroundColor = "green";
+                                        greenCells.add(cell);
+                                    }
+                                } else {
+                                    if (permaCells.has(cell)) {
+                                        cell.style.backgroundColor = "green";
+                                        permaCells.add(cell);
+                                    }
+                                    else{
+                                        cell.style.backgroundColor = "rgb(184, 188, 189)";
+                                        greenCells.delete(cell)
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
                 }
             }
+        });
+
+        function reiniciarColor() {
+            const horasCeldas = document.querySelectorAll(".horas");
+            horasCeldas.forEach(function (celda) {
+                celda.style.backgroundColor = "rgb(184, 188, 189)";
+            });
+            greenCells.clear();
+            permaCells.clear();
         }
-    }
-});
-
-function reiniciarColor() {
-    const horasCeldas = document.querySelectorAll(".horas");
-
-    horasCeldas.forEach(function (celda) {
-        celda.style.backgroundColor = "rgb(184, 188, 189)";
-    });
-}
-
     </script>
 
 </body>
