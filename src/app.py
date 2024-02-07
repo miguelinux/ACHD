@@ -156,10 +156,9 @@ def login():
     Si coincide, inserta una sesión en la tabla de sesiones y regresa la 
     cookie con el SessionID.
     """
-    try:
-        form = request.form
-    except Exception as e:
-        return "NO SE PUDO INICIAR SESIÓN", str(e)
+    
+    form = request.form
+
     print(str(form))
     user = form["email"]
     pssw = form["password"]
