@@ -48,6 +48,10 @@ db = Orator(app)
 
 
 def get_hex_digest(cadena):
+    """
+    Recibe un String.
+    Regresa el hexadecimal de un Hash en SHA256.
+    """
     sha256 = hashlib.sha256()
     sha256.update(cadena.encode("utf-8"))
     hexdigest = sha256.hexdigest()
@@ -56,6 +60,10 @@ def get_hex_digest(cadena):
 
 
 def get_session_random_id():
+    """
+    Regresa 64 caracteres alfanuméricos aleatorios.
+    Se utiliza para generar ID de sesión aleatorios.
+    """
     caracteres = string.ascii_letters + string.digits
     randomString = "".join(secrets.choice(caracteres) for _ in range(64))
 
@@ -63,6 +71,12 @@ def get_session_random_id():
 
 
 def verificar_sesion(cookies):
+    """
+    Recibe las cookies de la solicitud HTTPS.
+    Verifica si hay una sesión asociada la SessionID encontrada en las cookies.
+    Regresa True si la sesión es válida, está activa y no ha expirado.
+    En caso contrario, regresa False.
+    """
     try:
         sesion = (
             db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
@@ -83,21 +97,37 @@ def verificar_sesion(cookies):
 
 @app.route("/img/<filename>", methods=["GET"])
 def route_img_files(filename):
+    """
+    Recibe la ruta de la imagen que pide.
+    Regresa la imagen.
+    """
     return send_from_directory("templates/img", path=filename)
 
 
 @app.route("/css/<filename>")
 def route_js_files(filename):
+    """
+    Recibe la ruta del CSS que se pide.
+    Regresa el archivo CSS.
+    """
     return send_from_directory("templates/css", path=filename)
 
 
 @app.route("/js/<filename>")
 def route_css_files(filename):
+    """
+    Recibe la ruta del JS que pide.
+    Regresa el JS.
+    """
     return send_from_directory("templates/js", path=filename)
 
 
 @app.route("/")
 def principal():
+    """
+    Si hay una sesión iniciada, redirecciona al dashboard.
+    Si no hay una sesión iniciada, regresa el login.
+    """
     if verificar_sesion(request.cookies):
         return make_response(redirect("/dashboard"))
     return render_template("index.html")
@@ -106,6 +136,12 @@ def principal():
 
 @app.route("/logout")
 def logout():
+    """
+    Borra las cookies del sitio en el navegador del usuario.
+    """
+
+    #FALTA HACER QUE ACTUALICE LA SESIÓN A INACTIVA EN LA BASE DE DATOS
+    
     r = make_response(redirect("/"))
     r.set_cookie("sessionID", "")
     return r
@@ -113,6 +149,12 @@ def logout():
 
 @app.route("/login", methods=["POST"])
 def login():
+    """
+    Método para iniciar sesión.
+    Recibe el usuario y la contraseña de un form.
+    Si coincide, inserta una sesión en la tabla de sesiones y regresa la 
+    cookie con el SessionID.
+    """
     try:
         form = request.form
     except Exception as e:
@@ -158,6 +200,9 @@ def login():
 
 @app.route("/dashboard")
 def dashboard():
+    """
+    Regresa la vista del dashboard.
+    """
     cookies = request.cookies
     if not verificar_sesion(cookies):
         return make_response(redirect("/"))
@@ -171,6 +216,9 @@ def dashboard():
 
 @app.route("/homeDocente")
 def home_docente():
+    """
+    Regresa el panel de docente
+    """
     cookies = request.cookies
     if not verificar_sesion(cookies):
         return make_response(redirect("/"))
