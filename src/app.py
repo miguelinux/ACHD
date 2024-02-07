@@ -91,7 +91,8 @@ def verificar_sesion(cookies):
             )
             return False
         return True
-    except:
+    except TypeError as e:
+        print("Hubo un error al iniciar sesión",e)
         return False
 
 
