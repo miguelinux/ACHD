@@ -1,0 +1,8 @@
+Flask
+flask-orator
+
+pre-commit
+pylint
+
+python-decouple
+python-dotenv
