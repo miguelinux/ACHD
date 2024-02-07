@@ -47,7 +47,7 @@ app.config["ORATOR_DATABASES"] = DATABASES
 db = Orator(app)
 
 
-def getHexDigest(cadena):
+def get_hex_digest(cadena):
     sha256 = hashlib.sha256()
     sha256.update(cadena.encode("utf-8"))
     hexdigest = sha256.hexdigest()
@@ -55,14 +55,14 @@ def getHexDigest(cadena):
     return hexdigest
 
 
-def getSessionRandomID():
+def get_session_random_id():
     caracteres = string.ascii_letters + string.digits
     randomString = "".join(secrets.choice(caracteres) for _ in range(64))
 
     return randomString
 
 
-def verificarSesion(cookies):
+def verificar_sesion(cookies):
     try:
         sesion = (
             db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
@@ -98,14 +98,10 @@ def route_css_files(filename):
 
 @app.route("/")
 def principal():
-    if verificarSesion(request.cookies):
+    if verificar_sesion(request.cookies):
         return make_response(redirect("/dashboard"))
     return render_template("index.html")
 
-
-@app.route("/logged")
-def logged():
-    return "TE HAS LOGUEADO CON ÉXITO"
 
 
 @app.route("/logout")
@@ -128,7 +124,7 @@ def login():
     user = (
         db.table("usersPrueba")
         .where("email", user)
-        .where("password", getHexDigest(pssw))
+        .where("password", get_hex_digest(pssw))
         .get()
         .first()
     )
@@ -139,7 +135,7 @@ def login():
         )
 
     while True:
-        sessionID = getSessionRandomID()
+        sessionID = get_session_random_id()
         sesion = db.table("sesiones").where("sessionID", sessionID).get().first()
         if sesion is None:
             break
@@ -163,7 +159,7 @@ def login():
 @app.route("/dashboard")
 def dashboard():
     cookies = request.cookies
-    if not verificarSesion(cookies):
+    if not verificar_sesion(cookies):
         return make_response(redirect("/"))
     sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
     user = db.table("usersPrueba").where("id", sesion.userID).get().first()
@@ -174,9 +170,9 @@ def dashboard():
 
 
 @app.route("/homeDocente")
-def HomeDocente():
+def home_docente():
     cookies = request.cookies
-    if not verificarSesion(cookies):
+    if not verificar_sesion(cookies):
         return make_response(redirect("/"))
     sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
     user = db.table("usersPrueba").where("id", sesion.userID).get().first()
