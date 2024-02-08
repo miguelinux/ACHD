@@ -92,10 +92,10 @@ def verificar_sesion(cookies):
             return False
         return True
     except TypeError as e:
-        print("Hubo un error al iniciar sesión",e)
+        print("Hubo un error al iniciar sesión", e)
         return False
     except Exception as e:
-        print("ERROR AL INICIAR SESIÓN",e)
+        print("ERROR AL INICIAR SESIÓN", e)
         return False
 
 
@@ -137,14 +137,13 @@ def principal():
     return render_template("index.html")
 
 
-
 @app.route("/logout")
 def logout():
     """
     Borra las cookies del sitio en el navegador del usuario.
     """
 
-    #FALTA HACER QUE ACTUALICE LA SESIÓN A INACTIVA EN LA BASE DE DATOS
+    # FALTA HACER QUE ACTUALICE LA SESIÓN A INACTIVA EN LA BASE DE DATOS
     r = make_response(redirect("/"))
     r.set_cookie("sessionID", "")
     return r
@@ -155,7 +154,7 @@ def login():
     """
     Método para iniciar sesión.
     Recibe el usuario y la contraseña de un form.
-    Si coincide, inserta una sesión en la tabla de sesiones y regresa la 
+    Si coincide, inserta una sesión en la tabla de sesiones y regresa la
     cookie con el SessionID.
     """
     form = request.form
@@ -226,6 +225,7 @@ def home_docente():
     sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
     user = db.table("usersPrueba").where("id", sesion.userID).get().first()
     return render_template("homeDocente.html", user=user, sesion=sesion)
+
 
 @app.route("/horarioPrueba")
 def horario_prueba():
