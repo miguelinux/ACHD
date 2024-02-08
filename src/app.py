@@ -225,3 +225,15 @@ def home_docente():
     sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
     user = db.table("usersPrueba").where("id", sesion.userID).get().first()
     return render_template("homeDocente.html", user=user, sesion=sesion)
+
+@app.route("/horarioPrueba")
+def horario_prueba():
+    """
+    Regresa el panel de docente
+    """
+    cookies = request.cookies
+    if not verificar_sesion(cookies):
+        return make_response(redirect("/"))
+    sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
+    user = db.table("usersPrueba").where("id", sesion.userID).get().first()
+    return render_template("Horario-prueba.html", user=user, sesion=sesion)
