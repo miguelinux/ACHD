@@ -193,11 +193,11 @@ def login():
             "created_at": datetime.now() - timedelta(hours=6),
             "updated_at": datetime.now() - timedelta(hours=6),
             "expires": datetime.now() + timedelta(hours=1),
-            "sessionID": sessionID,
+            "sessionID": session_id,
         }
     )
     r = make_response(redirect("/dashboard"))
-    r.set_cookie("sessionID", sessionID)
+    r.set_cookie("sessionID", session_id)
     return r
 
 
