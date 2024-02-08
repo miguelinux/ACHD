@@ -94,6 +94,8 @@ def verificar_sesion(cookies):
     except TypeError as e:
         print("Hubo un error al iniciar sesión",e)
         return False
+    except Exception as e:
+        return False
 
 
 @app.route("/img/<filename>", methods=["GET"])
