@@ -238,3 +238,15 @@ def horario_prueba():
     sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
     user = db.table("usersPrueba").where("id", sesion.userID).get().first()
     return render_template("Horario-prueba.html", user=user, sesion=sesion)
+
+@app.route("/horario")
+def horario():
+    """
+    Regresa el selector de horario
+    """
+    cookies = request.cookies
+    if not verificar_sesion(cookies):
+        return make_response(redirect("/"))
+    sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
+    user = db.table("usersPrueba").where("id", sesion.userID).get().first()
+    return render_template("horario.html", user=user, sesion=sesion)
