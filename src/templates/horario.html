@@ -92,14 +92,42 @@
         border-radius: 1rem;
         border:none;
         font-family: 'Montserrat';
-        font-weight: bold;
+        font-size: large;
         transition: 0.3s
       }
       #verificar:hover{
-        background: #a1a1a1;
+        background: #32aa32;
         color:white;
       }
+      #verificar:focus{
+        background: #32aa32;
+        color:white;
+        border:none;
+      }
+      #verificar{
+        color:#32aa32;
+        background: #e7e7e7;
+      }
+
+
+      #reset:hover{
+        background: #ff3232;
+        color:white;
+      }
+      #reset:focus{
+        background: #ff3232;
+        color:white;
+      }
+      #reset{
+        background: #e7e7e7;
+        color:#ff3232;
+      }
+
       #regresar:hover{
+        background: #efefef;
+        color:red;
+      }
+      #regresar:focus{
         background: #efefef;
         color:red;
       }
@@ -603,7 +631,9 @@
 
 <div class="botones">
   <button type="button" id="verificar" name="verificar">Verificar</button>
+  <button type="button" id="reset" name="reset">Reiniciar</button>
   <button type="button" id="regresar" name="regresar">Regresar</button>
+
 
 </div>
 
