@@ -145,7 +145,6 @@ def logout():
     """
 
     #FALTA HACER QUE ACTUALICE LA SESIÓN A INACTIVA EN LA BASE DE DATOS
-    
     r = make_response(redirect("/"))
     r.set_cookie("sessionID", "")
     return r
@@ -159,7 +158,6 @@ def login():
     Si coincide, inserta una sesión en la tabla de sesiones y regresa la 
     cookie con el SessionID.
     """
-    
     form = request.form
 
     print(str(form))
