@@ -65,9 +65,9 @@ def get_session_random_id():
     Se utiliza para generar ID de sesión aleatorios.
     """
     caracteres = string.ascii_letters + string.digits
-    randomString = "".join(secrets.choice(caracteres) for _ in range(64))
+    random_string = "".join(secrets.choice(caracteres) for _ in range(64))
 
-    return randomString
+    return random_string
 
 
 def verificar_sesion(cookies):
@@ -95,6 +95,7 @@ def verificar_sesion(cookies):
         print("Hubo un error al iniciar sesión",e)
         return False
     except Exception as e:
+        print("ERROR AL INICIAR SESIÓN",e)
         return False
 
 
@@ -179,8 +180,8 @@ def login():
         )
 
     while True:
-        sessionID = get_session_random_id()
-        sesion = db.table("sesiones").where("sessionID", sessionID).get().first()
+        session_id = get_session_random_id()
+        sesion = db.table("sesiones").where("sessionID", session_id).get().first()
         if sesion is None:
             break
 
