@@ -61,7 +61,7 @@ body{
 }
 
 .main .btn{
-    width: 100%;
+    width: 94%;
     height: 45px;
     background: white;
     border: none;
@@ -77,6 +77,25 @@ body{
 .main .btn:hover{
     background-color: transparent;
     background-color: rgba(78, 46, 129, 0.568);
+    color: white;
+}
+.main button{
+    width: 17%;
+    height: 45px;
+    background: white;
+    border: none;
+    azimuth: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    cursor: pointer;
+    font-size: 15px;
+    color: #333;
+    font-weight: 600px;
+    margin: 10px;
+}
+.main button:hover{
+    background-color: transparent;
+    background-color: rgba(209, 154, 73, 0.836);
     color: white;
 }
 
