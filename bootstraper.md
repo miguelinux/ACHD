@@ -23,7 +23,7 @@ Este archivo contiene las instrucciones para configurar el entorno de desarrollo
   * En el archivo src\app.py, modifica la sección la constante "DATABASES" con la configuración de tu servidor de base de datos
 
 ## Ejecución del Proyecto
-  Para ejecutar el proyecto, ejecuta:
-  * python
-  * from app import app
-  * app.run()
+  - Para ejecutar el proyecto, ejecuta:
+    * python
+    * from app import app
+    * app.run()
