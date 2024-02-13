@@ -20,7 +20,7 @@ Este archivo contiene las instrucciones para configurar el entorno de desarrollo
   * Accede al terminal o línea de comandos MySQL y ejecuta la creación de tablas. La descripción de las tablas está en docs/tablas.txt
 
 - Asegurate de modificar la configuración de la conexión a la base de datos
- * En el archivo src\app.py, modifica la sección la constante "DATABASES" con la configuración de tu servidor de base de datos
+  * En el archivo src\app.py, modifica la sección la constante "DATABASES" con la configuración de tu servidor de base de datos
 
 - Ejecución del Proyecto
   Para ejecutar el proyecto, ejecuta:
