@@ -1,39 +1,29 @@
-##Bootstrap para Proyecto XYZ##
-Este archivo contiene las instrucciones para configurar el entorno de desarrollo y la base de datos del Proyecto XYZ.
+# Bootstrap para Proyecto Asistente para la Creación de Horarios para Docentes
 
-Requisitos previos
-Python (versión X.X.X)
-Git
-Pip
-Configuración del entorno
-Clona el repositorio de GitHub del Proyecto XYZ:
-bash
-Copy code
-git clone https://github.com/tu_usuario/proyecto-xyz.git
-Accede al directorio del proyecto:
-bash
-Copy code
-cd proyecto-xyz
-Instala las bibliotecas necesarias utilizando pip y el archivo requirements.txt:
-bash
-Copy code
-pip install -r requirements.txt
-Creación de la base de datos
-Asegúrate de tener instalado un servidor de base de datos compatible (por ejemplo, PostgreSQL, MySQL, SQLite, etc.).
+Este archivo contiene las instrucciones para configurar el entorno de desarrollo y la base de datos del proyecto Asistente para la Creación de Horarios para Docentes.
 
-Accede al terminal o línea de comandos y ejecuta el siguiente comando para crear las tablas de la base de datos:
+- Requisitos previos -
+  * Python 3.8
+  * Git
+  * Pip
 
-bash
-Copy code
-python manage.py migrate
-Este comando creará todas las tablas necesarias en la base de datos configurada en el archivo de configuración.
 
-Ejecución del Proyecto
-Para ejecutar el Proyecto XYZ, ejecuta el siguiente comando:
+- Configuración del entorno -
+  * Clona el repositorio de GitHub
+  * Accede al directorio del proyecto
+  * Instala las bibliotecas necesarias utilizando pip y el archivo requirements.txt:
+    - pip install -r requirements.txt
 
-bash
-Copy code
-python manage.py runserver
-El servidor de desarrollo estará disponible en http://127.0.0.1:8000/.
+- Creación de la base de datos -
+  * Asegúrate de tener instalado un servidor de base de datos MySQL
 
-¡Listo! Ahora puedes comenzar a trabajar en el Proyecto XYZ.
+  * Accede al terminal o línea de comandos MySQL y ejecuta la creación de tablas. La descripción de las tablas está en docs/tablas.txt
+
+- Asegurate de modificar la configuración de la conexión a la base de datos -
+ * En el archivo src\app.py, modifica la sección la constante "DATABASES" con la configuración de tu servidor de base de datos
+
+- Ejecución del Proyecto -
+  Para ejecutar el proyecto, ejecuta:
+  * python
+  * from app import app
+  * app.run()
