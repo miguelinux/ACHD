@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/80905f653a.js" crossorigin="anonymous"></script>
     <style media="screen">
 
       .container{
@@ -77,6 +78,9 @@
         align-items:center;
         text-align:center;
         justify-content:center;
+      }
+      h2{
+          font-family:'Montserrat';
       }
       .hora_selected:hover{
         background: darkgreen;
@@ -155,6 +159,7 @@
   </head>
   <body>
 
+<h2 id="alert"></h2>
 
 <div class="container">
 
@@ -165,65 +170,65 @@
             <p></p>
           </div>
 
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>7 - 8</p>
+            <p>7:00 - 8:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>8 - 9</p>
+            <p>8:00 - 9:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>9 - 10</p>
+            <p>9:00 - 10:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>10 - 11</p>
+            <p>10:00 - 11:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>11 - 12</p>
+            <p>11:00 - 12:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>12 - 13</p>
+            <p>12:00 - 13:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>13 - 14</p>
+            <p>13:00 - 14:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>14 - 15</p>
+            <p>14:00 - 15:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>15 - 16</p>
+            <p>15:00 - 16:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>16 - 17</p>
+            <p>16:00 - 17:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>17 - 18</p>
+            <p>17:00 - 18:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>18 - 19</p>
+            <p>18:00 - 19:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>19 - 20</p>
+            <p>19:00 - 20:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>20 - 21</p>
+            <p>20:00 - 21:00</p>
           </div>
-          <div class="horaT">
+          <div style="font-size: small;width: 6rem;" class="horaT">
 
-            <p>21 - 22</p>
+            <p>21:00 - 22:00</p>
           </div>
 
   </div>
@@ -630,7 +635,7 @@
 </div>
 
 <div class="botones">
-  <button type="button" id="verificar" name="verificar">Verificar</button>
+  <button type="button" id="verificar" name="verificar">Guardar</button>
   <button type="button" id="reset" name="reset">Reiniciar</button>
   <button type="button" id="regresar" name="regresar">Regresar</button>
 
@@ -645,20 +650,32 @@
 
 
 
+<script>
+    var changes = false;
+</script>
+
   <script>
+  document.addEventListener('DOMContentLoaded', function() {
+
+  var alerta = document.getElementById("alert");
     // Obtiene todos los elementos con la clase "hora"
     const horas = document.querySelectorAll('.hora');
 
     // Agrega un event listener a cada elemento con la clase "hora"
     horas.forEach(hora => {
       hora.addEventListener('click', () => {
+          changes = true;
+          alerta.innerHTML = "Cambios sin guardar <i class=\"fa-solid fa-star-of-life\" style=\"color: #cb1010;\"></i>"
         // Alternar la clase entre "hora" y "hora_selected"
         hora.classList.toggle('hora_selected');
       });
     });
+  });
   </script>
 
   <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var alerta = document.getElementById("alert");
     // Obtener el botón de verificar
     const botonVerificar = document.querySelector('button[name="verificar"]');
 
@@ -678,8 +695,32 @@
       // Crea un objeto JSON con los IDs de los divs seleccionados
       const jsonResult = JSON.stringify({ selectedIDs });
 
-      console.log(jsonResult);
+
+      fetch('/setDisponibilidad', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: jsonResult
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Respuesta del servidor:', data);
+      // Aquí puedes realizar cualquier acción adicional con la respuesta del servidor si es necesario
+      changes = false;
+      alerta.innerHTML = "Cambios guardados <i class=\"fa-solid fa-square-check\" style=\"color: green;\"></i>"
+    })
+    .catch(error => {
+      console.error('Error al enviar la solicitud:', error);
     });
+
+    });
+});
   </script>
 
   <script>
@@ -689,15 +730,51 @@
     // Agregar un event listener al botón
     botonRegresar.addEventListener('click', function() {
         // Preguntar al usuario si desea regresar
+        if (changes === true) {
         const confirmacion = confirm('¿Realmente desea regresar? Se perderán todos los cambios realizados');
 
         // Si el usuario confirma, redirigir a la dirección especificada
         if (confirmacion) {
-            window.location.href = '/';
+            window.location.href = '/homeDocente';
+        }
+
+        }
+        else{
+           window.location.href = '/homeDocente';
         }
     });
 </script>
 
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    var disp = JSON.parse({{ disponibilidad | tojson }});
+    console.log(disp)
+    var alerta = document.getElementById("alert");
+        alerta.innerHTML = "<i class=\"fa-solid fa-spinner fa-spin-pulse\"></i> Cargando horario...";
+        disp['disponibilidad'].forEach(function(elemento, indice) {
+        console.log('Elemento en la posición ' + indice + ': ' + elemento);
+        var elementoId = indice.toString(); // Convertir el ID del elemento a string
+        var element = document.getElementById(elementoId);
+
+
+        if (elemento === 1) {
+            setTimeout(function() {
+            console.log("DISP");
+            console.log(disp['disponibilidad'][indice]);
+            element.classList.add('hora_selected');
+        }, 100 + (indice*5));
+        }
+        });
+        setTimeout(function(){
+            alerta.innerHTML = "Horario cargado <i class=\"fa-solid fa-circle-check\"></i>"
+        },700);
+
+
+    });
+
+</script>
 
 
 </body></html>

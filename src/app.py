@@ -6,6 +6,7 @@
 import hashlib
 import secrets
 import string
+import json
 from configparser import ConfigParser
 from datetime import datetime
 from datetime import timedelta
@@ -249,4 +250,52 @@ def horario():
         return make_response(redirect("/"))
     sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
     user = db.table("usersPrueba").where("id", sesion.userID).get().first()
-    return render_template("horario.html", user=user, sesion=sesion)
+    disponibilidad = user.disponibilidad
+    return render_template("horario.html", user=user, sesion=sesion,disponibilidad=disponibilidad)
+
+@app.route("/setDisponibilidad", methods=['POST'])
+def set_disp():
+    """
+    Guarda la disponibilidad de un docente
+    """
+    cookies = request.cookies
+    if not verificar_sesion(cookies):
+        return make_response(redirect("/"))
+    sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
+    user = db.table("usersPrueba").where("id", sesion.userID).get().first()
+    propuesta = request.json
+    selected_ids = propuesta['selectedIDs']
+    selected_indices = [int(idx) for idx in selected_ids]
+    availability_matrix = [0] * 90
+    for idx in selected_indices:
+        availability_matrix[idx] = 1
+    result_dict = {"disponibilidad": availability_matrix}
+    result_json = json.dumps(result_dict)
+
+    resp = db.table('usersPrueba').where('user',user.user).update(disponibilidad=result_json)
+
+
+    return str(resp)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
