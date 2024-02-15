@@ -1,34 +1,25 @@
-# c-basic-offset: 4; tab-width: 8; indent-tabs-mode: nil
-# vi: set shiftwidth=4 tabstop=8 expandtab:
-# :indentSize=4:tabSize=8:noTabs=true:
-#
-# SPDX-License-Identifier: GPL-3.0-or-later
 import hashlib
-import secrets
 import string
+import secrets
 import json
-from configparser import ConfigParser
+
 from datetime import datetime
 from datetime import timedelta
 
-from flask import Flask
-from flask import make_response
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import send_from_directory
+from flask import Flask, render_template, send_from_directory, request, make_response, redirect
+from configparser import ConfigParser
 from flask_orator import Orator
 
-config = ConfigParser()
-config.read("config.ini")
 
+app=Flask(__name__)
+
+config = ConfigParser()
+config.read(".env")
 
 DB_HOST = config.get("DB", "DB_HOST")
 DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
-
-app = Flask(__name__)
 
 DATABASES = {
     "default": "mysql",
@@ -46,7 +37,6 @@ DATABASES = {
 
 app.config["ORATOR_DATABASES"] = DATABASES
 db = Orator(app)
-
 
 def get_hex_digest(cadena):
     """
@@ -98,7 +88,7 @@ def verificar_sesion(cookies):
     except Exception as e:
         print("ERROR AL INICIAR SESIÓN", e)
         return False
-
+    
 
 @app.route("/img/<filename>", methods=["GET"])
 def route_img_files(filename):
@@ -137,7 +127,6 @@ def principal():
         return make_response(redirect("/dashboard"))
     return render_template("index.html")
 
-
 @app.route("/logout")
 def logout():
     """
@@ -148,7 +137,6 @@ def logout():
     r = make_response(redirect("/"))
     r.set_cookie("sessionID", "")
     return r
-
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -198,7 +186,6 @@ def login():
     r.set_cookie("sessionID", session_id)
     return r
 
-
 @app.route("/dashboard")
 def dashboard():
     """
@@ -210,9 +197,9 @@ def dashboard():
     sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
     user = db.table("usersPrueba").where("id", sesion.userID).get().first()
 
-    d = db.table("datos_ejemplo").get()
 
-    return render_template("dashboard.html", user=user, sesion=sesion, d_x=d)
+    return render_template("dashboard.html", user=user, sesion=sesion)
+
 
 
 @app.route("/homeDocente")
@@ -282,20 +269,5 @@ def set_disp():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if __name__=='__main__':
+    app.run(debug=True, port=5000)
