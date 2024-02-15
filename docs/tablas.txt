@@ -9,7 +9,7 @@ CREATE TABLE `sesiones` (
   `created_at` datetime(6) DEFAULT NULL,
   `updated_at` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb3
+);
 
 
 usersPrueba
@@ -22,8 +22,16 @@ CREATE TABLE `usersPrueba` (
   `apellidos` text,
   `email` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3
+);
 
 
 CREATE TABLE asignaturas (clave VARCHAR(16) PRIMARY KEY, nombre TEXT, ht INT, hp INT, cr INT, grado INT, programa TEXT, sede TEXT, created_at DATETIME(6), updated_at DATETIME(6));
+
+CREATE TABLE `docentes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` text,
+  `created_at` datetime(6) DEFAULT NULL,
+  `updated_at` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
 
