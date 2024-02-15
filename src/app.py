@@ -20,7 +20,7 @@ from flask_orator import Orator
 app=Flask(__name__)
 
 config = ConfigParser()
-config.read(".env")
+config.read(".env") # EN ESTE APARTADO TOMARA LOS VALORES DE ENTORNO OBTENIDOS EN .env
 
 DB_HOST = config.get("DB", "DB_HOST")
 DB_PASSWORD = config.get("DB", "DB_PASSWORD")
