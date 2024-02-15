@@ -21,6 +21,7 @@ CREATE TABLE `usersPrueba` (
   `nombres` text,
   `apellidos` text,
   `email` text,
+  disponibilidad JSON,
   PRIMARY KEY (`id`)
 );
 
