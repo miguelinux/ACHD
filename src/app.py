@@ -272,7 +272,19 @@ def set_disp():
 
 
 
-
+@app.route("/jefeCarrera")
+def jefe_carrera():
+    """
+    Vista del jefe de carrera
+    """
+    cookies = request.cookies
+    if not verificar_sesion(cookies):
+        return make_response(redirect("/"))
+    sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
+    user = db.table("usersPrueba").where("id", sesion.userID).get().first()
+    d = db.table('docentes').get()
+    a = db.table('asignaturas').get()
+    return render_template("jefeCarrera.html", user=user, sesion=sesion,asignaturas=a,docentes=d)
 
 
 if __name__=='__main__':

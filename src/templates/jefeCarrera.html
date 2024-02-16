@@ -1,0 +1,79 @@
+{% extends 'layout.html' %}
+{% block title %}Jefe de carrera{% endblock %}
+
+
+{% block css %}
+
+<style>
+
+    .main1{
+        display:flex;
+        flex-direction: row;
+        justify-content:space-between;
+        max-height:45rem;
+    }
+    .docentes{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap:0.5rem;
+        margin:1rem;
+        overflow-y:auto;
+    }
+    .asignaturas{
+        display:flex;
+        flex-direction: column;
+        gap:0.5rem;
+        margin:1rem;
+        overflow-y:auto;
+    }
+    .docente{
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        background: aliceblue;
+        font-family: 'Montserrat';
+        width:25rem;
+    }
+    .asignatura{
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        background: aliceblue;
+        font-family: 'Montserrat';
+
+    }
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="main1">
+
+    <div class="docentes">
+
+        {% for docente in docentes %}
+        <div class="docente">
+            <p><strong>{{docente.nombre}}</strong></p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="asignaturas">
+
+        {% for asignatura in asignaturas %}
+        <div class="asignatura">
+            <p><strong>{{asignatura.clave}}</strong></p>
+            <p>{{asignatura.nombre}} </p>
+            <p>horas practicas: {{asignatura.hp}} horas teoria: {{asignatura.ht}} horas : {{asignatura.cr}}</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
