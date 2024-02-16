@@ -286,6 +286,20 @@ def jefe_carrera():
     a = db.table('asignaturas').get()
     return render_template("jefeCarrera.html", user=user, sesion=sesion,asignaturas=a,docentes=d)
 
+@app.route("/asignacion")
+def asignacion():
+    """
+    Vista de asignacion de materias
+ 
+   """
+    cookies = request.cookies
+    if not verificar_sesion(cookies):
+        return make_response(redirect("/"))
+    sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
+    user = db.table("usersPrueba").where("id", sesion.userID).get().first()
+    return render_template("asignacion.html", user=user, sesion=sesion)
+
+
 
 if __name__=='__main__':
     app.run(debug=True, port=5000)
