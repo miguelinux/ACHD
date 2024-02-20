@@ -32,7 +32,6 @@
     justify-content: space-around;
     margin: 10px;
     flex-direction: column;
-
   }
 
   .principal div {
@@ -42,36 +41,39 @@
     border: 1px solid black;
     margin: 0;
   }
+  .docentes , .horario, .materia, .aula{
+    background-color: white;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="btns">
-  <button class="semestre" id="sem1">Semestre  id="sem"1</button>
-  <button class="semestre" id="sem2">Semestre  id="sem"2</button>
-  <button class="semestre" id="sem3">Semestre  id="sem"3</button>
-  <button class="semestre" id="sem4">Semestre  id="sem"4</button>
-  <button class="semestre" id="sem5">Semestre  id="sem"5</button>
-  <button class="semestre" id="sem6">Semestre  id="sem"6</button>
-  <button class="semestre" id="sem7">Semestre  id="sem"7</button>
-  <button class="semestre" id="sem8">Semestre  id="sem"8</button>
-  <button class="semestre" id="sem9">Semestre  id="sem"9</button>
+  <button class="semestre" id="sem1">Semestre 1</button>
+  <button class="semestre" id="sem2">Semestre 2</button>
+  <button class="semestre" id="sem3">Semestre 3</button>
+  <button class="semestre" id="sem4">Semestre 4</button>
+  <button class="semestre" id="sem5">Semestre 5</button>
+  <button class="semestre" id="sem6">Semestre 6</button>
+  <button class="semestre" id="sem7">Semestre 7</button>
+  <button class="semestre" id="sem8">Semestre 8</button>
+  <button class="semestre" id="sem9">Semestre 9</button>
 </div>
 <div class="principal">
   <div>
     <div class="docentes">
-
+        <p>docentes</p>
     </div>
     <div class="horario">
-
+      <p>horario</p>
     </div>
   </div>
   <div>
     <div class="materia">
-
+      <p>Materias</p>
     </div>
     <div class="aula">
-
+      <P>Aulas</P>
     </div>
   </div>
 </div>
