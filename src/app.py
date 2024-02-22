@@ -1,4 +1,3 @@
-
 # c-basic-offset: 4; tab-width: 8; indent-tabs-mode: nil
 # vi: set shiftwidth=4 tabstop=8 expandtab:
 # :indentSize=4:tabSize=8:noTabs=true:
@@ -18,16 +17,12 @@ app=Flask(__name__)
 
 config = ConfigParser()
 config.read(".env") # EN ESTE APARTADO TOMARA LOS VALORES DE ENTORNO OBTENIDOS EN .env
-
 app.secret_key = config.get("SCT","SECRET_KY") 
 #para guardar las cookies es necesario una secret_key que se encuentra en .env
-
 DB_HOST = config.get("DB", "DB_HOST")
 DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
-
-
 
 DATABASES = {
     "default": "mysql",
@@ -41,8 +36,6 @@ DATABASES = {
         "log_queries": True,
     },
 }
-
-
 app.config["ORATOR_DATABASES"] = DATABASES
 db = Orator(app)
 
@@ -57,6 +50,11 @@ def get_hex_digest(cadena):
     return hexdigest
 
 def verificate_session():
+    """verificate_session
+    Returns:
+        user: nombre del usuario en la cookie
+        False: en caso de no tener encontrar la cookie
+    """
     if 'username' in session:
         user = session["username"]
         return user
@@ -159,6 +157,50 @@ def horario():
         usuario = db.table("usersPrueba").where("user",user).get().first()
         disponibilidad = usuario.disponibilidad
         return render_template("horario.html", user=user, disponibilidad=disponibilidad)
+    return redirect('/')
+    
+@app.route("/setDisponibilidad", methods=['POST'])
+def set_disp():
+    """
+    Guarda la disponibilidad de un docente
+    """
+    user=verificate_session()
+    if user:
+        propuesta = request.json
+        selected_ids = propuesta['selectedIDs']
+        selected_indices = [int(idx) for idx in selected_ids]
+        availability_matrix = [0] * 90
+        for idx in selected_indices:
+            availability_matrix[idx] = 1
+        result_dict = {"disponibilidad": availability_matrix}
+        result_json = json.dumps(result_dict)
+        resp = db.table('usersPrueba').where('user',user).update(disponibilidad=result_json)
+        return str(resp)
+    return redirect('/')
+
+
+
+@app.route("/jefeCarrera")
+def jefe_carrera():
+    """
+    Vista del jefe de carrera
+    """
+    user=verificate_session()
+    if user:
+        d = db.table('docentes').get()
+        a = db.table('asignaturas').get()
+        return render_template("jefeCarrera.html", user=user,asignaturas=a,docentes=d)
+    return redirect('/')
+
+@app.route("/asignacion")
+def asignacion():
+    """
+    Vista de asignacion de materias
+ 
+   """
+    user=verificate_session()
+    if user:
+        return render_template("asignacion.html", user=user)
     return redirect('/')
     
 if __name__=='__main__':
