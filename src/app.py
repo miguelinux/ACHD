@@ -5,15 +5,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import hashlib
-import string
-import secrets
 import json
-
-from datetime import datetime
-from datetime import timedelta
-
-from flask import Flask, render_template, send_from_directory, request, make_response, redirect
 from configparser import ConfigParser
+
+from flask import Flask, render_template, send_from_directory
+from flask import session, request, redirect
 from flask_orator import Orator
 
 
@@ -21,7 +17,8 @@ app=Flask(__name__)
 
 config = ConfigParser()
 config.read(".env") # EN ESTE APARTADO TOMARA LOS VALORES DE ENTORNO OBTENIDOS EN .env
-
+app.secret_key = config.get("SCT","SECRET_KY") 
+#para guardar las cookies es necesario una secret_key que se encuentra en .env
 DB_HOST = config.get("DB", "DB_HOST")
 DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
@@ -39,8 +36,6 @@ DATABASES = {
         "log_queries": True,
     },
 }
-
-
 app.config["ORATOR_DATABASES"] = DATABASES
 db = Orator(app)
 
@@ -52,49 +47,18 @@ def get_hex_digest(cadena):
     sha256 = hashlib.sha256()
     sha256.update(cadena.encode("utf-8"))
     hexdigest = sha256.hexdigest()
-
     return hexdigest
 
-
-def get_session_random_id():
+def verificate_session():
+    """verificate_session
+    Returns:
+        user: nombre del usuario en la cookie
+        False: en caso de no tener encontrar la cookie
     """
-    Regresa 64 caracteres alfanuméricos aleatorios.
-    Se utiliza para generar ID de sesión aleatorios.
-    """
-    caracteres = string.ascii_letters + string.digits
-    random_string = "".join(secrets.choice(caracteres) for _ in range(64))
-
-    return random_string
-
-
-def verificar_sesion(cookies):
-    """
-    Recibe las cookies de la solicitud HTTPS.
-    Verifica si hay una sesión asociada la SessionID encontrada en las cookies.
-    Regresa True si la sesión es válida, está activa y no ha expirado.
-    En caso contrario, regresa False.
-    """
-    try:
-        sesion = (
-            db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
-        )
-        if sesion is None:
-            return False
-        if not sesion.active:
-            return False
-        if sesion.expires < datetime.now() - timedelta(hours=6):
-            db.table("sesiones").where("sessionID", cookies["sessionID"]).update(
-                active=False
-            )
-            return False
-        return True
-    except TypeError as e:
-        print("Hubo un error al iniciar sesión", e)
-        return False
-    except Exception as e:
-        print("ERROR AL INICIAR SESIÓN", e)
-        return False
-    
+    if 'username' in session:
+        user = session["username"]
+        return user
+    return False
 
 @app.route("/img/<filename>", methods=["GET"])
 def route_img_files(filename):
@@ -104,7 +68,6 @@ def route_img_files(filename):
     """
     return send_from_directory("templates/img", path=filename)
 
-
 @app.route("/css/<filename>")
 def route_js_files(filename):
     """
@@ -112,7 +75,6 @@ def route_js_files(filename):
     Regresa el archivo CSS.
     """
     return send_from_directory("templates/css", path=filename)
-
 
 @app.route("/js/<filename>")
 def route_css_files(filename):
@@ -122,15 +84,12 @@ def route_css_files(filename):
     """
     return send_from_directory("templates/js", path=filename)
 
-
 @app.route("/")
-def principal():
+def index():
     """
     Si hay una sesión iniciada, redirecciona al dashboard.
     Si no hay una sesión iniciada, regresa el login.
     """
-    if verificar_sesion(request.cookies):
-        return make_response(redirect("/dashboard"))
     return render_template("index.html")
 
 @app.route("/logout")
@@ -138,11 +97,8 @@ def logout():
     """
     Borra las cookies del sitio en el navegador del usuario.
     """
-
-    # FALTA HACER QUE ACTUALICE LA SESIÓN A INACTIVA EN LA BASE DE DATOS
-    r = make_response(redirect("/"))
-    r.set_cookie("sessionID", "")
-    return r
+    session.pop('username', None)
+    return redirect('/')
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -153,122 +109,74 @@ def login():
     cookie con el SessionID.
     """
     form = request.form
-
     print(str(form))
     user = form["email"]
-    pssw = form["password"]
-
+    pssw = get_hex_digest(form["password"])
     user = (
         db.table("usersPrueba")
         .where("email", user)
-        .where("password", get_hex_digest(pssw))
+        .where("password", pssw)
         .get()
         .first()
     )
-
     if user is None:
         return render_template(
             "index.html", mensaje="Usuario y/o contraseña incorrectos"
         )
-
     while True:
-        session_id = get_session_random_id()
-        sesion = db.table("sesiones").where("sessionID", session_id).get().first()
-        if sesion is None:
-            break
-
-    # A CONSIDERACIÓN
-    db.table("sesiones").insert(
-        {
-            "userID": user.id,
-            "active": True,
-            "created_at": datetime.now() - timedelta(hours=6),
-            "updated_at": datetime.now() - timedelta(hours=6),
-            "expires": datetime.now() + timedelta(hours=1),
-            "sessionID": session_id,
-        }
-    )
-    r = make_response(redirect("/dashboard"))
-    r.set_cookie("sessionID", session_id)
-    return r
+        session['username'] = user['user'] #'user' hace referencia a la tabla de la base de datos
+        return redirect("/dashboard")
 
 @app.route("/dashboard")
 def dashboard():
     """
     Regresa la vista del dashboard.
     """
-    cookies = request.cookies
-    if not verificar_sesion(cookies):
-        return make_response(redirect("/"))
-    sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
-    user = db.table("usersPrueba").where("id", sesion.userID).get().first()
-
-
-    return render_template("dashboard.html", user=user, sesion=sesion)
-
-
+    user=verificate_session()
+    if user:
+        return render_template("dashboard.html", user=user)
+    return redirect('/')
 
 @app.route("/homeDocente")
 def home_docente():
     """
     Regresa el panel de docente
     """
-    cookies = request.cookies
-    if not verificar_sesion(cookies):
-        return make_response(redirect("/"))
-    sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
-    user = db.table("usersPrueba").where("id", sesion.userID).get().first()
-    return render_template("homeDocente.html", user=user, sesion=sesion)
-
-
-@app.route("/horarioPrueba")
-def horario_prueba():
-    """
-    Regresa el panel de docente
-    """
-    cookies = request.cookies
-    if not verificar_sesion(cookies):
-        return make_response(redirect("/"))
-    sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
-    user = db.table("usersPrueba").where("id", sesion.userID).get().first()
-    return render_template("Horario-prueba.html", user=user, sesion=sesion)
+    user=verificate_session()
+    if user:
+        return render_template("homeDocente.html", user=user)    
+    return redirect('/')
 
 @app.route("/horario")
 def horario():
     """
     Regresa el selector de horario
     """
-    cookies = request.cookies
-    if not verificar_sesion(cookies):
-        return make_response(redirect("/"))
-    sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
-    user = db.table("usersPrueba").where("id", sesion.userID).get().first()
-    disponibilidad = user.disponibilidad
-    return render_template("horario.html", user=user, sesion=sesion,disponibilidad=disponibilidad)
-
+    user=verificate_session()
+    if user:
+        usuario = db.table("usersPrueba").where("user",user).get().first()
+        disponibilidad = usuario.disponibilidad
+        return render_template("horario.html", user=user, disponibilidad=disponibilidad)
+    return redirect('/')
+    
 @app.route("/setDisponibilidad", methods=['POST'])
 def set_disp():
     """
     Guarda la disponibilidad de un docente
     """
-    cookies = request.cookies
-    if not verificar_sesion(cookies):
-        return make_response(redirect("/"))
-    sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
-    user = db.table("usersPrueba").where("id", sesion.userID).get().first()
-    propuesta = request.json
-    selected_ids = propuesta['selectedIDs']
-    selected_indices = [int(idx) for idx in selected_ids]
-    availability_matrix = [0] * 90
-    for idx in selected_indices:
-        availability_matrix[idx] = 1
-    result_dict = {"disponibilidad": availability_matrix}
-    result_json = json.dumps(result_dict)
-
-    resp = db.table('usersPrueba').where('user',user.user).update(disponibilidad=result_json)
-
-
-    return str(resp)
+    user=verificate_session()
+    if user:
+        propuesta = request.json
+        selected_ids = propuesta['selectedIDs']
+        selected_indices = [int(idx) for idx in selected_ids]
+        availability_matrix = [0] * 90
+        for idx in selected_indices:
+            availability_matrix[idx] = 1
+        result_dict = {"disponibilidad": availability_matrix}
+        result_json = json.dumps(result_dict)
+        resp = db.table('usersPrueba').where('user',user).update(disponibilidad=result_json)
+        return str(resp)
+    return redirect('/')
 
 
 
@@ -277,14 +185,12 @@ def jefe_carrera():
     """
     Vista del jefe de carrera
     """
-    cookies = request.cookies
-    if not verificar_sesion(cookies):
-        return make_response(redirect("/"))
-    sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
-    user = db.table("usersPrueba").where("id", sesion.userID).get().first()
-    d = db.table('docentes').get()
-    a = db.table('asignaturas').get()
-    return render_template("jefeCarrera.html", user=user, sesion=sesion,asignaturas=a,docentes=d)
+    user=verificate_session()
+    if user:
+        d = db.table('docentes').get()
+        a = db.table('asignaturas').get()
+        return render_template("jefeCarrera.html", user=user,asignaturas=a,docentes=d)
+    return redirect('/')
 
 @app.route("/asignacion")
 def asignacion():
@@ -292,14 +198,11 @@ def asignacion():
     Vista de asignacion de materias
  
    """
-    cookies = request.cookies
-    if not verificar_sesion(cookies):
-        return make_response(redirect("/"))
-    sesion = db.table("sesiones").where("sessionID", cookies["sessionID"]).get().first()
-    user = db.table("usersPrueba").where("id", sesion.userID).get().first()
-    return render_template("asignacion.html", user=user, sesion=sesion)
-
-
-
+    user=verificate_session()
+    if user:
+        return render_template("asignacion.html", user=user)
+    return redirect('/')
+    
 if __name__=='__main__':
     app.run(debug=True, port=5000)
+    
