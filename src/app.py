@@ -55,9 +55,10 @@ def verificate_session():
         user: nombre del usuario en la cookie
         False: en caso de no tener encontrar la cookie
     """
-    if 'username' in session:
-        user = session["username"]
-        return user
+    if 'user' in session:
+        user_id = session['user']['userid']
+        username = session['user']['username']
+        return {'userid': user_id, 'username': username}
     return False
 
 @app.route("/img/<filename>", methods=["GET"])
@@ -124,7 +125,8 @@ def login():
             "index.html", mensaje="Usuario y/o contraseña incorrectos"
         )
     while True:
-        session['username'] = user['user'] #'user' hace referencia a la tabla de la base de datos
+        
+        session['user'] = {'userid':user['id'],'username':user['user']} #'user' hace referencia a la tabla de la base de datos
         return redirect("/dashboard")
 
 @app.route("/dashboard")
@@ -134,7 +136,8 @@ def dashboard():
     """
     user=verificate_session()
     if user:
-        return render_template("dashboard.html", user=user)
+        username = user['username']
+        return render_template("dashboard.html", user=username)
     return redirect('/')
 
 @app.route("/homeDocente")
@@ -144,7 +147,8 @@ def home_docente():
     """
     user=verificate_session()
     if user:
-        return render_template("homeDocente.html", user=user)    
+        username = user['username']
+        return render_template("homeDocente.html", user=username)    
     return redirect('/')
 
 @app.route("/horario")
@@ -154,9 +158,11 @@ def horario():
     """
     user=verificate_session()
     if user:
-        usuario = db.table("usersPrueba").where("user",user).get().first()
+        user_id = user['userid']
+        username = user['username']
+        usuario = db.table("usersPrueba").where("id",user_id).get().first()
         disponibilidad = usuario.disponibilidad
-        return render_template("horario.html", user=user, disponibilidad=disponibilidad)
+        return render_template("horario.html", user=username, disponibilidad=disponibilidad)
     return redirect('/')
     
 @app.route("/setDisponibilidad", methods=['POST'])
@@ -166,6 +172,7 @@ def set_disp():
     """
     user=verificate_session()
     if user:
+        user_id = user['userid']
         propuesta = request.json
         selected_ids = propuesta['selectedIDs']
         selected_indices = [int(idx) for idx in selected_ids]
@@ -174,7 +181,7 @@ def set_disp():
             availability_matrix[idx] = 1
         result_dict = {"disponibilidad": availability_matrix}
         result_json = json.dumps(result_dict)
-        resp = db.table('usersPrueba').where('user',user).update(disponibilidad=result_json)
+        resp = db.table('usersPrueba').where('id',user_id).update(disponibilidad=result_json)
         return str(resp)
     return redirect('/')
 
@@ -186,10 +193,11 @@ def jefe_carrera():
     Vista del jefe de carrera
     """
     user=verificate_session()
-    if user:
+    if user: 
+        username = user['username']
         d = db.table('docentes').get()
         a = db.table('asignaturas').get()
-        return render_template("jefeCarrera.html", user=user,asignaturas=a,docentes=d)
+        return render_template("jefeCarrera.html", user=username,asignaturas=a,docentes=d)
     return redirect('/')
 
 @app.route("/asignacion")
@@ -200,7 +208,8 @@ def asignacion():
    """
     user=verificate_session()
     if user:
-        return render_template("asignacion.html", user=user)
+        username = user['username']
+        return render_template("asignacion.html", user=username)
     return redirect('/')
     
 if __name__=='__main__':
