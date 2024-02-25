@@ -9,7 +9,7 @@ import json
 from configparser import ConfigParser
 
 from flask import Flask, render_template, send_from_directory
-from flask import session, request, redirect
+from flask import session, request, redirect, jsonify
 from flask_orator import Orator
 
 
@@ -57,7 +57,7 @@ def verificate_session():
     """
     if 'user' in session:
         user_id = session['user']['userid']
-        username = session['user']['username']
+        username = session['user']['name']
         return {'userid': user_id, 'username': username}
     return False
 
@@ -126,7 +126,7 @@ def login():
         )
     while True:
         
-        session['user'] = {'userid':user['id'],'username':user['user']} #'user' hace referencia a la tabla de la base de datos
+        session['user'] = {'userid':user['id'],'name':user['nombres']} #'user' hace referencia a la tabla de la base de datos
         return redirect("/dashboard")
 
 @app.route("/dashboard")
@@ -139,6 +139,40 @@ def dashboard():
         username = user['username']
         return render_template("dashboard.html", user=username)
     return redirect('/')
+
+
+@app.route("/change", methods=['POST', 'GET'])
+def change():
+    user = verificate_session()
+    if not user:
+        return redirect('/')
+
+    user_id = user['userid']
+
+    mensaje = None
+
+    if request.method == 'POST':
+        current_password = request.form["password"]
+        new_password = request.form["newpass"]
+        confirm_password = request.form["conf_newpass"]
+
+        if current_password == "" or new_password == "" or confirm_password == "":
+            mensaje = "Favor de llenar todos los campos"
+        else:
+            user_record = db.table("usersPrueba").where('id', user_id).get().first()
+
+            if current_password != user_record['password']:
+                pass
+
+            if new_password != confirm_password:
+                pass
+
+            resp = db.table('usersPrueba').where('id', user_id).update(password=new_password)
+            return jsonify({"success": True})
+
+    return jsonify({"success": False, "message": mensaje}) 
+
+
 
 @app.route("/homeDocente")
 def home_docente():

@@ -2,9 +2,9 @@
 
 {% block title %}Cambio de Contraseña{% endblock %}
 {% block css %}
-    <style>
+<style>
 
-   </style>
+</style>
 {% endblock %}
 
 {% block body_class %}cambio_contra{% endblock %}
@@ -13,10 +13,10 @@
 {% block content %}
 
 
-    <div class="main">
-
-        <p>Este sitio está en construcción</p>
-        <h1>Hola {{user}}</h1>
+<<div class="main">
+    <p>Este sitio está en construcción</p>
+    <h1>Hola {{user}}</h1>
+    <form action="/change" method="post">
         <div class="input">
             <input type="password" placeholder="Contraseña actual" name="password">
         </div>
@@ -26,14 +26,47 @@
         <div class="input">
             <input type="password" placeholder="Confirmar Contraseña" name="conf_newpass">
         </div>
-        <div>
-        <button class="Confirmar">Confirmar</button>
-        
-
-    </div>
-
+        <button class="Confirmar" type="submit">Confirmar</button>
+    </form>        
     <p>Estamos trabajando para tí</p>
+</div>
 
-    <div>
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <p>{{ mensaje }}</p>
     </div>
-{% endblock %}
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.querySelector("form");
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(form);
+            fetch("/change", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Si la operación es exitosa, puedes redirigir o realizar alguna otra acción
+                    window.location.href = "/dashboard";
+                } else {
+                    // Si hay un error, muestra el mensaje de error
+                    const mensaje = data.message;
+                    if (mensaje) {
+                        alert(mensaje);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        });
+    });
+</script>
+    {% endblock %}

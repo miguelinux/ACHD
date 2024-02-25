@@ -123,9 +123,9 @@ footer a {
     background-color: white;
 }
 .cambio_contra .main .input {
-    width: 100%;
-    height: 30px;
-    margin: 25px;
+    width: 19rem;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 .cambio_contra .input input {
     width: 80%;
@@ -141,12 +141,10 @@ footer a {
     color: rgb(63, 39, 4);
 }
 .cambio_contra .main .Confirmar {
-    width: 15rem;
+    width: 19.5rem;
     height: 50px;
-    margin-top: 25px;
     margin-bottom: 10px;
     background: white;
-    border: none;
     border-radius: 40px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .1);
     cursor: pointer;
@@ -166,6 +164,32 @@ footer a {
 .cambio_contra .main p {
     color: #333;
 }
+
+
+.cambio_contra .popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.cambio_contra .popup-content {
+    text-align: center;
+}
+
+.cambio_contra .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
 
 /* CSS de HomeDocente*/
 
