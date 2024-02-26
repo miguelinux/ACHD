@@ -35,4 +35,3 @@ CREATE TABLE `docentes` (
   `updated_at` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
-
