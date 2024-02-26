@@ -176,7 +176,7 @@ footer a {
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     z-index: 1000;
-    border-radius: 5px; 
+    border-radius: 5px;
 }
 
 .cambio_contra .popup-content {
@@ -189,7 +189,7 @@ footer a {
     right: 10px;
     font-size: 20px;
     cursor: pointer;
-    color: #f80000; 
+    color: #f80000;
 }
 
 
