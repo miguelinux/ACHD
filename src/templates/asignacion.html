@@ -10,10 +10,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 1rem;
+    margin: 0.5rem;
   }
 
-  .btns .semestre  {
+  
+  .btns .semestre {
     width: 100px;
     height: 30px;
     margin-left: 10px;
@@ -26,7 +27,27 @@
     background-color: blue;
     color: white;
   }
+  .btnsturn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btnsturn p{
+    
+  }
+  .btnsturn .turno {
+    width: 100px;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 15px;
+    transition: .5s;
+  }
 
+  .btnsturn .turno:hover {
+    background-color: blue;
+    color: white;
+  }
   .principal {
     display: flex;
     justify-content: space-around;
@@ -41,7 +62,11 @@
     border: 1px solid black;
     margin: 0;
   }
-  .docentes , .horario, .materia, .aula{
+
+  .docentes,
+  .horario,
+  .materia,
+  .aula {
     background-color: white;
   }
 </style>
@@ -59,10 +84,17 @@
   <button class="semestre" id="sem8">Semestre 8</button>
   <button class="semestre" id="sem9">Semestre 9</button>
 </div>
+<div class="btnsturn">
+  <p>Turno :</p>
+  <button class="turno" id="turnA">A</button>
+  <button class="turno" id="turnB">B</button>
+  <button class="turno" id="turnN">N</button>
+  <button class="turno" id="turnR">R</button>
+</div>
 <div class="principal">
   <div>
     <div class="docentes">
-        <p>docentes</p>
+      <p>docentes</p>
     </div>
     <div class="horario">
       <p>horario</p>

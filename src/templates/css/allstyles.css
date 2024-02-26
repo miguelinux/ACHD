@@ -130,7 +130,7 @@ footer a {
 .cambio_contra .input input {
     width: 80%;
     background: rgb(174, 190, 235);
-    outline: none;
+    box-shadow: 0 0 10px rgba(85, 76, 141, 0.349);
     border-radius: 40px;
     border: solid 2px rgba(255, 255, 255, .2);
     font-size: 15px;
