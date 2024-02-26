@@ -172,10 +172,11 @@ footer a {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #ffffff;
+    background-color: #cfb2b2;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     z-index: 1000;
+    border-radius: 5px; 
 }
 
 .cambio_contra .popup-content {
@@ -188,6 +189,7 @@ footer a {
     right: 10px;
     font-size: 20px;
     cursor: pointer;
+    color: #f80000; 
 }
 
 

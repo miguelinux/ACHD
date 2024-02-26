@@ -158,21 +158,28 @@ def change():
 
         if current_password == "" or new_password == "" or confirm_password == "":
             mensaje = "Favor de llenar todos los campos"
+            return jsonify({"success": False, "message": mensaje})
         else:
-            user_record = db.table("usersPrueba").where('id', user_id).get().first()
-
-            if current_password != user_record['password']:
-                pass
+            
+            usactual = db.table("usersPrueba").where('id', user_id).get().first() 
+            current_password = get_hex_digest(current_password)
+            new_password = get_hex_digest(new_password)
+            confirm_password = get_hex_digest(confirm_password)
+            if current_password != usactual['password']:
+                mensaje = 'La contraseña actual no coincide'
+                return jsonify({"success": False, "message": mensaje})
 
             if new_password != confirm_password:
-                pass
-
-            resp = db.table('usersPrueba').where('id', user_id).update(password=new_password)
-            return jsonify({"success": True})
-
-    return jsonify({"success": False, "message": mensaje}) 
-
-
+                mensaje = 'La nueva contraseña no coincide'
+                return jsonify({"success": False, "message": mensaje})  
+            
+            if current_password == new_password:
+                mensaje = 'La nueva contraseña es la misma que la actual'
+                return jsonify({"success": False, "message": mensaje})  
+            
+            mensaje = 'La contraseña se cambió exitosamente. En 3 segundos serás redirigido'
+            db.table('usersPrueba').where('id', user_id).update(password=new_password)
+    return jsonify({"success": True, "message": mensaje}) 
 
 @app.route("/homeDocente")
 def home_docente():
