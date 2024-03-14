@@ -126,7 +126,7 @@ def login():
     user = form["email"]
     pssw = get_hex_digest(form["password"])
     user = (
-        db.table("usersPrueba")
+        db.table("usuario")
         .where("email", user)
         .where("password", pssw)
         .get()
@@ -139,7 +139,7 @@ def login():
     while True:
         session["user"] = {
             "userid": user["id"],
-            "name": user["nombres"],
+            "name": user["nombre"],
         }  #'user' hace referencia a la tabla de la base de datos
         return redirect("/dashboard")
 
@@ -175,7 +175,7 @@ def change():
             mensaje = "Favor de llenar todos los campos"
             return jsonify({"success": False, "message": mensaje})
         else:
-            usactual = db.table("usersPrueba").where("id", user_id).get().first()
+            usactual = db.table("usuario").where("id", user_id).get().first()
             current_password = get_hex_digest(current_password)
             new_password = get_hex_digest(new_password)
             confirm_password = get_hex_digest(confirm_password)
@@ -194,7 +194,7 @@ def change():
             mensaje = (
                 "La contraseña se cambió exitosamente. En 3 segundos serás redirigido"
             )
-            db.table("usersPrueba").where("id", user_id).update(password=new_password)
+            db.table("usuario").where("id", user_id).update(password=new_password)
     return jsonify({"success": True, "message": mensaje})
 
 
@@ -219,7 +219,7 @@ def horario():
     if user:
         user_id = user["userid"]
         username = user["username"]
-        usuario = db.table("usersPrueba").where("id", user_id).get().first()
+        usuario = db.table("usuario").where("id", user_id).get().first()
         disponibilidad = usuario.disponibilidad
         return render_template(
             "horario.html", user=username, disponibilidad=disponibilidad
@@ -244,7 +244,7 @@ def set_disp():
         result_dict = {"disponibilidad": availability_matrix}
         result_json = json.dumps(result_dict)
         resp = (
-            db.table("usersPrueba")
+            db.table("usuario")
             .where("id", user_id)
             .update(disponibilidad=result_json)
         )

@@ -1,37 +1,52 @@
-sesiones
-
-CREATE TABLE `sesiones` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `userID` int DEFAULT NULL,
-  `sessionID` text,
-  `active` tinyint(1) DEFAULT NULL,
-  `expires` datetime(6) DEFAULT NULL,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+create table usuario (
+id int AUTO_INCREMENT PRIMARY KEY,
+nombre text NOT NULL,
+apellido_pat text NOT NULL,
+apellido_mat text NOT NULL,
+email text NOT NULL,
+password text NOT NULL,
+disponibilidad json ,
+materias_asignadas json,
+user_type int NOT NULL,
+first_loggin bool NOT NULL,
+horas_semana int ,
+carrera int);
+create table carrera (
+id int AUTO_INCREMENT PRIMARY KEY,
+nombre text,
+plan_de_estudio text
 );
 
 
-usersPrueba
-
-CREATE TABLE `usersPrueba` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user` text,
-  `password` text,
-  `nombres` text,
-  `apellidos` text,
-  `email` text,
-  disponibilidad JSON,
-  PRIMARY KEY (`id`)
+create table materia (
+id int AUTO_INCREMENT PRIMARY KEY,
+clave text NOT NULL,
+nombre text NOT NULL,
+semestre int NOT NULL,
+horas_practica int NOT NULL,
+horas_teoria int NOT NULL,
+creditos int NOT NULL,
+carrera int
 );
 
+create table aula (
+id int AUTO_INCREMENT PRIMARY KEY,
+nombre text NOT NULL,
+edificio text NOT NULL
+);
 
-CREATE TABLE asignaturas (clave VARCHAR(16) PRIMARY KEY, nombre TEXT, ht INT, hp INT, cr INT, grado INT, programa TEXT, sede TEXT, created_at DATETIME(6), updated_at DATETIME(6));
+create table asignacion (
+id int AUTO_INCREMENT PRIMARY KEY,
+horario json,
+semestre int,
+carrera int
+);
 
-CREATE TABLE `docentes` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nombre` text,
-  `created_at` datetime(6) DEFAULT NULL,
-  `updated_at` datetime(6) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+CREATE TABLE loggs (
+id int AUTO_INCREMENT PRIMARY KEY,
+usuario INTEGER,
+fecha DATETIME,
+tabla_change text,
+change_description text,
+FOREIGN KEY (usuario) REFERENCES usuario(id)
 );
