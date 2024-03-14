@@ -28,6 +28,11 @@ DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
 
+
+docente = 3
+jefe_de_carrera = 2
+admin = 1
+
 DATABASES = {
     "default": "mysql",
     "mysql": {
@@ -141,9 +146,16 @@ def login():
             "userid": user["id"],
             "name": user["nombre"],
         }  #'user' hace referencia a la tabla de la base de datos
-        return redirect("/dashboard")
-
-
+        if user["first_loggin"] =="TRUE":
+            db.table("usuario").where(user).update(first_login="FALSE")
+            return redirect("/dashboard")
+        if user["user_type"] == admin:
+            return redirect("/asignacion")
+        if user["user_type"] == docente:
+            return redirect("/homeDocente")
+        if user["user_type"] == jefe_de_carrera:
+            return redirect("/jefeCarrera")    
+        
 @app.route("/dashboard")
 def dashboard():
     """
