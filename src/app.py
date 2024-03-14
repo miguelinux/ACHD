@@ -28,10 +28,11 @@ DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
 
-
 docente = 3
 jefe_de_carrera = 2
 admin = 1
+tru = bool(1)
+fals = bool(0)
 
 DATABASES = {
     "default": "mysql",
@@ -146,8 +147,8 @@ def login():
             "userid": user["id"],
             "name": user["nombre"],
         }  #'user' hace referencia a la tabla de la base de datos
-        if user["first_loggin"] =="TRUE":
-            db.table("usuario").where(user).update(first_login="FALSE")
+        if user["first_login"]:
+            db.table("usuario").where("id",user["id"]).update(first_login=fals)
             return redirect("/dashboard")
         if user["user_type"] == admin:
             return redirect("/asignacion")

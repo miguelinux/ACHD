@@ -8,7 +8,7 @@ password text NOT NULL,
 disponibilidad json ,
 materias_asignadas json,
 user_type int NOT NULL,
-first_loggin bool NOT NULL,
+first_login bool NOT NULL,
 horas_semana int ,
 carrera int);
 create table carrera (
