@@ -273,8 +273,8 @@ def jefe_carrera():
     user = verificate_session()
     if user:
         username = user["username"]
-        d = db.table("docentes").get()
-        a = db.table("asignaturas").get()
+        d = db.table("usuario").where("user_type",docente).get()
+        a = db.table("materia").get()
         return render_template(
             "jefeCarrera.html", user=username, asignaturas=a, docentes=d
         )
