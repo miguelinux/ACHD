@@ -115,7 +115,7 @@ def logout():
     """
     Borra las cookies del sitio en el navegador del usuario.
     """
-    session.pop("username", None)
+    session.pop("user", None)
     return redirect("/")
 
 
