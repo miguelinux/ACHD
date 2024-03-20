@@ -157,7 +157,6 @@ def login():
         if user["user_type"] == docente:
             return redirect("/homeDocente")
         if user["user_type"] == jefe_de_carrera:
-            session["user"] = {}
             return redirect("/jefeCarrera")    
         
 @app.route("/dashboard")
