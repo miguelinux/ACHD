@@ -71,7 +71,7 @@ def verificate_session():
         user_id = session["user"]["userid"]
         username = session["user"]["name"]
         usercarrer = session["user"]["carrera"]
-        return {"userid": user_id, "username": username,"carrera": usercarrer}
+        return {"userid": user_id, "username": username, "carrera": usercarrer}
     return False
 
 
@@ -129,15 +129,11 @@ def login():
     cookie con el SessionID.
     """
     form = request.form
-    print(str(form))
+    # print(str(form))
     user = form["email"]
     pssw = get_hex_digest(form["password"])
     user = (
-        db.table("usuario")
-        .where("email", user)
-        .where("password", pssw)
-        .get()
-        .first()
+        db.table("usuario").where("email", user).where("password", pssw).get().first()
     )
     if user is None:
         return render_template(
@@ -147,18 +143,19 @@ def login():
         session["user"] = {
             "userid": user["id"],
             "name": user["nombre"],
-            "carrera": user["carrera"]
+            "carrera": user["carrera"],
         }  #'user' hace referencia a la tabla de la base de datos
         if user["first_login"]:
-            db.table("usuario").where("id",user["id"]).update(first_login=fals)
+            db.table("usuario").where("id", user["id"]).update(first_login=fals)
             return redirect("/dashboard")
         if user["user_type"] == admin:
             return redirect("/asignacion")
         if user["user_type"] == docente:
             return redirect("/homeDocente")
         if user["user_type"] == jefe_de_carrera:
-            return redirect("/jefeCarrera")    
-        
+            return redirect("/jefeCarrera")
+
+
 @app.route("/dashboard")
 def dashboard():
     """
@@ -236,8 +233,39 @@ def horario():
         username = user["username"]
         usuario = db.table("usuario").where("id", user_id).get().first()
         disponibilidad = usuario.disponibilidad
+
+        return render_template("horario.html", user=user, disponibilidad=disponibilidad)
+    return redirect("/")
+
+
+@app.route("/horarioJ")
+def horarioJefe():
+    """
+    Regresa el horario en solo lectura para
+    la vista del jefe de carrera
+    """
+    user = verificate_session()
+    if user:
+        try:
+            user_id = request.args["userid"]
+            if user_id == None:
+                return "NO HA SELECCIONADO NINGÚN DOCENTE"
+            if user_id == "None":
+                return "NO HA SELECCIONADO NINGÚN DOCENTE"
+            print(f"userid: {user_id}")
+        except:
+            return "NO HA SELECCIONADO NINGÚN DOCENTE"
+        username = user["username"]
+        usuario = db.table("usuario").where("id", user_id).get().first()
+        try:
+            disponibilidad = usuario.disponibilidad
+        except:
+            return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
+        if disponibilidad == None:
+            return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
+
         return render_template(
-            "horario.html", user=username, disponibilidad=disponibilidad
+            "horarioJ.html", user=user, disponibilidad=disponibilidad
         )
     return redirect("/")
 
@@ -259,9 +287,7 @@ def set_disp():
         result_dict = {"disponibilidad": availability_matrix}
         result_json = json.dumps(result_dict)
         resp = (
-            db.table("usuario")
-            .where("id", user_id)
-            .update(disponibilidad=result_json)
+            db.table("usuario").where("id", user_id).update(disponibilidad=result_json)
         )
         return str(resp)
     return redirect("/")
@@ -276,11 +302,57 @@ def jefe_carrera():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        d = db.table("usuario").where("user_type",docente).where("carrera",carrera).get()
-        a = db.table("materia").where("carrera",carrera).get()
+        d = (
+            db.table("usuario")
+            .where("user_type", docente)
+            .where("carrera", carrera)
+            .get()
+        )
+        a = db.table("materia").where("carrera", carrera).get()
         return render_template(
             "jefeCarrera.html", user=username, asignaturas=a, docentes=d
         )
+    return redirect("/")
+
+
+@app.route("/jefeCarrera/docentes")
+def docentes():
+    """
+    Vista del jefe de carrera
+    Menú de los docentes
+    """
+    user = verificate_session()
+    if user:
+        try:
+            userid = request.args["userid"]
+            print(f"userid: {userid}")
+        except:
+            userid = None
+        username = user["username"]
+        carrera = user["carrera"]
+        d = (
+            db.table("usuario")
+            .where("user_type", docente)
+            .where("carrera", carrera)
+            .order_by("apellido_pat", "desc")
+            .get()
+        )
+        return render_template(
+            "docentes.html", user=username, docentes=d, userid=userid
+        )
+    return redirect("/")
+
+
+@app.route("/jefeCarrera/docentes/agregar")
+def docentes_agregar():
+    """
+    Vista del jefe de carrera
+    Agregar un docente a la base de datos
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        return render_template("agregar_docente.html", user=username)
     return redirect("/")
 
 
@@ -294,9 +366,16 @@ def asignacion():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        d = db.table("usuario").where("user_type",docente).where("carrera",carrera).get()
-        a = db.table("materia").where("carrera",carrera).get()
-        return render_template("asignacion.html", user=username, asignaturas=a, docentes=d)
+        d = (
+            db.table("usuario")
+            .where("user_type", docente)
+            .where("carrera", carrera)
+            .get()
+        )
+        a = db.table("materia").where("carrera", carrera).get()
+        return render_template(
+            "asignacion.html", user=username, asignaturas=a, docentes=d
+        )
     return redirect("/")
 
 

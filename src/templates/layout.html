@@ -10,17 +10,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/allstyles.css">
+    <link rel="stylesheet" href="/css/allstyles.css">
     {% block css %}
     {% endblock %}
     </head>
     <body class="{% block body_class %}{% endblock %}">
         <header>
-            <a href="homeDocente"><img src="img/logo.jpg"></a>
+            <a href="homeDocente"><img src="/img/logo.jpg"></a>
             <nav>
-                <a href="homeDocente">Vista Docente</a>
-                <a href="jefeCarrera">Vista Jefe de carrera</a>
-                <a href="asignacion">pruebas</a>
+                <a href="/homeDocente">Vista Docente</a>
+                <a href="/jefeCarrera">Vista Jefe de carrera</a>
+                <a href="/asignacion">pruebas</a>
             </nav>
             <div class="dropdown">
                 <button class="dropbtn"> {{user}}</button>
@@ -35,7 +35,7 @@
         </header>
 {% block content %}
 {% endblock %}
-        <footer>
+        <footer style="font-family: 'Montserrat', sans-serif">
             <div>
                 <a href="#">Términos y Condiciones</a>
             </div>

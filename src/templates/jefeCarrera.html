@@ -4,13 +4,16 @@
 
 {% block css %}
 
+    <script src="https://kit.fontawesome.com/80905f653a.js" crossorigin="anonymous"></script>
+
 <style>
 
     .main1{
         display:flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content:space-between;
-        max-height:45rem;
+        max-height:100%;
+        align-items: center;
     }
     .docentes{
         display: flex;
@@ -41,6 +44,38 @@
         font-family: 'Montserrat';
 
     }
+    .boton{
+        background: rgb(168, 187, 241);
+        padding: 2rem;
+        border-radius: 1rem;
+        display: flex;
+        font-size: 1.2rem;
+        flex-direction:column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        width: 10%;
+        text-decoration: none;
+        color:black;
+    }
+    .boton i{
+        font-size: 5rem;
+    }
+    .boton:hover{
+        transition: ease .3s;
+        background: #a98bf5;
+    }
+    .botones{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+        justify-content: space-evenly;
+        width: 100%;
+        margin-top: 10rem;
+    }
 
 </style>
 
@@ -48,32 +83,41 @@
 
 {% block content %}
 
-<div class="main1">
 
-    <div class="docentes">
 
-        {% for docente in docentes %}
-        <div class="docente">
-            <p><strong>{{docente.nombre}}</strong></p>
+    <div class="botones">
+        <a class ="boton" href="/jefeCarrera/docentes">
+            <div >
+                <i class="fa-solid fa-user"></i>
+                <p>Docentes</p>
+            </div>
+        </a>
+
+        <div class="boton">
+            <i class="fa-solid fa-list-check"></i>
+            <p>Materias</p>
         </div>
 
-        {% endfor %}
+        <div class="boton">
+            <i class="fa-solid fa-person-shelter"></i>
+            <p>Aulas</p>
+        </div>
+
+        <div class="boton">
+            <i class="fa-solid fa-calendar-days"></i>
+            <p>Semestres</p>
+        </div>
+
+        <div class="boton">
+            <i class="fa-solid fa-users-rays"></i>
+            <p>Grupos</p>
+        </div>
+
+
 
     </div>
 
-    <div class="asignaturas">
 
-        {% for asignatura in asignaturas %}
-        <div class="asignatura">
-            <p><strong>{{asignatura.clave}}</strong></p>
-            <p>{{asignatura.nombre}} </p>
-            <p>horas practicas: {{asignatura.horas_practica}} horas teoria: {{asignatura.horas_teoria}} horas : {{asignatura.creditos}}</p>
-        </div>
 
-        {% endfor %}
-
-    </div>
-
-</div>
 
 {% endblock %}
