@@ -70,7 +70,8 @@ def verificate_session():
     if "user" in session:
         user_id = session["user"]["userid"]
         username = session["user"]["name"]
-        return {"userid": user_id, "username": username}
+        usercarrer = session["user"]["carrera"]
+        return {"userid": user_id, "username": username,"carrera": usercarrer}
     return False
 
 
@@ -146,6 +147,7 @@ def login():
         session["user"] = {
             "userid": user["id"],
             "name": user["nombre"],
+            "carrera": user["carrera"]
         }  #'user' hace referencia a la tabla de la base de datos
         if user["first_login"]:
             db.table("usuario").where("id",user["id"]).update(first_login=fals)
@@ -273,8 +275,9 @@ def jefe_carrera():
     user = verificate_session()
     if user:
         username = user["username"]
-        d = db.table("usuario").where("user_type",docente).get()
-        a = db.table("materia").get()
+        carrera = user["carrera"]
+        d = db.table("usuario").where("user_type",docente).where("carrera",carrera).get()
+        a = db.table("materia").where("carrera",carrera).get()
         return render_template(
             "jefeCarrera.html", user=username, asignaturas=a, docentes=d
         )
@@ -290,7 +293,10 @@ def asignacion():
     user = verificate_session()
     if user:
         username = user["username"]
-        return render_template("asignacion.html", user=username)
+        carrera = user["carrera"]
+        d = db.table("usuario").where("user_type",docente).where("carrera",carrera).get()
+        a = db.table("materia").where("carrera",carrera).get()
+        return render_template("asignacion.html", user=username, asignaturas=a, docentes=d)
     return redirect("/")
 
 
