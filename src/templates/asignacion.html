@@ -12,7 +12,7 @@
     justify-content: center;
     margin: 0.5rem;
   }
-
+  
 
   .btns .semestre {
     width: 100px;
@@ -27,14 +27,13 @@
     background-color: blue;
     color: white;
   }
+
   .btnsturn {
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .btnsturn p{
 
-  }
   .btnsturn .turno {
     width: 100px;
     height: 30px;
@@ -43,8 +42,7 @@
     border-radius: 15px;
     transition: .5s;
   }
-
-  .btnsturn .turno:hover {
+  .semestre.selected {
     background-color: blue;
     color: white;
   }
@@ -62,7 +60,7 @@
     border: 1px solid black;
     margin: 0;
   }
-
+  
   .docentes,
   .horario,
   .materia,
@@ -74,15 +72,15 @@
 
 {% block content %}
 <div class="btns">
-  <button class="semestre" id="sem1">Semestre 1</button>
-  <button class="semestre" id="sem2">Semestre 2</button>
-  <button class="semestre" id="sem3">Semestre 3</button>
-  <button class="semestre" id="sem4">Semestre 4</button>
-  <button class="semestre" id="sem5">Semestre 5</button>
-  <button class="semestre" id="sem6">Semestre 6</button>
-  <button class="semestre" id="sem7">Semestre 7</button>
-  <button class="semestre" id="sem8">Semestre 8</button>
-  <button class="semestre" id="sem9">Semestre 9</button>
+  <button class="semestre" data-semestre="1">Semestre 1</button>
+  <button class="semestre" data-semestre="2">Semestre 2</button>
+  <button class="semestre" data-semestre="3">Semestre 3</button>
+  <button class="semestre" data-semestre="4">Semestre 4</button>
+  <button class="semestre" data-semestre="5">Semestre 5</button>
+  <button class="semestre" data-semestre="6">Semestre 6</button>
+  <button class="semestre" data-semestre="7">Semestre 7</button>
+  <button class="semestre" data-semestre="8">Semestre 8</button>
+  <button class="semestre" data-semestre="9">Semestre 9</button>
 </div>
 <div class="btnsturn">
   <p>Turno :</p>
@@ -94,7 +92,14 @@
 <div class="principal">
   <div>
     <div class="docentes">
-      <p>docentes</p>
+
+      {% for docente in docentes %}
+      <div class="docente">
+        <p><strong>{{docente.nombre}}</strong></p>
+      </div>
+
+      {% endfor %}
+
     </div>
     <div class="horario">
       <p>horario</p>
@@ -102,7 +107,13 @@
   </div>
   <div>
     <div class="materia">
-      <p>Materias</p>
+      {% for asignatura in asignaturas %}
+        <div class="asignatura" data-semestre="{{ asignatura.semestre }}">
+          <p><strong>{{ asignatura.clave }}</strong></p>
+          <p>{{ asignatura.nombre }}</p>
+          <p>Horas prácticas: {{ asignatura.horas_practica }} horas, horas teoría: {{ asignatura.horas_teoria }} horas, créditos: {{ asignatura.creditos }}</p>
+        </div>
+      {% endfor %}
     </div>
     <div class="aula">
       <P>Aulas</P>
@@ -110,4 +121,36 @@
   </div>
 </div>
 
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.semestre').forEach(function(button) {
+      button.addEventListener('click', function() {
+        // Elimina la clase 'selected' de todos los botones de semestre
+        document.querySelectorAll('.semestre').forEach(function(btn) {
+          btn.classList.remove('selected');
+        });
+
+        // Agrega la clase 'selected' al botón de semestre seleccionado
+        this.classList.add('selected');
+
+        var semestre = this.getAttribute('data-semestre');
+
+        // Oculta todas las asignaturas
+        document.querySelectorAll('.asignatura').forEach(function(asignatura) {
+          asignatura.style.display = 'none';
+        });
+
+        // Muestra las asignaturas del semestre seleccionado
+        document.querySelectorAll('.asignatura[data-semestre="' + semestre + '"]').forEach(function(asignatura) {
+          asignatura.style.display = 'block';
+        });
+      });
+    });
+  });
+
+  
+</script>
 {% endblock %}

@@ -294,7 +294,10 @@ def asignacion():
     user = verificate_session()
     if user:
         username = user["username"]
-        return render_template("asignacion.html", user=username)
+        carrera = user["carrera"]
+        d = db.table("usuario").where("user_type",docente).where("carrera",carrera).get()
+        a = db.table("materia").where("carrera",carrera).get()
+        return render_template("asignacion.html", user=username, asignaturas=a, docentes=d)
     return redirect("/")
 
 
