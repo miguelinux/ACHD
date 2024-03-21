@@ -356,16 +356,11 @@ def materias():
         d = (
             db.table("materia")
             .where("carrera", carrera)
-            .where("carrera", carrera)
-            .order_by("semestre","asc")
+            .order_by("semestre", "asc")
             .get()
         )
-        return render_template(
-            "materias.html", user=username, materias=d
-        )
+        return render_template("materias.html", user=username, materias=d)
     return redirect("/")
-
-
 
 
 @app.route("/jefeCarrera/docentes/agregar")
