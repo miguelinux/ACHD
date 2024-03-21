@@ -343,6 +343,31 @@ def docentes():
     return redirect("/")
 
 
+@app.route("/jefeCarrera/materias")
+def materias():
+    """
+    Vista del jefe de carrera
+    Menú de los docentes
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        carrera = user["carrera"]
+        d = (
+            db.table("materia")
+            .where("carrera", carrera)
+            .where("carrera", carrera)
+            .order_by("semestre","asc")
+            .get()
+        )
+        return render_template(
+            "materias.html", user=username, materias=d
+        )
+    return redirect("/")
+
+
+
+
 @app.route("/jefeCarrera/docentes/agregar")
 def docentes_agregar():
     """

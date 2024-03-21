@@ -230,7 +230,9 @@ footer a {
     height: 150px;
 }
 .inicio .box:hover {
-    background-color: #a98bf5;
+    background-color: #37109b;
+    color:white;
+
 }
 .inicio i {
     font-size: 5rem;

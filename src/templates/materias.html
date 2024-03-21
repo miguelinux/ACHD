@@ -22,14 +22,22 @@
     .subseccion{
         width: 100%;
     }
-    .docente{
+    .materia{
         padding: 0.8rem;
         background: white;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
         color:black;
         border-radius: 0.5rem;
         margin: 0.9rem;
-        max-width: 25rem;
+        max-width: 35rem;
         text-decoration:none;
+    }
+    .materia:hover{
+        transition: 0.2s ease-in-out;
+        background: #37109b;
+        color: white;
     }
     .boton i{
         font-size: 5rem;
@@ -86,16 +94,19 @@
     <div class="seccion">
 
         <div class="docentes">
-
-            {% for docente in docentes %}
-                {% set useridINT = userid | int %}
-                <div class="docente" style="background: {% if useridINT == docente.id %}#37109b;{% else %}white;{% endif %}color: {% if useridINT == docente.id %}white;{% else %}black;{% endif %}">
-                <a style="text-decoration: none;{% if useridINT == docente.id %}color:white;{% else %}{% endif %}" href="?userid={{ docente.id }}">
-                <p>{{ docente.nombre }} {{ docente.apellido_pat }} {{ docente.apellido_mat }}</p>
-
-                </a>
+                <div class="materia" style="background: #37109b;color:white;">
+                <p><strong style=" width: 1rem ; background:#37109b;padding: 0.2rem;border-radius: 0.2rem;color:white;">S</strong> NOMBRE DE LA MATERIA</p>
+                <div>
+                    <p>T P C</p>
                 </div>
-
+                </div>
+            {% for materia in materias %}
+                <div class="materia" style="">
+                <p><strong style=" width: 1rem ; background: #37109b;padding: 0.2rem;border-radius: 0.2rem;color:white;">{{ materia.semestre }}</strong> {{ materia.nombre }} </p>
+                <div>
+                    <p>{{ materia.horas_teoria }} {{ materia.horas_practica }} {{ materia.creditos }}</p>
+                </div>
+                </div>
 
             {% endfor %}
 
@@ -110,10 +121,10 @@
     <div class="seccion" style="text-align: center; align-items: center">
 
         <div class="subseccion" style="height: 40rem;">
-        <h2>Horario del docente</h2>
+        <h2>Docentes asociados a esta materia</h2>
 
             <div id="contenedor">
-                <iframe src="/horarioJ?userid={{ userid }}"></iframe>
+
             </div>
 
 
@@ -121,10 +132,10 @@
 
         <div class="subseccion">
 
-            <a href="/jefeCarrera/docentes/agregar" class="boton" style="height: 5rem;">
+            <a href="/jefeCarrera/materias/agregar" class="boton" style="height: 5rem;">
                 <div style="">
-                    <i class="fa-solid fa-user-plus"></i>
-                    <p>Agregar docente</p>
+                    <i class="fa-solid fa-book-medical"></i>
+                    <p>Agregar materia</p>
                 </div>
 
             </a>
