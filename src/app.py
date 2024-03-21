@@ -347,7 +347,7 @@ def docentes():
 def materias():
     """
     Vista del jefe de carrera
-    Menú de los docentes
+    Menú de las materias
     """
     user = verificate_session()
     if user:
