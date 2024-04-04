@@ -230,7 +230,6 @@ def horario():
     user = verificate_session()
     if user:
         user_id = user["userid"]
-        username = user["username"]
         usuario = db.table("usuario").where("id", user_id).get().first()
         disponibilidad = usuario.disponibilidad
 
@@ -248,20 +247,20 @@ def horarioJefe():
     if user:
         try:
             user_id = request.args["userid"]
-            if user_id == None:
+            if user_id is None:
                 return "NO HA SELECCIONADO NINGÚN DOCENTE"
             if user_id == "None":
                 return "NO HA SELECCIONADO NINGÚN DOCENTE"
             print(f"userid: {user_id}")
-        except:
+        except KeyError:
             return "NO HA SELECCIONADO NINGÚN DOCENTE"
-        username = user["username"]
+
         usuario = db.table("usuario").where("id", user_id).get().first()
         try:
             disponibilidad = usuario.disponibilidad
-        except:
+        except AttributeError:
             return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
-        if disponibilidad == None:
+        if disponibilidad is None:
             return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
 
         return render_template(
@@ -326,7 +325,7 @@ def docentes():
         try:
             userid = request.args["userid"]
             print(f"userid: {userid}")
-        except:
+        except KeyError:
             userid = None
         username = user["username"]
         carrera = user["carrera"]
