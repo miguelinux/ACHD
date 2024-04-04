@@ -1,0 +1,17 @@
+# Uncomment out the following lines to execute at user login
+# [Install]
+# WantedBy=default.target
+
+[Container]
+Image=docker.io/library/mysql:8.3.0
+ContainerName=mysql-achd
+Volume=mysql-achd.volume:/var/lib/mysql
+PublishPort=127.0.0.1:3306:3306
+Secret=achd-md,type=env,target=MYSQL_DATABASE
+Secret=achd-mu,type=env,target=MYSQL_USER
+Secret=achd-mp,type=env,target=MYSQL_PASSWORD
+Secret=achd-mrp,type=env,target=MYSQL_ROOT_PASSWORD
+
+#Environment=VARIABLE=valor
+
+
