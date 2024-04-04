@@ -13,5 +13,3 @@ Secret=achd-mp,type=env,target=MYSQL_PASSWORD
 Secret=achd-mrp,type=env,target=MYSQL_ROOT_PASSWORD
 
 #Environment=VARIABLE=valor
-
-

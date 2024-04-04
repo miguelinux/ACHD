@@ -17,7 +17,7 @@ crea_secreto()
         then
             podman secret rm ${podman_name}
         fi
-        printf "${env_name}" | podman secret create ${podman_name} - 
+        printf "${env_name}" | podman secret create ${podman_name} -
     fi
 }
 
@@ -33,4 +33,3 @@ crea_secreto "$MYSQL_ROOT_PASSWORD" achd-mrp
 crea_secreto "$MYSQL_DATABASE" achd-md
 crea_secreto "$MYSQL_USER" achd-mu
 crea_secreto "$MYSQL_PASSWORD" achd-mp
-
