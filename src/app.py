@@ -28,6 +28,16 @@ DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
 
+# TODO: Hay que mejorar esto por favor
+ETAPA = config.get("APP", "ETAPA")
+
+if ETAPA == "desarrollo":
+    app.config["DEBUG"] = True
+
+SERVER_NAME = config.get("APP", "SERVER_NAME")
+PORT = config.get("APP", "PORT")
+app.config["SERVER_NAME"] = SERVER_NAME + ":" + PORT
+
 docente = 3
 jefe_de_carrera = 2
 admin = 1
@@ -183,7 +193,11 @@ def change():
         new_password = request.form["newpass"]
         confirm_password = request.form["conf_newpass"]
 
-        if current_password == "" or new_password == "" or confirm_password == "":
+        if (
+            current_password == ""  # nosec hardcoded_password_string
+            or new_password == ""  # nosec hardcoded_password_string
+            or confirm_password == ""  # nosec hardcoded_password_string
+        ):
             mensaje = "Favor de llenar todos los campos"
             return jsonify({"success": False, "message": mensaje})
         else:
@@ -230,7 +244,6 @@ def horario():
     user = verificate_session()
     if user:
         user_id = user["userid"]
-        username = user["username"]
         usuario = db.table("usuario").where("id", user_id).get().first()
         disponibilidad = usuario.disponibilidad
 
@@ -248,20 +261,20 @@ def horarioJefe():
     if user:
         try:
             user_id = request.args["userid"]
-            if user_id == None:
+            if user_id is None:
                 return "NO HA SELECCIONADO NINGÚN DOCENTE"
             if user_id == "None":
                 return "NO HA SELECCIONADO NINGÚN DOCENTE"
             print(f"userid: {user_id}")
-        except:
+        except KeyError:
             return "NO HA SELECCIONADO NINGÚN DOCENTE"
-        username = user["username"]
+
         usuario = db.table("usuario").where("id", user_id).get().first()
         try:
             disponibilidad = usuario.disponibilidad
-        except:
+        except AttributeError:
             return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
-        if disponibilidad == None:
+        if disponibilidad is None:
             return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
 
         return render_template(
@@ -326,7 +339,7 @@ def docentes():
         try:
             userid = request.args["userid"]
             print(f"userid: {userid}")
-        except:
+        except KeyError:
             userid = None
         username = user["username"]
         carrera = user["carrera"]
@@ -400,4 +413,4 @@ def asignacion():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run()
