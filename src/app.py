@@ -28,6 +28,16 @@ DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
 
+# TODO: Hay que mejorar esto por favor
+ETAPA = config.get("APP", "ETAPA")
+
+if ETAPA == "desarrollo":
+    app.config["DEBUG"] = True
+
+SERVER_NAME = config.get("APP", "SERVER_NAME")
+PORT = config.get("APP", "PORT")
+app.config["SERVER_NAME"] = SERVER_NAME + ":" + PORT
+
 docente = 3
 jefe_de_carrera = 2
 admin = 1
@@ -403,5 +413,4 @@ def asignacion():
 
 
 if __name__ == "__main__":
-    # TODO: Fix this issue in config and remove nosec
-    app.run(debug=True, port=5000)  # nosec flask_debug_true
+    app.run()
