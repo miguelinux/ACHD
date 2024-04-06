@@ -1,0 +1,19 @@
+FROM docker.io/library/ubuntu:20.04 as builder
+
+ARG packages="vim sudo python3.8-venv"
+
+RUN apt-get update -qq \
+	&& apt-get upgrade -y \
+        && apt-get install -y -m $packages \
+        && rm -rf /var/lib/apt/lists/* \
+        && useradd --create-home --shell /bin/bash developer \
+        && echo "developer:developer" | chpasswd \
+        && adduser developer sudo \
+	&& echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/015_developer-nopasswd
+
+FROM docker.io/library/ubuntu:20.04
+
+USER developer
+WORKDIR /home/developer
+
+COPY --from=builder / /
