@@ -118,9 +118,11 @@ def index():
     Si hay una sesión iniciada, redirecciona al dashboard.
     Si no hay una sesión iniciada, regresa el login.
     """
+
     user = verificate_session()
     if user:
         return redirect("dashboard")
+
     return render_template("index.html")
 
 @app.errorhandler(404)
