@@ -4,6 +4,7 @@ Copia los archivos de
 
   * `mysql-achd.container`
   * `mysql-achd.volume`
+  * `achd.network`
 
 a `$HOME/.config/containers/systemd`, para usar un contenedor de MySQL
 en podman (usando quadlets).

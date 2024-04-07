@@ -55,5 +55,9 @@ fi
 
 ${VTOOL} run --rm --interactive --tty --name achd \
     --volume ${VREPO}:/home/achd:Z  \
+    --workdir /home/achd \
+    --network achdnet \
+    --ip 192.168.5.5 \
     --publish 5000:5000 \
+    --add-host mysql-achd:192.168.5.10 \
     ${VIMAGE}
