@@ -55,4 +55,5 @@ fi
 
 ${VTOOL} run --rm --interactive --tty --name achd \
     --volume ${VREPO}:/home/achd:Z  \
+    --publish 5000:5000 \
     ${VIMAGE}
