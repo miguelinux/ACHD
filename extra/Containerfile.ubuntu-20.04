@@ -1,6 +1,6 @@
 FROM docker.io/library/ubuntu:20.04 as builder
 
-ARG packages="vim sudo python3.8-venv"
+ARG packages="vim sudo python3.8-venv mysql-client libmysqlclient21"
 
 RUN apt-get update -qq \
 	&& apt-get upgrade -y \

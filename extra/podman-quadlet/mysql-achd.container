@@ -8,10 +8,11 @@ ContainerName=mysql-achd
 Volume=mysql-achd.volume:/var/lib/mysql
 Network=achd.network
 IP=192.168.5.10
-PublishPort=3306:3306
+#Pod=achdpod
 Secret=achd-md,type=env,target=MYSQL_DATABASE
 Secret=achd-mu,type=env,target=MYSQL_USER
 Secret=achd-mp,type=env,target=MYSQL_PASSWORD
-Secret=achd-mrp,type=env,target=MYSQL_ROOT_PASSWORD
+#Secret=achd-mrp,type=env,target=MYSQL_ROOT_PASSWORD
+#PublishPort=3306:3306
 
 #Environment=VARIABLE=valor
