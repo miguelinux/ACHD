@@ -118,8 +118,14 @@ def index():
     Si hay una sesión iniciada, redirecciona al dashboard.
     Si no hay una sesión iniciada, regresa el login.
     """
+    user = verificate_session()
+    if user:
+        return redirect("dashboard")
     return render_template("index.html")
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("error.html"),404
 
 @app.route("/logout")
 def logout():
@@ -159,7 +165,7 @@ def login():
             db.table("usuario").where("id", user["id"]).update(first_login=fals)
             return redirect("/dashboard")
         if user["user_type"] == admin:
-            return redirect("/asignacion")
+            return redirect("/jefeCarrera/asignacion")
         if user["user_type"] == docente:
             return redirect("/homeDocente")
         if user["user_type"] == jefe_de_carrera:
@@ -389,7 +395,7 @@ def docentes_agregar():
     return redirect("/")
 
 
-@app.route("/asignacion")
+@app.route("/jefeCarrera/asignacion")
 def asignacion():
     """
     Vista de asignacion de materias

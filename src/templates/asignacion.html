@@ -61,6 +61,15 @@
     margin: 0;
   }
 
+  .asignatura{
+        padding: 10px;
+        background-color: #ddd0e7;
+        color: #000000;
+        border-radius: 5px;
+        border: none;
+
+  }
+
   .docentes,
   .horario,
   .materia,
@@ -109,9 +118,8 @@
     <div class="materia">
       {% for asignatura in asignaturas %}
         <div class="asignatura" data-semestre="{{ asignatura.semestre }}">
-          <p><strong>{{ asignatura.clave }}</strong></p>
-          <p>{{ asignatura.nombre }}</p>
-          <p>Horas prácticas: {{ asignatura.horas_practica }} horas, horas teoría: {{ asignatura.horas_teoria }} horas, créditos: {{ asignatura.creditos }}</p>
+          <p><strong>{{ asignatura.nombre }}</strong></p>
+          <p>créditos: {{ asignatura.creditos }}</p>
         </div>
       {% endfor %}
     </div>
