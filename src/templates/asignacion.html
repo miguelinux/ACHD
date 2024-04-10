@@ -33,6 +33,10 @@
     align-items: center;
     justify-content: center;
   }
+  .btnsturn .turno:hover{
+    background-color: blue;
+    color: white;
+  }
 
   .btnsturn .turno {
     width: 100px;
@@ -41,10 +45,6 @@
     margin-right: 10px;
     border-radius: 15px;
     transition: .5s;
-  }
-  .semestre.selected {
-    background-color: blue;
-    color: white;
   }
 
   .container {
@@ -58,34 +58,33 @@
       "materias aulas";
   }
 
-  .docentes { 
-    grid-area: docentes; 
-    background-color: lightblue; 
-    height: 22rem
-    
-  }
-
-  .horario { 
-    grid-area: horario; 
-    background-color: lightgreen; 
-    height: 22rem
-  }
-
-  .materias { 
-    grid-area: materias;
-    background-color: lightyellow; 
+  .docentes {
+    grid-area: docentes;
     height: 22rem;
     display: flex;
-    align-items: center;
-    justify-content: center;
     text-align: center;
-    flex-direction: row;
     flex-wrap: wrap;
   }
 
-  .aulas { 
-    grid-area: aulas; 
-    background-color: lightcoral; 
+  .horario {
+    grid-area: horario;
+    height: 22rem;
+    text-align: center;
+  }
+
+  .materias {
+    grid-area: materias;
+    background-color: lightyellow;
+    height: 22rem;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    flex-wrap: wrap;
+  }
+
+  .aulas {
+    grid-area: aulas;
+    background-color: lightcoral;
     height: 22rem
   }
 
@@ -94,7 +93,8 @@
     align-items: center;
     justify-content: end;
   }
-  .savebtn{
+
+  .savebtn {
     width: 100px;
     height: 30px;
     margin-left: 10px;
@@ -103,19 +103,41 @@
     transition: .5s;
   }
 
-  .materia{
-    width: auto;
+  .docente {
     height: 55px;
-    background-color: rosybrown;
+    background-color: green;
     border-radius: 5px;
     margin: 5px;
   }
-  .materia p{
+
+  .docente p {
+    text-align: center;
+    margin-top: 5px;
+  }
+  .materia {
+    width: auto;
+    height: 55px;
+    background-color: #897baf;
+    color: white;
+    border-radius: 5px;
+    margin: 5px;
+  }
+
+  .materia p {
     text-align: center;
     margin-top: 5px;
   }
 
+  table {
+    background-color: aquamarine;
+    width: 50rem; 
+    max-width: auto;
+    height: 25rem;
+  }
 
+  table tr {
+    background-color: white;
+  }
 </style>
 {% endblock %}
 
@@ -136,19 +158,112 @@
   <button class="turno" id="turnA">A</button>
   <button class="turno" id="turnB">B</button>
   <button class="turno" id="turnN">N</button>
-  <button class="turno" id="turnR">R</button>
 </div>
 
 <div class="container">
-  <div class="docentes"> docentes</div>
-  <div class="horario"> horario</div>
-  <div class="materias"> 
-      {% for asignatura in asignaturas %}
-        <div class="materia" data-semestre="{{ asignatura.semestre }}">
-          <p>{{ asignatura.nombre }}</p>
-          <p>Créditos: {{ asignatura.creditos }}</p>
-        </div>
+  <div class="docentes"> 
+    <p>docentes</p>
+
+    {% for docente in docentes %}
+      <div class="docente">
+        <p><strong>{{docente.nombre}} {{docente.apellido_pat}}</strong></p>
+      </div>
       {% endfor %}
+  </div>
+
+  <div class="horario">
+    <table>
+      <tr>
+        <th>horas</th>
+        <th>lunes</th>
+        <th>martes</th>
+        <th>miercoles</th>
+        <th>jueves</th>
+        <th>viernes</th>
+        <th>sabado</th>
+      </tr>
+      <tr>
+        <td class="hora">7-8</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="hora">8-9</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="hora">9-10</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="hora">10-11</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="hora">11-12</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="hora">12-13</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="hora">13-14</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="hora">14-15</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+  <div class="materias">
+    <p>materias</p>
+    {% for asignatura in asignaturas %}
+    <div class="materia" data-semestre="{{ asignatura.semestre }}">
+      <p>{{ asignatura.nombre }}</p>
+      <p>Créditos: {{ asignatura.creditos }}</p>
+    </div>
+    {% endfor %}
   </div>
   <div class="aulas"> aulas</div>
 </div>
