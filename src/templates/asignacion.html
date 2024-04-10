@@ -75,8 +75,12 @@
     grid-area: materias;
     background-color: lightyellow; 
     height: 22rem;
+    display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    text-align: center;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .aulas { 
@@ -100,11 +104,15 @@
   }
 
   .materia{
-    display: flex;
-    width: 100px;
-    height: 30px;
+    width: auto;
+    height: 55px;
     background-color: rosybrown;
-    border-radius: 15px;
+    border-radius: 5px;
+    margin: 5px;
+  }
+  .materia p{
+    text-align: center;
+    margin-top: 5px;
   }
 
 
@@ -135,14 +143,12 @@
   <div class="docentes"> docentes</div>
   <div class="horario"> horario</div>
   <div class="materias"> 
-    <div class="materia">
       {% for asignatura in asignaturas %}
-        <div class="asignatura" data-semestre="{{ asignatura.semestre }}">
-          <p><strong>{{ asignatura.nombre }}</strong></p>
+        <div class="materia" data-semestre="{{ asignatura.semestre }}">
+          <p>{{ asignatura.nombre }}</p>
           <p>Créditos: {{ asignatura.creditos }}</p>
         </div>
       {% endfor %}
-    </div>
   </div>
   <div class="aulas"> aulas</div>
 </div>
