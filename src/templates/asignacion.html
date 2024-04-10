@@ -46,36 +46,68 @@
     background-color: blue;
     color: white;
   }
-  .principal {
+
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "docentes horario"
+      "materias aulas";
+  }
+
+  .docentes { 
+    grid-area: docentes; 
+    background-color: lightblue; 
+    height: 22rem
+    
+  }
+
+  .horario { 
+    grid-area: horario; 
+    background-color: lightgreen; 
+    height: 22rem
+  }
+
+  .materias { 
+    grid-area: materias;
+    background-color: lightyellow; 
+    height: 22rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .aulas { 
+    grid-area: aulas; 
+    background-color: lightcoral; 
+    height: 22rem
+  }
+
+  .btn {
     display: flex;
-    justify-content: space-around;
-    margin: 10px;
-    flex-direction: column;
+    align-items: center;
+    justify-content: end;
+  }
+  .savebtn{
+    width: 100px;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 15px;
+    transition: .5s;
   }
 
-  .principal div {
+  .materia{
     display: flex;
-    width: 100%;
-    height: 40vh;
-    border: 1px solid black;
-    margin: 0;
+    width: 100px;
+    height: 30px;
+    background-color: rosybrown;
+    border-radius: 15px;
   }
 
-  .asignatura{
-        padding: 10px;
-        background-color: #ddd0e7;
-        color: #000000;
-        border-radius: 5px;
-        border: none;
 
-  }
-
-  .docentes,
-  .horario,
-  .materia,
-  .aula {
-    background-color: white;
-  }
 </style>
 {% endblock %}
 
@@ -98,67 +130,25 @@
   <button class="turno" id="turnN">N</button>
   <button class="turno" id="turnR">R</button>
 </div>
-<div class="principal">
-  <div>
-    <div class="docentes">
 
-      {% for docente in docentes %}
-      <div class="docente">
-        <p><strong>{{docente.nombre}}</strong></p>
-      </div>
-
-      {% endfor %}
-
-    </div>
-    <div class="horario">
-      <p>horario</p>
-    </div>
-  </div>
-  <div>
+<div class="container">
+  <div class="docentes"> docentes</div>
+  <div class="horario"> horario</div>
+  <div class="materias"> 
     <div class="materia">
       {% for asignatura in asignaturas %}
         <div class="asignatura" data-semestre="{{ asignatura.semestre }}">
           <p><strong>{{ asignatura.nombre }}</strong></p>
-          <p>créditos: {{ asignatura.creditos }}</p>
+          <p>Créditos: {{ asignatura.creditos }}</p>
         </div>
       {% endfor %}
     </div>
-    <div class="aula">
-      <P>Aulas</P>
-    </div>
   </div>
+  <div class="aulas"> aulas</div>
+</div>
+<div class="btn">
+  <button class="savebtn"> guardar</button>
 </div>
 
 
-
-<script>
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.semestre').forEach(function(button) {
-      button.addEventListener('click', function() {
-        // Elimina la clase 'selected' de todos los botones de semestre
-        document.querySelectorAll('.semestre').forEach(function(btn) {
-          btn.classList.remove('selected');
-        });
-
-        // Agrega la clase 'selected' al botón de semestre seleccionado
-        this.classList.add('selected');
-
-        var semestre = this.getAttribute('data-semestre');
-
-        // Oculta todas las asignaturas
-        document.querySelectorAll('.asignatura').forEach(function(asignatura) {
-          asignatura.style.display = 'none';
-        });
-
-        // Muestra las asignaturas del semestre seleccionado
-        document.querySelectorAll('.asignatura[data-semestre="' + semestre + '"]').forEach(function(asignatura) {
-          asignatura.style.display = 'block';
-        });
-      });
-    });
-  });
-
-
-</script>
 {% endblock %}
