@@ -1,0 +1,64 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+// https://dbdiagram.io/
+
+Table usuario {
+  id integer [primary key, increment]
+  nombre varchar
+  apellido_pat varchar
+  apellido_Mat varchar
+  email varchar
+  password varchar
+  disponibilidad json
+  materias_asignadas json
+  user_type integer
+  first_log bool
+  horas_semana integer
+  carrera integer
+}
+
+Table carrera {
+ id integer [primary key, increment]
+ nombre varchar
+ plan_de_estudio varchar
+}
+
+Table materia{
+  id integer [primary key, increment]
+  clave varchar
+  nombre varchar
+  semestre varchar
+  horas_practica integer
+  horas_teoria integer
+  creditos integer
+  carrera integer
+}
+
+Table aula{
+id integer [primary key, increment]
+nombre varchar
+edificio varchar
+}
+
+table asignacion{
+  id integer [primary key, increment]
+  horario json
+  semestre integer
+  carrera integer
+}
+
+
+Table log{
+  id integer [primary key, increment]
+  usuario integer
+  fecha datetime
+  tabla_change varchar
+  change varchar
+}
+
+
+
+Ref: usuario.carrera < carrera.id
+Ref: carrera.id > materia.carrera
+Ref: log.usuario < usuario.id
+Ref: asignacion.carrera < carrera.id
