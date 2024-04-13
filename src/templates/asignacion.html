@@ -46,6 +46,11 @@
     border-radius: 15px;
     transition: .5s;
   }
+  .btnsturn .turno.selected {
+  background-color: blue;
+  color: white;
+  }
+
 
   .container {
     display: grid;
@@ -172,7 +177,7 @@
   </div>
 
   <div class="horario">
-    <table>
+    <table id="TablaHorario">
       <tr>
         <th>horas</th>
         <th>lunes</th>
@@ -183,76 +188,76 @@
         <th>sabado</th>
       </tr>
       <tr>
-        <td class="hora">7-8</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td class="hora hora-1">7-8</td>
+        <td class="lunes"></td>
+        <td class="martes"></td>
+        <td class="miercoles"></td>
+        <td class="jueves"></td>
+        <td class="viernes"></td>
+        <td class="sabado"></td>
       </tr>
       <tr>
-        <td class="hora">8-9</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td class="hora hora-2">8-9</td>
+        <td class="lunes"></td>
+        <td class="martes"></td>
+        <td class="miercoles"></td>
+        <td class="jueves"></td>
+        <td class="viernes"></td>
+        <td class="sabado"></td>
       </tr>
       <tr>
-        <td class="hora">9-10</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td class="hora hora-3">9-10</td>
+        <td class="lunes"></td>
+        <td class="martes"></td>
+        <td class="miercoles"></td>
+        <td class="jueves"></td>
+        <td class="viernes"></td>
+        <td class="sabado"></td>
       </tr>
       <tr>
-        <td class="hora">10-11</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td class="hora hora-4">10-11</td>
+        <td class="lunes"></td>
+        <td class="martes"></td>
+        <td class="miercoles"></td>
+        <td class="jueves"></td>
+        <td class="viernes"></td>
+        <td class="sabado"></td>
       </tr>
       <tr>
-        <td class="hora">11-12</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td class="hora hora-5">11-12</td>
+        <td class="lunes"></td>
+        <td class="martes"></td>
+        <td class="miercoles"></td>
+        <td class="jueves"></td>
+        <td class="viernes"></td>
+        <td class="sabado"></td>
       </tr>
       <tr>
-        <td class="hora">12-13</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td class="hora hora-6">12-13</td>
+        <td class="lunes"></td>
+        <td class="martes"></td>
+        <td class="miercoles"></td>
+        <td class="jueves"></td>
+        <td class="viernes"></td>
+        <td class="sabado"></td>
       </tr>
       <tr>
-        <td class="hora">13-14</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td class="hora hora-7">13-14</td>
+        <td class="lunes"></td>
+        <td class="martes"></td>
+        <td class="miercoles"></td>
+        <td class="jueves"></td>
+        <td class="viernes"></td>
+        <td class="sabado"></td>
       </tr>
       <tr>
-        <td class="hora">14-15</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td class="hora hora-8">14-15</td>
+        <td class="lunes"></td>
+        <td class="martes"></td>
+        <td class="miercoles"></td>
+        <td class="jueves"></td>
+        <td class="viernes"></td>
+        <td class="sabado"></td>
       </tr>
     </table>
   </div>
@@ -271,5 +276,62 @@
   <button class="savebtn"> guardar</button>
 </div>
 
+<script>
+
+
+  //Botones de turno, permiten cambiar los valores de las horas y mantiene el turno seleccionado
+  document.addEventListener("DOMContentLoaded", function () {
+  const horasOriginales = obtenerHorasOriginales();
+  const turnA = document.getElementById("turnA");
+  const turnB = document.getElementById("turnB");
+  const turnN = document.getElementById("turnN");
+
+  turnA.addEventListener("click", function () {
+    restaurarHorasOriginales();
+    cambiarTurno("A");
+  });
+
+  turnB.addEventListener("click", function () {
+    restaurarHorasOriginales();
+    cambiarTurno("B");
+  });
+
+  turnN.addEventListener("click", function () {
+    cambiarTurno("N");
+  });
+  function cambiarTurno(turno) {
+    document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
+    document.getElementById(`turn${turno}`).classList.add('selected');
+    if (turno === "N") {
+      const horas = document.querySelectorAll(".hora");
+      horas.forEach(function (hora, index) {
+        let inicio = 15 + index;
+        let fin = 16 + index;
+        if (fin > 22) {
+          fin = 22;
+        }
+        hora.textContent = inicio.toString().padStart(2, '0') + '-' + fin.toString().padStart(2, '0');
+      });
+    }
+  }
+  function obtenerHorasOriginales() {
+    const horasOriginales = [];
+    const horas = document.querySelectorAll(".hora");
+    horas.forEach(function (hora) {
+      horasOriginales.push(hora.textContent);
+    });
+    return horasOriginales;
+  }
+  function restaurarHorasOriginales() {
+    const horas = document.querySelectorAll(".hora");
+    horas.forEach(function (hora, index) {
+      hora.textContent = horasOriginales[index];
+    });
+  }
+});
+
+//siguiente funcion js
+
+</script>
 
 {% endblock %}
