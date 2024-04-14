@@ -6,6 +6,7 @@
 """
 Modelo de la base de datos con SQLAlchemy
 """
+
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
