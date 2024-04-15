@@ -33,6 +33,10 @@
     align-items: center;
     justify-content: center;
   }
+  .btnsturn .turno:hover{
+    background-color: blue;
+    color: white;
+  }
 
   .btnsturn .turno {
     width: 100px;
@@ -42,30 +46,125 @@
     border-radius: 15px;
     transition: .5s;
   }
-  .semestre.selected {
-    background-color: blue;
+  .btnsturn .turno.selected {
+  background-color: blue;
+  color: white;
+  }
+
+
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 0.5fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "docentes horario"
+      "materias aulas";
+  }
+
+  .docentes {
+    grid-area: docentes;
+    height: 22rem;
+    display: flex;
+    text-align: center;
+    flex-wrap: wrap;
+  }
+
+  .horario {
+    grid-area: horario;
+    height: 22rem;
+    text-align: center;
+  }
+
+  .materias {
+    grid-area: materias;
+    background-color: lightyellow;
+    height: 22rem;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    flex-wrap: wrap;
+  }
+
+  .aulas {
+    grid-area: aulas;
+    background-color: lightcoral;
+    height: 22rem;
+    display: flex;
+    text-align: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+  }
+
+  .savebtn {
+    width: 100px;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 15px;
+    transition: .5s;
+  }
+
+  .docente {
+    height: 55px;
+    background-color: green;
+    border-radius: 5px;
+    margin: 5px;
+  }
+
+  .docente p {
+    user-select: none;
+    text-align: center;
+    margin-top: 5px;
+  }
+  
+  .materia {
+    width: auto;
+    height: 55px;
+    background-color: #897baf;
     color: white;
-  }
-  .principal {
-    display: flex;
-    justify-content: space-around;
-    margin: 10px;
-    flex-direction: column;
+    border-radius: 5px;
+    margin: 5px;
   }
 
-  .principal div {
-    display: flex;
-    width: 100%;
-    height: 40vh;
-    border: 1px solid black;
-    margin: 0;
+  .materia p {
+    user-select: none;
+    text-align: center;
+    margin-top: 5px;
   }
 
-  .docentes,
-  .horario,
-  .materia,
   .aula {
+    width: auto;
+    height: 55px;
+    background-color: #897baf;
+    border-radius: 5px;
+    margin: 5px;
+  }
+  .aula p{
+    user-select: none;
+    text-align: center;
+    margin-top: 5px;
+  }
+  table {
+    user-select: none;
+    background-color: aquamarine;
+    width: 50rem; 
+    max-width: auto;
+    height: 20rem;
+  }
+
+  table tr {
     background-color: white;
+  }
+  
+  .selected {
+    background-color: lightblue; /* Cambiar el color de fondo de los elementos seleccionados */
   }
 </style>
 {% endblock %}
@@ -87,70 +186,264 @@
   <button class="turno" id="turnA">A</button>
   <button class="turno" id="turnB">B</button>
   <button class="turno" id="turnN">N</button>
-  <button class="turno" id="turnR">R</button>
 </div>
-<div class="principal">
-  <div>
-    <div class="docentes">
 
-      {% for docente in docentes %}
+<div class="container">
+  <div class="docentes"> 
+    <p>docentes</p>
+
+    {% for docente in docentes %}
       <div class="docente">
-        <p><strong>{{docente.nombre}}</strong></p>
+        <p><strong>{{docente.nombre}} {{docente.apellido_pat}}</strong></p>
       </div>
-
       {% endfor %}
-
-    </div>
-    <div class="horario">
-      <p>horario</p>
-    </div>
   </div>
-  <div>
-    <div class="materia">
-      {% for asignatura in asignaturas %}
-        <div class="asignatura" data-semestre="{{ asignatura.semestre }}">
-          <p><strong>{{ asignatura.clave }}</strong></p>
-          <p>{{ asignatura.nombre }}</p>
-          <p>Horas prácticas: {{ asignatura.horas_practica }} horas, horas teoría: {{ asignatura.horas_teoria }} horas, créditos: {{ asignatura.creditos }}</p>
-        </div>
-      {% endfor %}
+
+  <div class="horario">
+    <table id="TablaHorario">
+      <tr>
+        <th>horas</th>
+        <th>lunes</th>
+        <th>martes</th>
+        <th>miercoles</th>
+        <th>jueves</th>
+        <th>viernes</th>
+        <th>sabado</th>
+      </tr>
+      <tr>
+        <td class="hora hora-1">7-8</td>
+        <td class="1"></td>
+        <td class="9"></td>
+        <td class="17"></td>
+        <td class="25"></td>
+        <td class="33"></td>
+        <td class="41"></td>
+      </tr>
+      <tr>
+        <td class="hora hora-2">8-9</td>
+        <td class="2"></td>
+        <td class="10"></td>
+        <td class="18"></td>
+        <td class="26"></td>
+        <td class="34"></td>
+        <td class="42"></td>
+      </tr>
+      <tr>
+        <td class="hora hora-3">9-10</td>
+        <td class="3"></td>
+        <td class="11"></td>
+        <td class="19"></td>
+        <td class="27"></td>
+        <td class="35"></td>
+        <td class="43"></td>
+      </tr>
+      <tr>
+        <td class="hora hora-4">10-11</td>
+        <td class="4"></td>
+        <td class="12"></td>
+        <td class="20"></td>
+        <td class="28"></td>
+        <td class="36"></td>
+        <td class="44"></td>
+      </tr>
+      <tr>
+        <td class="hora hora-5">11-12</td>
+        <td class="5"></td>
+        <td class="13"></td>
+        <td class="21"></td>
+        <td class="29"></td>
+        <td class="37"></td>
+        <td class="45"></td>
+      </tr>
+      <tr>
+        <td class="hora hora-6">12-13</td>
+        <td class="6"></td>
+        <td class="14"></td>
+        <td class="22"></td>
+        <td class="30"></td>
+        <td class="38"></td>
+        <td class="46"></td>
+      </tr>
+      <tr>
+        <td class="hora hora-7">13-14</td>
+        <td class="7"></td>
+        <td class="15"></td>
+        <td class="23"></td>
+        <td class="31"></td>
+        <td class="39"></td>
+        <td class="47"></td>
+      </tr>
+      <tr>
+        <td class="hora hora-8">14-15</td>
+        <td class="8"></td>
+        <td class="16"></td>
+        <td class="24"></td>
+        <td class="32"></td>
+        <td class="40"></td>
+        <td class="48"></td>
+      </tr>
+    </table>
+  </div>
+  <div class="materias">
+    <p>materias</p>
+    {% for asignatura in asignaturas %}
+    <div class="materia" >
+      <p>{{ asignatura.nombre }}</p>
+      <p>Créditos: {{ asignatura.creditos }}</p>
     </div>
-    <div class="aula">
-      <P>Aulas</P>
+    {% endfor %}
+  </div>
+  <div class="aulas"> 
+    <p>aulas</p>
+    {% for aula in aulas %}
+    <div class="aula" >
+      <p>{{ aula.nombre }}</p>
+      <p>{{ aula.edificio }}</p>
     </div>
+    {% endfor %}
   </div>
 </div>
-
-
+<div class="btn">
+  <button class="savebtn"> guardar</button>
+</div>
 
 <script>
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.semestre').forEach(function(button) {
-      button.addEventListener('click', function() {
-        // Elimina la clase 'selected' de todos los botones de semestre
-        document.querySelectorAll('.semestre').forEach(function(btn) {
-          btn.classList.remove('selected');
-        });
 
-        // Agrega la clase 'selected' al botón de semestre seleccionado
-        this.classList.add('selected');
+  //Botones de turno, permiten cambiar los valores de las horas y mantiene el turno seleccionado
+  document.addEventListener("DOMContentLoaded", function () {
+  const horasOriginales = obtenerHorasOriginales();
+  const turnA = document.getElementById("turnA");
+  const turnB = document.getElementById("turnB");
+  const turnN = document.getElementById("turnN");
 
-        var semestre = this.getAttribute('data-semestre');
+  turnA.addEventListener("click", function () {
+    restaurarHorasOriginales();
+    cambiarTurno("A");
+  });
 
-        // Oculta todas las asignaturas
-        document.querySelectorAll('.asignatura').forEach(function(asignatura) {
-          asignatura.style.display = 'none';
-        });
+  turnB.addEventListener("click", function () {
+    restaurarHorasOriginales();
+    cambiarTurno("B");
+  });
 
-        // Muestra las asignaturas del semestre seleccionado
-        document.querySelectorAll('.asignatura[data-semestre="' + semestre + '"]').forEach(function(asignatura) {
-          asignatura.style.display = 'block';
-        });
+  turnN.addEventListener("click", function () {
+    cambiarTurno("N");
+  });
+  function cambiarTurno(turno) {
+    document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
+    document.getElementById(`turn${turno}`).classList.add('selected');
+    if (turno === "N") {
+      const horas = document.querySelectorAll(".hora");
+      horas.forEach(function (hora, index) {
+        let inicio = 15 + index;
+        let fin = 16 + index;
+        if (fin > 22) {
+          fin = 22;
+        }
+        hora.textContent = inicio.toString().padStart(2, '0') + '-' + fin.toString().padStart(2, '0');
       });
+    }
+  }
+  function obtenerHorasOriginales() {
+    const horasOriginales = [];
+    const horas = document.querySelectorAll(".hora");
+    horas.forEach(function (hora) {
+      horasOriginales.push(hora.textContent);
+    });
+    return horasOriginales;
+  }
+  function restaurarHorasOriginales() {
+    const horas = document.querySelectorAll(".hora");
+    horas.forEach(function (hora, index) {
+      hora.textContent = horasOriginales[index];
+    });
+  }
+});
+
+//siguiente funcion js
+
+document.addEventListener("DOMContentLoaded", function () {
+  let selectedElements = [];
+
+  document.querySelectorAll(".docente, .materia, .aula").forEach(item => {
+    item.addEventListener("click", function () {
+      const elementType = this.classList.contains('docente') ? 'docente' : this.classList.contains('materia') ? 'materia' : 'aula';
+      const elementText = this.textContent.trim();
+
+      // Deseleccionar cualquier otro elemento del mismo tipo
+      selectedElements = selectedElements.filter(element => element.type !== elementType);
+      document.querySelectorAll(`.${elementType}.selected`).forEach(element => {
+        element.classList.remove('selected');
+      });
+
+      // Agregar el nuevo elemento seleccionado
+      let trimmedText = elementType === 'materia' ? elementText.replace(/Créditos.*/g, '').trim() : elementText.trim();
+      selectedElements.push({ type: elementType, text: trimmedText });
+      this.classList.add('selected');
     });
   });
 
+  // Controlador de eventos para las celdas vacías de la tabla
+  document.querySelectorAll(".horario td:not(.hora)").forEach(cell => {
+    cell.addEventListener("click", function () {
+      const hasOneOfEachType = selectedElements.filter(element => element.type === 'docente').length > 0 &&
+                               selectedElements.filter(element => element.type === 'materia').length > 0 &&
+                               selectedElements.filter(element => element.type === 'aula').length > 0;
 
+      if (hasOneOfEachType) {
+        cell.textContent = "";
+
+        // Crear elementos de div para cada uno de los elementos seleccionados y agregarlos a la celda
+        selectedElements.forEach(element => {
+          const newContent = document.createElement("div");
+          newContent.textContent = element.text;
+          cell.appendChild(newContent);
+        });
+      }
+    });
+  });
+});document.addEventListener("DOMContentLoaded", function () {
+  let selectedElements = [];
+
+  document.querySelectorAll(".docente, .materia, .aula").forEach(item => {
+    item.addEventListener("click", function () {
+      const elementType = this.classList.contains('docente') ? 'docente' : this.classList.contains('materia') ? 'materia' : 'aula';
+      const elementText = this.textContent.trim();
+
+      // Deseleccionar cualquier otro elemento del mismo tipo
+      selectedElements = selectedElements.filter(element => element.type !== elementType);
+      document.querySelectorAll(`.${elementType}.selected`).forEach(element => {
+        element.classList.remove('selected');
+      });
+
+      // Agregar el nuevo elemento seleccionado
+      let trimmedText = elementType === 'materia' ? elementText.replace(/Créditos.*/g, '').trim() : elementText.trim();
+      selectedElements.push({ type: elementType, text: trimmedText });
+      this.classList.add('selected');
+    });
+  });
+
+  // Controlador de eventos para las celdas vacías de la tabla
+  document.querySelectorAll(".horario td:not(.hora)").forEach(cell => {
+    cell.addEventListener("click", function () {
+      const hasOneOfEachType = selectedElements.filter(element => element.type === 'docente').length > 0 &&
+                               selectedElements.filter(element => element.type === 'materia').length > 0 &&
+                               selectedElements.filter(element => element.type === 'aula').length > 0;
+
+      if (hasOneOfEachType) {
+        cell.textContent = "";
+
+        // Crear elementos de div para cada uno de los elementos seleccionados y agregarlos a la celda
+        selectedElements.forEach(element => {
+          const newContent = document.createElement("div");
+          newContent.textContent = element.text;
+          cell.appendChild(newContent);
+        });
+      }
+    });
+  });
+});
 </script>
+
 {% endblock %}
