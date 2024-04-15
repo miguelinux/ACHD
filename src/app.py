@@ -412,8 +412,9 @@ def asignacion():
             .get()
         )
         a = db.table("materia").where("carrera", carrera).get()
+        aula = db.table("aula").get()
         return render_template(
-            "asignacion.html", user=username, asignaturas=a, docentes=d
+            "asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula
         )
     return redirect("/")
 
