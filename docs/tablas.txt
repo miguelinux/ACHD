@@ -6,7 +6,6 @@ apellido_mat text NOT NULL,
 email text NOT NULL,
 password text NOT NULL,
 disponibilidad json ,
-materias_asignadas json,
 user_type int NOT NULL,
 first_login bool NOT NULL,
 horas_semana int ,
@@ -39,7 +38,9 @@ create table asignacion (
 id int AUTO_INCREMENT PRIMARY KEY,
 horario json,
 semestre int,
-carrera int
+carrera int,
+turno text,
+ciclo text
 );
 
 CREATE TABLE loggs (

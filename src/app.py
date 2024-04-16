@@ -229,6 +229,12 @@ def change():
             db.table("usuario").where("id", user_id).update(password=new_password)
     return jsonify({"success": True, "message": mensaje})
 
+@app.route('/getDisponibilidad')
+def getDisponibilidad():
+    user_id = request.args['id']
+    usuario = db.table("usuario").where("id", user_id).get().first()
+    disponibilidad = usuario.disponibilidad
+    return jsonify(disponibilidad)
 
 @app.route("/homeDocente")
 def home_docente():
