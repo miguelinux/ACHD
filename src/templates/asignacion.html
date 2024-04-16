@@ -197,8 +197,8 @@
     <p>docentes</p>
 
     {% for docente in docentes %}
-      <div class="docente">
-        <p><strong>{{docente.nombre}} {{docente.apellido_pat}}</strong></p>
+    <div class="docente" data-disponibilidad='{{docente.disponibilidad}}'>
+        <p><strong>{{docente.nombre}} {{docente.apellido_pat}} </strong></p>
       </div>
       {% endfor %}
   </div>
@@ -216,75 +216,75 @@
       </tr>
       <tr>
         <td class="hora hora-1">7-8</td>
-        <td id="1"></td>
-        <td id="9"></td>
-        <td id="17"></td>
-        <td id="25"></td>
-        <td id="33"></td>
-        <td id="41"></td>
+        <td class="dia" id="0"></td>
+        <td class="dia" id="15"></td>
+        <td class="dia" id="30"></td>
+        <td class="dia" id="45"></td>
+        <td class="dia" id="60"></td>
+        <td class="dia" id="75"></td>
       </tr>
       <tr>
         <td class="hora hora-2">8-9</td>
-        <td id="2"></td>
-        <td id="10"></td>
-        <td id="18"></td>
-        <td id="26"></td>
-        <td id="34"></td>
-        <td id="42"></td>
+        <td class="dia" id="1"></td>
+        <td class="dia" id="16"></td>
+        <td class="dia" id="31"></td>
+        <td class="dia" id="46"></td>
+        <td class="dia" id="61"></td>
+        <td class="dia" id="76"></td>
       </tr>
       <tr>
         <td class="hora hora-3">9-10</td>
-        <td id="3"></td>
-        <td id="11"></td>
-        <td id="19"></td>
-        <td id="27"></td>
-        <td id="35"></td>
-        <td id="43"></td>
+        <td class="dia" id="2"></td>
+        <td class="dia" id="17"></td>
+        <td class="dia" id="32"></td>
+        <td class="dia" id="47"></td>
+        <td class="dia" id="62"></td>
+        <td class="dia" id="77"></td>
       </tr>
       <tr>
         <td class="hora hora-4">10-11</td>
-        <td id="4"></td>
-        <td id="12"></td>
-        <td id="20"></td>
-        <td id="28"></td>
-        <td id="36"></td>
-        <td id="44"></td>
+        <td class="dia" id="3"></td>
+        <td class="dia" id="18"></td>
+        <td class="dia" id="33"></td>
+        <td class="dia" id="48"></td>
+        <td class="dia" id="63"></td>
+        <td class="dia" id="78"></td>
       </tr>
       <tr>
         <td class="hora hora-5">11-12</td>
-        <td id="5"></td>
-        <td id="13"></td>
-        <td id="21"></td>
-        <td id="29"></td>
-        <td id="37"></td>
-        <td id="45"></td>
+        <td class="dia" id="4"></td>
+        <td class="dia" id="19"></td>
+        <td class="dia" id="34"></td>
+        <td class="dia" id="49"></td>
+        <td class="dia" id="64"></td>
+        <td class="dia" id="79"></td>
       </tr>
       <tr>
         <td class="hora hora-6">12-13</td>
-        <td id="6"></td>
-        <td id="14"></td>
-        <td id="22"></td>
-        <td id="30"></td>
-        <td id="38"></td>
-        <td id="46"></td>
+        <td class="dia" id="5"></td>
+        <td class="dia" id="20"></td>
+        <td class="dia" id="35"></td>
+        <td class="dia" id="50"></td>
+        <td class="dia" id="65"></td>
+        <td class="dia" id="80"></td>
       </tr>
       <tr>
         <td class="hora hora-7">13-14</td>
-        <td id="7"></td>
-        <td id="15"></td>
-        <td id="23"></td>
-        <td id="31"></td>
-        <td id="39"></td>
-        <td id="47"></td>
+        <td class="dia" id="6" ></td>
+        <td class="dia" id="21"></td>
+        <td class="dia" id="36"></td>
+        <td class="dia" id="51"></td>
+        <td class="dia" id="66"></td>
+        <td class="dia" id="81"></td>
       </tr>
       <tr>
         <td class="hora hora-8">14-15</td>
-        <td id="8"></td>
-        <td id="16"></td>
-        <td id="24"></td>
-        <td id="32"></td>
-        <td id="40"></td>
-        <td id="48"></td>
+        <td class="dia" id="7"></td>
+        <td class="dia" id="22"></td>
+        <td class="dia" id="37"></td>
+        <td class="dia" id="52"></td>
+        <td class="dia" id="67"></td>
+        <td class="dia" id="82"></td>
       </tr>
     </table>
   </div>
@@ -312,45 +312,32 @@
 </div>
 
 <script>
-
-  //botones semestre
-  document.addEventListener('DOMContentLoaded', function() {
-  const semestre1 = document.querySelector('.semestre[data-semestre="1"]');  
-  // Agrega la clase 'selected' al botón del semestre 1
-  semestre1.classList.add('selected');
-  var semestre = semestre1.getAttribute('data-semestre');
-  document.querySelectorAll('.materia').forEach(function(asignatura) {
-    asignatura.style.display = 'none';
-  });
-  // Muestra las asignaturas del semestre seleccionado (en este caso, el semestre 1)
-  document.querySelectorAll('.materia[data-semestre="' + semestre + '"]').forEach(function(asignatura) {
-    asignatura.style.display = 'block';
-  });
-  // Agrega el evento 'click' a todos los botones de semestre
-  document.querySelectorAll('.semestre').forEach(function(button) {
-    button.addEventListener('click', function() {
-      // Elimina la clase 'selected' de todos los botones de semestre
-      document.querySelectorAll('.semestre').forEach(function(btn) {
-        btn.classList.remove('selected');
-      });
-      // Agrega la clase 'selected' al botón de semestre seleccionado
-      this.classList.add('selected');
-      var semestre = this.getAttribute('data-semestre');
-      document.querySelectorAll('.materia').forEach(function(asignatura) {
-        asignatura.style.display = 'none';
-      });
-      document.querySelectorAll('.materia[data-semestre="' + semestre + '"]').forEach(function(asignatura) {
-        asignatura.style.display = 'block';
-      });
+  let diasOriginales = obtenerDiasOriginales();
+ // Controlador de eventos para seleccionar docentes y actualizar la disponibilidad en la tabla
+  document.querySelectorAll(".docente").forEach(docente => {
+  docente.addEventListener("click", function () {
+    // Obtener la disponibilidad del docente desde el atributo data-disponibilidad
+    const disponibilidad = JSON.parse(this.getAttribute('data-disponibilidad'));
+    
+    // Obtener todos los elementos .dia de la tabla
+    const dias = document.querySelectorAll(".dia");
+    
+    // Iterar sobre los elementos .dia y actualizar el color según la disponibilidad del docente
+    dias.forEach(dia => {
+      // Obtener el índice del día desde el ID del elemento .dia
+      const index = parseInt(dia.id);
+      
+      // Verificar si la disponibilidad del docente en el día correspondiente es 1
+      if (disponibilidad.disponibilidad[index] === 1) {
+        dia.style.backgroundColor = "green";
+      } else {
+        dia.style.backgroundColor = "red"; // Restaurar el color por defecto
+      }
     });
   });
 });
 
-
-
-
-  //Botones de turno, permiten cambiar los valores de las horas y mantiene el turno seleccionado
-  document.addEventListener("DOMContentLoaded", function () {
+  // Controlador de eventos para los botones de turno
   const horasOriginales = obtenerHorasOriginales();
   const turnA = document.getElementById("turnA");
   const turnB = document.getElementById("turnB");
@@ -371,21 +358,43 @@
   turnN.addEventListener("click", function () {
     cambiarTurno("N");
   });
-  function cambiarTurno(turno) {
-    document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
-    document.getElementById(`turn${turno}`).classList.add('selected');
-    if (turno === "N") {
-      const horas = document.querySelectorAll(".hora");
+
+
+function cambiarTurno(turno) {
+  document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
+  document.getElementById(`turn${turno}`).classList.add('selected');
+  const dias = document.querySelectorAll(".dia");
+  if (turno === "N") {
+    dias.forEach(function (dia, index) {
+      const id = parseInt(diasOriginales[index]) + 7;
+      dia.id = id.toString(); // Actualizar el ID del día
+    });
+    const horas = document.querySelectorAll(".hora");
       horas.forEach(function (hora, index) {
-        let inicio = 14 + index;
-        let fin = 15 + index;
+        let inicio = 15 + index;
+        let fin = 16 + index;
         if (fin > 22) {
           fin = 22;
         }
         hora.textContent = inicio.toString().padStart(2, '0') + '-' + fin.toString().padStart(2, '0');
       });
-    }
+  } else {
+    // Restaurar los IDs originales
+    dias.forEach(function (dia, index) {
+      dia.id = diasOriginales[index]; // Restaurar el ID del día
+    });
   }
+}
+
+function obtenerDiasOriginales() {
+  const diasOriginales = [];
+  const dias = document.querySelectorAll(".dia");
+  dias.forEach(function (dia) {
+    diasOriginales.push(dia.id);
+  });
+  return diasOriginales;
+}
+
   function obtenerHorasOriginales() {
     const horasOriginales = [];
     const horas = document.querySelectorAll(".hora");
@@ -394,17 +403,15 @@
     });
     return horasOriginales;
   }
+
   function restaurarHorasOriginales() {
     const horas = document.querySelectorAll(".hora");
     horas.forEach(function (hora, index) {
       hora.textContent = horasOriginales[index];
     });
   }
-});
 
-//siguiente funcion js
-
-document.addEventListener("DOMContentLoaded", function () {
+  // Controlador de eventos para seleccionar docentes, materias y aulas
   let selectedElements = [];
 
   document.querySelectorAll(".docente, .materia, .aula").forEach(item => {
@@ -444,47 +451,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   });
-});document.addEventListener("DOMContentLoaded", function () {
-  let selectedElements = [];
 
-  document.querySelectorAll(".docente, .materia, .aula").forEach(item => {
-    item.addEventListener("click", function () {
-      const elementType = this.classList.contains('docente') ? 'docente' : this.classList.contains('materia') ? 'materia' : 'aula';
-      const elementText = this.textContent.trim();
-
-      // Deseleccionar cualquier otro elemento del mismo tipo
-      selectedElements = selectedElements.filter(element => element.type !== elementType);
-      document.querySelectorAll(`.${elementType}.selected`).forEach(element => {
-        element.classList.remove('selected');
-      });
-
-      // Agregar el nuevo elemento seleccionado
-      let trimmedText = elementType === 'materia' ? elementText.replace(/Créditos.*/g, '').trim() : elementText.trim();
-      selectedElements.push({ type: elementType, text: trimmedText });
-      this.classList.add('selected');
-    });
-  });
-
-  // Controlador de eventos para las celdas vacías de la tabla
-  document.querySelectorAll(".horario td:not(.hora)").forEach(cell => {
-    cell.addEventListener("click", function () {
-      const hasOneOfEachType = selectedElements.filter(element => element.type === 'docente').length > 0 &&
-                               selectedElements.filter(element => element.type === 'materia').length > 0 &&
-                               selectedElements.filter(element => element.type === 'aula').length > 0;
-
-      if (hasOneOfEachType) {
-        cell.textContent = "";
-
-        // Crear elementos de div para cada uno de los elementos seleccionados y agregarlos a la celda
-        selectedElements.forEach(element => {
-          const newContent = document.createElement("div");
-          newContent.textContent = element.text;
-          cell.appendChild(newContent);
-        });
-      }
-    });
-  });
-});
 </script>
+
 
 {% endblock %}
