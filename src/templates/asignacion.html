@@ -343,7 +343,7 @@
   const turnB = document.getElementById("turnB");
   const turnN = document.getElementById("turnN");
 
-  cambiarTurno("A");
+  turnA.classList.add('selected');
 
   turnA.addEventListener("click", function () {
     restaurarHorasOriginales();
@@ -359,8 +359,7 @@
     cambiarTurno("N");
   });
 
-
-function cambiarTurno(turno) {
+  function cambiarTurno(turno) {
   document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
   document.getElementById(`turn${turno}`).classList.add('selected');
   const dias = document.querySelectorAll(".dia");
@@ -370,18 +369,42 @@ function cambiarTurno(turno) {
       dia.id = id.toString(); // Actualizar el ID del día
     });
     const horas = document.querySelectorAll(".hora");
-      horas.forEach(function (hora, index) {
-        let inicio = 15 + index;
-        let fin = 16 + index;
-        if (fin > 22) {
-          fin = 22;
-        }
-        hora.textContent = inicio.toString().padStart(2, '0') + '-' + fin.toString().padStart(2, '0');
-      });
+    horas.forEach(function (hora, index) {
+      let inicio = 15 + index;
+      let fin = 16 + index;
+      if (fin > 22) {
+        fin = 22;
+      }
+      hora.textContent = inicio.toString().padStart(2, '0') + '-' + fin.toString().padStart(2, '0');
+    });
   } else {
     // Restaurar los IDs originales
     dias.forEach(function (dia, index) {
       dia.id = diasOriginales[index]; // Restaurar el ID del día
+    });
+  }
+  // Actualizar los colores de la tabla según la disponibilidad de los docentes después de cambiar el turno
+  actualizarColoresTabla();
+}
+function actualizarColoresTabla() {
+  // Obtener el docente seleccionado
+  const docenteSeleccionado = document.querySelector(".docente.selected");
+  // Verificar si hay un docente seleccionado
+  if (docenteSeleccionado) {
+    // Obtener la disponibilidad del docente desde el atributo data-disponibilidad
+    const disponibilidad = JSON.parse(docenteSeleccionado.getAttribute('data-disponibilidad'));
+    // Obtener todos los elementos .dia de la tabla
+    const dias = document.querySelectorAll(".dia");
+    // Iterar sobre los elementos .dia y actualizar el color según la disponibilidad del docente
+    dias.forEach(dia => {
+      // Obtener el índice del día desde el ID del elemento .dia
+      const index = parseInt(dia.id);
+      // Verificar si la disponibilidad del docente en el día correspondiente es 1
+      if (disponibilidad.disponibilidad[index] === 1) {
+        dia.style.backgroundColor = "green";
+      } else {
+        dia.style.backgroundColor = "red"; // Restaurar el color por defecto
+      }
     });
   }
 }
