@@ -163,6 +163,10 @@
     background-color: white;
   }
   
+  .semestre.selected {
+    background-color: blue;
+    color: white;
+  }
   .selected {
     background-color: lightblue; /* Cambiar el color de fondo de los elementos seleccionados */
   }
@@ -284,10 +288,10 @@
       </tr>
     </table>
   </div>
-  <div class="materias">
+  <div class="materias" >
     <p>materias</p>
     {% for asignatura in asignaturas %}
-    <div class="materia" >
+    <div class="materia" data-semestre="{{ asignatura.semestre }}">
       <p>{{ asignatura.nombre }}</p>
       <p>Créditos: {{ asignatura.creditos }}</p>
     </div>
@@ -309,6 +313,41 @@
 
 <script>
 
+  //botones semestre
+  document.addEventListener('DOMContentLoaded', function() {
+  const semestre1 = document.querySelector('.semestre[data-semestre="1"]');  
+  // Agrega la clase 'selected' al botón del semestre 1
+  semestre1.classList.add('selected');
+  var semestre = semestre1.getAttribute('data-semestre');
+  document.querySelectorAll('.materia').forEach(function(asignatura) {
+    asignatura.style.display = 'none';
+  });
+  // Muestra las asignaturas del semestre seleccionado (en este caso, el semestre 1)
+  document.querySelectorAll('.materia[data-semestre="' + semestre + '"]').forEach(function(asignatura) {
+    asignatura.style.display = 'block';
+  });
+  // Agrega el evento 'click' a todos los botones de semestre
+  document.querySelectorAll('.semestre').forEach(function(button) {
+    button.addEventListener('click', function() {
+      // Elimina la clase 'selected' de todos los botones de semestre
+      document.querySelectorAll('.semestre').forEach(function(btn) {
+        btn.classList.remove('selected');
+      });
+      // Agrega la clase 'selected' al botón de semestre seleccionado
+      this.classList.add('selected');
+      var semestre = this.getAttribute('data-semestre');
+      document.querySelectorAll('.materia').forEach(function(asignatura) {
+        asignatura.style.display = 'none';
+      });
+      document.querySelectorAll('.materia[data-semestre="' + semestre + '"]').forEach(function(asignatura) {
+        asignatura.style.display = 'block';
+      });
+    });
+  });
+});
+
+
+
 
   //Botones de turno, permiten cambiar los valores de las horas y mantiene el turno seleccionado
   document.addEventListener("DOMContentLoaded", function () {
@@ -316,6 +355,8 @@
   const turnA = document.getElementById("turnA");
   const turnB = document.getElementById("turnB");
   const turnN = document.getElementById("turnN");
+
+  cambiarTurno("A");
 
   turnA.addEventListener("click", function () {
     restaurarHorasOriginales();
@@ -336,8 +377,8 @@
     if (turno === "N") {
       const horas = document.querySelectorAll(".hora");
       horas.forEach(function (hora, index) {
-        let inicio = 15 + index;
-        let fin = 16 + index;
+        let inicio = 14 + index;
+        let fin = 15 + index;
         if (fin > 22) {
           fin = 22;
         }
