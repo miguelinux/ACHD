@@ -257,6 +257,14 @@ def horario():
     return redirect("/")
 
 
+@app.route('/getDisponibilidad')
+def getDisponibilidad():
+    user_id = request.args['id']
+    usuario = db.table("usuario").where("id", user_id).get().first()
+    disponibilidad = usuario.disponibilidad
+    return jsonify(disponibilidad)
+
+
 @app.route("/horarioJ")
 def horarioJefe():
     """
