@@ -2,21 +2,21 @@
 // Docs: https://dbml.dbdiagram.io/docs
 // https://dbdiagram.io/
 
-Table usuario.persona {
+Table usuario.persona [headercolor: #CCCCFF] {
   id integer [primary key, increment]
   nombre varchar(30) [not null]
   apellido_pat varchar(22) [not null]
   apellido_mat varchar(22)
 }
 
-Table usuario.tipo {
+Table usuario.tipo [headercolor: #CCCCFF] {
   id integer [primary key, increment]
-  nombre varchar(30) [not null]
+  descripcion varchar(30) [not null]
 
   Note: 'Tipo de usuario: maestro, admin, alumno, etc.'
 }
 
-Table usuario.acceso {
+Table usuario.acceso [headercolor: #CCCCFF] {
   persona integer [ref: > usuario.persona.id]
   google_id varchar(30) [null]
   email varchar(50) [not null]
@@ -27,9 +27,35 @@ Table usuario.acceso {
   }
 }
 
-Table usuario.datos {
+Table usuario.datos [headercolor: #CCCCFF] {
   persona integer [ref: - usuario.persona.id]
   email2 varchar [null]
   telefono char(15)
   celular char(15)
+  calle char(20)
+  num_ext char(20)
+  num_int char(20)
+}
+
+Table escolar.asignatura [headercolor: #FFCCCC] {
+  id integer [primary key, increment]
+  carrera integer [ref: > escolar.carrera.id]
+  creditos integer
+  horas_clase integer
+  horas_practicas integer
+  nombre varchar(30) [not null]
+}
+
+Table escolar.carrera [headercolor: #FFCCCC] {
+  id integer [primary key, increment]
+  creditos integer
+  clave char(16)
+  nombre varchar(30) [not null]
+}
+
+Table escolar.ciclo [headercolor: #FFCCCC] {
+  id integer [primary key, increment]
+  inicio date
+  fin date
+  nombre varchar(30) [not null]
 }
