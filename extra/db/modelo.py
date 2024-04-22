@@ -21,10 +21,10 @@ class Base(DeclarativeBase):
 
 
 # an example mapping using the base
-class Usuario(Base):
-    __tablename__ = "usuario"
+class Persona(Base):
+    __tablename__ = "persona"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    nombre: Mapped[str]
-    apellido_pat: Mapped[str] = mapped_column(String(30))
-    apellido_mat: Mapped[Optional[str]]
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    nombre: Mapped[str] = mapped_column(String(30), nullable=False)
+    apellido_pat: Mapped[str] = mapped_column(String(22), nullable=False)
+    apellido_mat: Mapped[str] = mapped_column(String(22), nullable=False)
