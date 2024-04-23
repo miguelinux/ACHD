@@ -161,7 +161,7 @@
 
   table {
     user-select: none;
-    background-color: aquamarine;
+    background-color: black;
     width: 50rem;
     max-width: auto;
     height: 20rem;
@@ -169,6 +169,9 @@
 
   table tr {
     background-color: white;
+  }
+  table td{
+    border: 1px solid;
   }
 
   .semestre.selected {
@@ -339,9 +342,9 @@
 
         // Verificar si la disponibilidad del docente en el día correspondiente es 1
         if (disponibilidad.disponibilidad[index] === 1) {
-          dia.style.backgroundColor = "green";
+          dia.style.backgroundColor = "#2EDC41";
         } else {
-          dia.style.backgroundColor = "red"; // Restaurar el color por defecto
+          dia.style.backgroundColor = "#FF6E33"; // Restaurar el color por defecto
         }
       });
     });
@@ -411,9 +414,9 @@
         const index = parseInt(dia.id);
         // Verificar si la disponibilidad del docente en el día correspondiente es 1
         if (disponibilidad.disponibilidad[index] === 1) {
-          dia.style.backgroundColor = "green";
+          dia.style.backgroundColor = "#2EDC41";
         } else {
-          dia.style.backgroundColor = "red"; // Restaurar el color por defecto
+          dia.style.backgroundColor = "#FF6E33"; 
         }
       });
     }
@@ -475,6 +478,7 @@
       if (hasOneOfEachType) {
         cell.textContent = "";
 
+        cell.style.backgroundColor = "white";
         // Crear elementos de div para cada uno de los elementos seleccionados y agregarlos a la celda
         selectedElements.forEach(element => {
           const newContent = document.createElement("div");
@@ -524,6 +528,7 @@
     btn.addEventListener("click", function () {
       document.querySelectorAll(".dia").forEach(cell => {
         cell.textContent = "";
+      actualizarColoresTabla();
       });
     });
   });
@@ -531,9 +536,11 @@
     button.addEventListener('click', function () {
       document.querySelectorAll(".dia").forEach(cell => {
         cell.textContent = "";
+        actualizarColoresTabla();
       });
     });
   });
+
 </script>
 
 
