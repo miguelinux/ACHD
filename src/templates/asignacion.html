@@ -33,7 +33,8 @@
     align-items: center;
     justify-content: center;
   }
-  .btnsturn .turno:hover{
+
+  .btnsturn .turno:hover {
     background-color: blue;
     color: white;
   }
@@ -46,9 +47,10 @@
     border-radius: 15px;
     transition: .5s;
   }
+
   .btnsturn .turno.selected {
-  background-color: blue;
-  color: white;
+    background-color: blue;
+    color: white;
   }
 
 
@@ -82,7 +84,6 @@
     background-color: lightyellow;
     height: 22rem;
     display: flex;
-    align-items: center;
     text-align: center;
     flex-wrap: wrap;
   }
@@ -111,6 +112,11 @@
     transition: .5s;
   }
 
+  .semestre.selected {
+    background-color: blue;
+    color: white;
+  }
+
   .docente {
     height: 55px;
     background-color: green;
@@ -123,7 +129,7 @@
     text-align: center;
     margin-top: 5px;
   }
-  
+
   .materia {
     width: auto;
     height: 55px;
@@ -146,15 +152,17 @@
     border-radius: 5px;
     margin: 5px;
   }
-  .aula p{
+
+  .aula p {
     user-select: none;
     text-align: center;
     margin-top: 5px;
   }
+
   table {
     user-select: none;
     background-color: aquamarine;
-    width: 50rem; 
+    width: 50rem;
     max-width: auto;
     height: 20rem;
   }
@@ -162,13 +170,15 @@
   table tr {
     background-color: white;
   }
-  
+
   .semestre.selected {
     background-color: blue;
     color: white;
   }
+
   .selected {
-    background-color: lightblue; /* Cambiar el color de fondo de los elementos seleccionados */
+    background-color: lightblue;
+    /* Cambiar el color de fondo de los elementos seleccionados */
   }
 </style>
 {% endblock %}
@@ -193,14 +203,14 @@
 </div>
 
 <div class="container">
-  <div class="docentes"> 
+  <div class="docentes">
     <p>docentes</p>
 
     {% for docente in docentes %}
     <div class="docente" data-disponibilidad='{{docente.disponibilidad}}'>
-        <p><strong>{{docente.nombre}} {{docente.apellido_pat}} </strong></p>
-      </div>
-      {% endfor %}
+      <p><strong>{{docente.nombre}} {{docente.apellido_pat}} </strong></p>
+    </div>
+    {% endfor %}
   </div>
 
   <div class="horario">
@@ -270,7 +280,7 @@
       </tr>
       <tr>
         <td class="hora hora-7">13-14</td>
-        <td class="dia" id="6" ></td>
+        <td class="dia" id="6"></td>
         <td class="dia" id="21"></td>
         <td class="dia" id="36"></td>
         <td class="dia" id="51"></td>
@@ -288,7 +298,7 @@
       </tr>
     </table>
   </div>
-  <div class="materias" >
+  <div class="materias">
     <p>materias</p>
     {% for asignatura in asignaturas %}
     <div class="materia" data-semestre="{{ asignatura.semestre }}">
@@ -297,10 +307,10 @@
     </div>
     {% endfor %}
   </div>
-  <div class="aulas"> 
+  <div class="aulas">
     <p>aulas</p>
     {% for aula in aulas %}
-    <div class="aula" >
+    <div class="aula">
       <p>{{ aula.nombre }}</p>
       <p>{{ aula.edificio }}</p>
     </div>
@@ -313,29 +323,29 @@
 
 <script>
   let diasOriginales = obtenerDiasOriginales();
- // Controlador de eventos para seleccionar docentes y actualizar la disponibilidad en la tabla
+  // Controlador de eventos para seleccionar docentes y actualizar la disponibilidad en la tabla
   document.querySelectorAll(".docente").forEach(docente => {
-  docente.addEventListener("click", function () {
-    // Obtener la disponibilidad del docente desde el atributo data-disponibilidad
-    const disponibilidad = JSON.parse(this.getAttribute('data-disponibilidad'));
-    
-    // Obtener todos los elementos .dia de la tabla
-    const dias = document.querySelectorAll(".dia");
-    
-    // Iterar sobre los elementos .dia y actualizar el color según la disponibilidad del docente
-    dias.forEach(dia => {
-      // Obtener el índice del día desde el ID del elemento .dia
-      const index = parseInt(dia.id);
-      
-      // Verificar si la disponibilidad del docente en el día correspondiente es 1
-      if (disponibilidad.disponibilidad[index] === 1) {
-        dia.style.backgroundColor = "green";
-      } else {
-        dia.style.backgroundColor = "red"; // Restaurar el color por defecto
-      }
+    docente.addEventListener("click", function () {
+      // Obtener la disponibilidad del docente desde el atributo data-disponibilidad
+      const disponibilidad = JSON.parse(this.getAttribute('data-disponibilidad'));
+
+      // Obtener todos los elementos .dia de la tabla
+      const dias = document.querySelectorAll(".dia");
+
+      // Iterar sobre los elementos .dia y actualizar el color según la disponibilidad del docente
+      dias.forEach(dia => {
+        // Obtener el índice del día desde el ID del elemento .dia
+        const index = parseInt(dia.id);
+
+        // Verificar si la disponibilidad del docente en el día correspondiente es 1
+        if (disponibilidad.disponibilidad[index] === 1) {
+          dia.style.backgroundColor = "green";
+        } else {
+          dia.style.backgroundColor = "red"; // Restaurar el color por defecto
+        }
+      });
     });
   });
-});
 
   // Controlador de eventos para los botones de turno
   const horasOriginales = obtenerHorasOriginales();
@@ -360,63 +370,63 @@
   });
 
   function cambiarTurno(turno) {
-  document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
-  document.getElementById(`turn${turno}`).classList.add('selected');
-  const dias = document.querySelectorAll(".dia");
-  if (turno === "N") {
-    dias.forEach(function (dia, index) {
-      const id = parseInt(diasOriginales[index]) + 7;
-      dia.id = id.toString(); // Actualizar el ID del día
-    });
-    const horas = document.querySelectorAll(".hora");
-    horas.forEach(function (hora, index) {
-      let inicio = 14 + index;
-      let fin = 15 + index;
-      if (fin > 22) {
-        fin = 22;
-      }
-      hora.textContent = inicio.toString().padStart(2, '0') + '-' + fin.toString().padStart(2, '0');
-    });
-  } else {
-    // Restaurar los IDs originales
-    dias.forEach(function (dia, index) {
-      dia.id = diasOriginales[index]; // Restaurar el ID del día
-    });
-  }
-  // Actualizar los colores de la tabla según la disponibilidad de los docentes después de cambiar el turno
-  actualizarColoresTabla();
-}
-function actualizarColoresTabla() {
-  // Obtener el docente seleccionado
-  const docenteSeleccionado = document.querySelector(".docente.selected");
-  // Verificar si hay un docente seleccionado
-  if (docenteSeleccionado) {
-    // Obtener la disponibilidad del docente desde el atributo data-disponibilidad
-    const disponibilidad = JSON.parse(docenteSeleccionado.getAttribute('data-disponibilidad'));
-    // Obtener todos los elementos .dia de la tabla
+    document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
+    document.getElementById(`turn${turno}`).classList.add('selected');
     const dias = document.querySelectorAll(".dia");
-    // Iterar sobre los elementos .dia y actualizar el color según la disponibilidad del docente
-    dias.forEach(dia => {
-      // Obtener el índice del día desde el ID del elemento .dia
-      const index = parseInt(dia.id);
-      // Verificar si la disponibilidad del docente en el día correspondiente es 1
-      if (disponibilidad.disponibilidad[index] === 1) {
-        dia.style.backgroundColor = "green";
-      } else {
-        dia.style.backgroundColor = "red"; // Restaurar el color por defecto
-      }
-    });
+    if (turno === "N") {
+      dias.forEach(function (dia, index) {
+        const id = parseInt(diasOriginales[index]) + 7;
+        dia.id = id.toString(); // Actualizar el ID del día
+      });
+      const horas = document.querySelectorAll(".hora");
+      horas.forEach(function (hora, index) {
+        let inicio = 14 + index;
+        let fin = 15 + index;
+        if (fin > 22) {
+          fin = 22;
+        }
+        hora.textContent = inicio.toString().padStart(2, '0') + '-' + fin.toString().padStart(2, '0');
+      });
+    } else {
+      // Restaurar los IDs originales
+      dias.forEach(function (dia, index) {
+        dia.id = diasOriginales[index]; // Restaurar el ID del día
+      });
+    }
+    // Actualizar los colores de la tabla según la disponibilidad de los docentes después de cambiar el turno
+    actualizarColoresTabla();
   }
-}
+  function actualizarColoresTabla() {
+    // Obtener el docente seleccionado
+    const docenteSeleccionado = document.querySelector(".docente.selected");
+    // Verificar si hay un docente seleccionado
+    if (docenteSeleccionado) {
+      // Obtener la disponibilidad del docente desde el atributo data-disponibilidad
+      const disponibilidad = JSON.parse(docenteSeleccionado.getAttribute('data-disponibilidad'));
+      // Obtener todos los elementos .dia de la tabla
+      const dias = document.querySelectorAll(".dia");
+      // Iterar sobre los elementos .dia y actualizar el color según la disponibilidad del docente
+      dias.forEach(dia => {
+        // Obtener el índice del día desde el ID del elemento .dia
+        const index = parseInt(dia.id);
+        // Verificar si la disponibilidad del docente en el día correspondiente es 1
+        if (disponibilidad.disponibilidad[index] === 1) {
+          dia.style.backgroundColor = "green";
+        } else {
+          dia.style.backgroundColor = "red"; // Restaurar el color por defecto
+        }
+      });
+    }
+  }
 
-function obtenerDiasOriginales() {
-  const diasOriginales = [];
-  const dias = document.querySelectorAll(".dia");
-  dias.forEach(function (dia) {
-    diasOriginales.push(dia.id);
-  });
-  return diasOriginales;
-}
+  function obtenerDiasOriginales() {
+    const diasOriginales = [];
+    const dias = document.querySelectorAll(".dia");
+    dias.forEach(function (dia) {
+      diasOriginales.push(dia.id);
+    });
+    return diasOriginales;
+  }
 
   function obtenerHorasOriginales() {
     const horasOriginales = [];
@@ -459,8 +469,8 @@ function obtenerDiasOriginales() {
   document.querySelectorAll(".horario td:not(.hora)").forEach(cell => {
     cell.addEventListener("click", function () {
       const hasOneOfEachType = selectedElements.filter(element => element.type === 'docente').length > 0 &&
-                               selectedElements.filter(element => element.type === 'materia').length > 0 &&
-                               selectedElements.filter(element => element.type === 'aula').length > 0;
+        selectedElements.filter(element => element.type === 'materia').length > 0 &&
+        selectedElements.filter(element => element.type === 'aula').length > 0;
 
       if (hasOneOfEachType) {
         cell.textContent = "";
@@ -475,6 +485,55 @@ function obtenerDiasOriginales() {
     });
   });
 
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.semestre').forEach(function (button) {
+      button.addEventListener('click', function () {
+        // Elimina la clase 'selected' de todos los botones de semestre
+        document.querySelectorAll('.semestre').forEach(function (btn) {
+          btn.classList.remove('selected');
+        });
+
+        // Agrega la clase 'selected' al botón de semestre seleccionado
+        this.classList.add('selected');
+
+        var semestre = this.getAttribute('data-semestre');
+
+        // Oculta todas las asignaturas
+        document.querySelectorAll('.materia').forEach(function (asignatura) {
+          asignatura.style.display = 'none';
+        });
+
+        // Muestra las asignaturas del semestre seleccionado
+        document.querySelectorAll('.materia[data-semestre="' + semestre + '"]').forEach(function (asignatura) {
+          asignatura.style.display = 'block';
+        });
+      });
+    });
+  });
+  // Simula un clic en el botón del semestre 1 al cargar la página
+  document.addEventListener('DOMContentLoaded', function () {
+    // Obtiene el botón del semestre 1
+    const semestre1Btn = document.querySelector('.semestre[data-semestre="1"]');
+
+    // Si el botón del semestre 1 existe, simula un clic en él
+    if (semestre1Btn) {
+      semestre1Btn.click();
+    }
+  });
+  document.querySelectorAll(".turno").forEach(btn => {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".dia").forEach(cell => {
+        cell.textContent = "";
+      });
+    });
+  });
+  document.querySelectorAll('.semestre').forEach(function (button) {
+    button.addEventListener('click', function () {
+      document.querySelectorAll(".dia").forEach(cell => {
+        cell.textContent = "";
+      });
+    });
+  });
 </script>
 
 
