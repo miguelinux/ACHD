@@ -1,0 +1,1 @@
+from .tables_db import Carreras, Usuarios, Materias, Aulas,Asignaciones,Logg

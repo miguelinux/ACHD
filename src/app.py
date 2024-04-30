@@ -14,8 +14,7 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import session
-from flask_orator import Orator
-
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
@@ -27,6 +26,9 @@ DB_HOST = config.get("DB", "DB_HOST")
 DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://<username>:<password>@<host>/<database>'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # TODO: Hay que mejorar esto por favor
 ETAPA = config.get("APP", "ETAPA")
@@ -44,20 +46,7 @@ admin = 1
 tru = bool(1)
 fals = bool(0)
 
-DATABASES = {
-    "default": "mysql",
-    "mysql": {
-        "driver": "mysql",
-        "host": DB_HOST,
-        "database": DB_DB,
-        "user": DB_USER,
-        "password": DB_PASSWORD,
-        "prefix": "",
-        "log_queries": True,
-    },
-}
-app.config["ORATOR_DATABASES"] = DATABASES
-db = Orator(app)
+db = SQLAlchemy(app)
 
 
 def get_hex_digest(cadena):
