@@ -10,13 +10,21 @@ Este programa permitira ingresar datos de prueba a la base de datos
 """
 
 import pymysql
+from configparser import ConfigParser
+config = ConfigParser()
+
+# para guardar las cookies es necesario una secret_key que se encuentra en .env
+DB_HOST = config.get("DB", "DB_HOST")
+DB_PASSWORD = config.get("DB", "DB_PASSWORD")
+DB_DB = config.get("DB", "DB_DB")
+DB_USER = config.get("DB", "DB_USER")
 
 # Conexión a la base de datos MySQL
 conn = pymysql.connect(
-    host='tu_host',
-    user='tu_usuario',
-    password='tu_contraseña',
-    database='tu_base_de_datos'
+    host='DB_HOST',
+    user='DB_USER',
+    password='DB_PASSWORD',
+    database='DB_DB'
 )
 cursor = conn.cursor()
 
