@@ -15,7 +15,6 @@ from flask import request
 from flask import send_from_directory
 from flask import session
 
-from datetime import datetime
 from datetime import timedelta
 
 from extensions import db
@@ -33,6 +32,8 @@ DB_HOST = config.get("DB", "DB_HOST")
 DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
+
+app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=5) #el tiempo de vida de la cookie
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DB}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -73,17 +74,6 @@ def verificate_session():
         user: nombre del usuario en la cookie
         False: en caso de no tener encontrar la cookie
     """
-    try:
-        print("validando..")
-        print(session["user"]["expires"])
-        if session["user"]["expires"] datetime.now():
-            session.pop("user", None)
-            return False
-    except Exception as e:
-        print(e)
-        return False
-
-
     if "user" in session:
         user_id = session["user"]["userid"]
         username = session["user"]["name"]
@@ -162,21 +152,17 @@ def login():
         return render_template(
             "index.html", mensaje="Usuario y/o contraseña incorrectos"
         )
-    print("intentando setear sesión")
     session["user"] = {
             "userid": user.id,
             "name": user.nombre,
             "carrera": user.carrera,
-            "expires": datetime.now()+timedelta(minutes=1)
-           
     }#'user' hace referencia a la tabla de la base de datos
-    
+
     if user.first_login:    
         user.first_login = False
         db.session.commit()
         return redirect("/dashboard")
     if user.user_type == admin:
-        print("trying return")
         return redirect("/homeDocente")
     if user.user_type == docente:
         return redirect("/homeDocente")
