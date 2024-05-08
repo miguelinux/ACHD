@@ -15,6 +15,9 @@ from flask import request
 from flask import send_from_directory
 from flask import session
 
+from datetime import datetime
+from datetime import timedelta
+
 from extensions import db
 from sqlalchemy import update
 from models.tables_db import Usuarios, Materias
@@ -47,8 +50,7 @@ app.config["SERVER_NAME"] = SERVER_NAME + ":" + PORT
 docente = 3
 jefe_de_carrera = 2
 admin = 1
-tru = bool(1)
-fals = bool(0)
+
 
 db.init_app(app)
 with app.app_context():
@@ -71,6 +73,17 @@ def verificate_session():
         user: nombre del usuario en la cookie
         False: en caso de no tener encontrar la cookie
     """
+    try:
+        print("validando..")
+        print(session["user"]["expires"])
+        if session["user"]["expires"] datetime.now():
+            session.pop("user", None)
+            return False
+    except Exception as e:
+        print(e)
+        return False
+
+
     if "user" in session:
         user_id = session["user"]["userid"]
         username = session["user"]["name"]
@@ -149,22 +162,26 @@ def login():
         return render_template(
             "index.html", mensaje="Usuario y/o contraseña incorrectos"
         )
-    while True:
-        session["user"] = {
+    print("intentando setear sesión")
+    session["user"] = {
             "userid": user.id,
             "name": user.nombre,
             "carrera": user.carrera,
-        }  #'user' hace referencia a la tabla de la base de datos
-        if user.first_login:    
-            user.first_login = False
-            db.session.commit()
-            return redirect("/dashboard")
-        if user.user_type == admin:
-            return redirect("/homeDocente")
-        if user.user_type == docente:
-            return redirect("/homeDocente")
-        if user.user_type == jefe_de_carrera:
-            return redirect("/jefeCarrera")
+            "expires": datetime.now()+timedelta(minutes=1)
+           
+    }#'user' hace referencia a la tabla de la base de datos
+    
+    if user.first_login:    
+        user.first_login = False
+        db.session.commit()
+        return redirect("/dashboard")
+    if user.user_type == admin:
+        print("trying return")
+        return redirect("/homeDocente")
+    if user.user_type == docente:
+        return redirect("/homeDocente")
+    if user.user_type == jefe_de_carrera:
+        return redirect("/jefeCarrera")
 
 
 @app.route("/dashboard")
