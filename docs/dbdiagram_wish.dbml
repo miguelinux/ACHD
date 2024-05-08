@@ -42,24 +42,24 @@ Table usuario.datos [headercolor: #CCCCFF] {
 
 Table escolar.asignatura [headercolor: #FFCCCC] {
   id integer [primary key, increment]
-  creditos integer
-  horas_clase integer
-  horas_practicas integer
+  creditos integer [not null]
+  horas_clase integer [not null]
+  horas_practicas integer [not null]
   clave char(20) [not null]
   nombre varchar(30) [not null]
 }
 
 Table escolar.carrera [headercolor: #FFCCCC] {
   id integer [primary key, increment]
-  creditos integer
-  clave char(16)
+  creditos integer [not null]
+  clave char(16) [not null]
   nombre varchar(30) [not null]
 }
 
 Table escolar.ciclo [headercolor: #FFCCCC] {
   id integer [primary key, increment]
-  inicio date
-  fin date
+  inicio date [not null]
+  fin date [not null]
   nombre varchar(30) [not null]
 
 }

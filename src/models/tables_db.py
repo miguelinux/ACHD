@@ -1,8 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
+from extensions import db
 from sqlalchemy.dialects.mysql import TINYINT, JSON
 
-
-db = SQLAlchemy()
 
 class Carreras(db.Model):
     __tablename__ = 'carrera'
@@ -12,7 +10,7 @@ class Carreras(db.Model):
     plan_de_estudio = db.Column(db.Text, nullable=False)
     
     def __repr__(self):
-        return f"<Carreras {self.id}>"
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
 class Usuarios(db.Model):
     __tablename__ = 'usuario'
@@ -30,7 +28,7 @@ class Usuarios(db.Model):
     carrera = db.Column(db.Integer, nullable=True, default=None)
 
     def __repr__(self):
-        return f"<Usuarios {self.id}>"
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
     
 class Materias(db.Model):
     __tablename__ ='materia'
@@ -39,13 +37,13 @@ class Materias(db.Model):
     clave = db.Column(db.Text, nullable=False)
     nombre = db.Column(db.Text, nullable=False)
     semestre = db.Column(db.Integer, nullable=False)
-    horas_practica = db.column(db.Integer, nullable=False)
-    horas_teoria = db.column(db.Integer, nullable=False)
-    creditos = db.column(db.Integer, nullable=False)
+    horas_practica = db.Column(db.Integer, nullable=False)
+    horas_teoria = db.Column(db.Integer, nullable=False)
+    creditos = db.Column(db.Integer, nullable=False)
     carrera = db.Column(db.Integer, nullable=True, default=None)
 
     def __repr__(self):
-        return f"<Materias {self.id}>"
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
 class Aulas(db.Model):
     __tablename__ = 'aula'
@@ -55,7 +53,7 @@ class Aulas(db.Model):
     edificio = db.Column(db.Text, nullable=False)
     
     def __repr__(self):
-        return f"<Aulas {self.id}>"
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
     
 class Asignaciones(db.Model):
     __tablename__='asignacion'
@@ -68,7 +66,7 @@ class Asignaciones(db.Model):
     ciclo = db.Column(db.Text, nullable = False)
 
     def __repr__(self):
-        return f"<Asignaciones {self.id}>"
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
     
 class Logg (db.Model):
     __tablename__='loggs'
@@ -79,6 +77,4 @@ class Logg (db.Model):
 
     def __repr__(self):
 
-        return f"<Logg {self.id}>"
-
-
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}

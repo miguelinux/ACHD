@@ -14,7 +14,11 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import session
-from flask_sqlalchemy import SQLAlchemy
+
+from extensions import db
+from sqlalchemy import update
+from models.tables_db import Usuarios, Materias
+
 
 app = Flask(__name__)
 
@@ -27,7 +31,7 @@ DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://<username>:<password>@<host>/<database>'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DB}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # TODO: Hay que mejorar esto por favor
@@ -46,8 +50,9 @@ admin = 1
 tru = bool(1)
 fals = bool(0)
 
-db = SQLAlchemy(app)
-
+db.init_app(app)
+with app.app_context():
+    db.create_all()
 
 def get_hex_digest(cadena):
     """
@@ -139,27 +144,26 @@ def login():
     # print(str(form))
     user = form["email"]
     pssw = get_hex_digest(form["password"])
-    user = (
-        db.table("usuario").where("email", user).where("password", pssw).get().first()
-    )
+    user = Usuarios.query.filter_by(email=user, password=pssw).first()
     if user is None:
         return render_template(
             "index.html", mensaje="Usuario y/o contraseña incorrectos"
         )
     while True:
         session["user"] = {
-            "userid": user["id"],
-            "name": user["nombre"],
-            "carrera": user["carrera"],
+            "userid": user.id,
+            "name": user.nombre,
+            "carrera": user.carrera,
         }  #'user' hace referencia a la tabla de la base de datos
-        if user["first_login"]:
-            db.table("usuario").where("id", user["id"]).update(first_login=fals)
+        if user.first_login:    
+            user.first_login = False
+            db.session.commit()
             return redirect("/dashboard")
-        if user["user_type"] == admin:
-            return redirect("/jefeCarrera/asignacion")
-        if user["user_type"] == docente:
+        if user.user_type == admin:
             return redirect("/homeDocente")
-        if user["user_type"] == jefe_de_carrera:
+        if user.user_type == docente:
+            return redirect("/homeDocente")
+        if user.user_type == jefe_de_carrera:
             return redirect("/jefeCarrera")
 
 
@@ -317,13 +321,8 @@ def jefe_carrera():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        d = (
-            db.table("usuario")
-            .where("user_type", docente)
-            .where("carrera", carrera)
-            .get()
-        )
-        a = db.table("materia").where("carrera", carrera).get()
+        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
+        a = Materias.query.filter_by(carrera=carrera).all()
         return render_template(
             "jefeCarrera.html", user=username, asignaturas=a, docentes=d
         )
@@ -366,14 +365,14 @@ def materias():
     """
     user = verificate_session()
     if user:
-        username = user["username"]
-        carrera = user["carrera"]
-        d = (
+        username = user.username
+        carrera = user.carrera
+        """d = (
             db.table("materia")
             .where("carrera", carrera)
             .order_by("semestre", "asc")
             .get()
-        )
+        )"""
         return render_template("materias.html", user=username, materias=d)
     return redirect("/")
 
