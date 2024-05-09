@@ -9,8 +9,10 @@
 Este programa permitira ingresar datos de prueba a la base de datos
 """
 
-import pymysql
 from configparser import ConfigParser
+
+import pymysql
+
 config = ConfigParser()
 
 # para guardar las cookies es necesario una secret_key que se encuentra en .env
@@ -21,41 +23,53 @@ DB_USER = config.get("DB", "DB_USER")
 
 # Conexión a la base de datos MySQL
 conn = pymysql.connect(
-    host='DB_HOST',
-    user='DB_USER',
-    password='DB_PASSWORD',
-    database='DB_DB'
+    host="DB_HOST", user="DB_USER", password="DB_PASSWORD", database="DB_DB"
 )
 cursor = conn.cursor()
 
 # Datos a insertar
-datoscarrera =[
-    ('ing prueba', 'ipru-0001')
-]
-'''
+datoscarrera = [("ing prueba", "ipru-0001")]
+"""
 la contraseña: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
 hace referencia a la palabra "admin"
-'''
+"""
 datosusuario = [
-    ('admin','root','prueb','admin@admin.com',
-     '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',
-     '1','1','1'),
-    ('Docente','prueb1','prueb','docente1@docente.com',
-     '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',
-     '3','1','1'),
-    ('Maestro','prueb2','pr','docente2@docente.com',
-     '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',
-     '3','1','1')
+    (
+        "admin",
+        "root",
+        "prueb",
+        "admin@admin.com",
+        "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+        "1",
+        "1",
+        "1",
+    ),
+    (
+        "Docente",
+        "prueb1",
+        "prueb",
+        "docente1@docente.com",
+        "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+        "3",
+        "1",
+        "1",
+    ),
+    (
+        "Maestro",
+        "prueb2",
+        "pr",
+        "docente2@docente.com",
+        "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+        "3",
+        "1",
+        "1",
+    ),
 ]
 datosmateria = [
-    ('pru-0001', 'matprueb','1','1','1','2','1'),
-    ('pru-0002', 'matpr2','2','1','1','2','1')
-    
+    ("pru-0001", "matprueb", "1", "1", "1", "2", "1"),
+    ("pru-0002", "matpr2", "2", "1", "1", "2", "1"),
 ]
-datosaula = [
-    ('A1','principal')
-    ('A2','principal')
-]
+datosaula = [("A1", "principal")("A2", "principal")]
 # Consulta SQL de inserción
 consultauser = "INSERT INTO usuario (nombre, apellido_pat, apellido_mat, email, password, user_type, first_login) VALUES (%s, %s, %s, %s, %s, %s, %s)"
 consultcarrera = "INSERT INTO carrera (nombre, plan_de_estudio) VALUES (%s, %s)"
