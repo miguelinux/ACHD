@@ -16,10 +16,9 @@ from flask import send_from_directory
 from flask import session
 
 from datetime import timedelta
-
+from sqlalchemy import desc
 from extensions import db
-from sqlalchemy import update
-from models.tables_db import Usuarios, Materias
+from models.tables_db import Usuarios, Materias, Aulas
 
 
 app = Flask(__name__)
@@ -33,7 +32,7 @@ DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
 
-app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=5) #el tiempo de vida de la cookie
+app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=15) #el tiempo de vida de la cookie
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DB}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -144,7 +143,6 @@ def login():
     cookie con el SessionID.
     """
     form = request.form
-    # print(str(form))
     user = form["email"]
     pssw = get_hex_digest(form["password"])
     user = Usuarios.query.filter_by(email=user, password=pssw).first()
@@ -205,11 +203,11 @@ def change():
             mensaje = "Favor de llenar todos los campos"
             return jsonify({"success": False, "message": mensaje})
         else:
-            usactual = db.table("usuario").where("id", user_id).get().first()
+            usactual = Usuarios.query.filter_by(id=user_id).first()
             current_password = get_hex_digest(current_password)
             new_password = get_hex_digest(new_password)
             confirm_password = get_hex_digest(confirm_password)
-            if current_password != usactual["password"]:
+            if current_password != usactual.password:
                 mensaje = "La contraseña actual no coincide"
                 return jsonify({"success": False, "message": mensaje})
 
@@ -224,13 +222,15 @@ def change():
             mensaje = (
                 "La contraseña se cambió exitosamente. En 3 segundos serás redirigido"
             )
-            db.table("usuario").where("id", user_id).update(password=new_password)
+            usactual.password=new_password
+            db.session.commit()
+            
     return jsonify({"success": True, "message": mensaje})
 
 @app.route('/getDisponibilidad')
 def getDisponibilidad():
     user_id = request.args['id']
-    usuario = db.table("usuario").where("id", user_id).get().first()
+    usuario = Usuarios.query.filter_by(id=user_id).first()
     disponibilidad = usuario.disponibilidad
     return jsonify(disponibilidad)
 
@@ -254,7 +254,7 @@ def horario():
     user = verificate_session()
     if user:
         user_id = user["userid"]
-        usuario = db.table("usuario").where("id", user_id).get().first()
+        usuario = Usuarios.query.filter_by(id=user_id).first()
         disponibilidad = usuario.disponibilidad
 
         return render_template("horario.html", user=user, disponibilidad=disponibilidad)
@@ -278,7 +278,7 @@ def horarioJefe():
         except KeyError:
             return "NO HA SELECCIONADO NINGÚN DOCENTE"
 
-        usuario = db.table("usuario").where("id", user_id).get().first()
+        usuario = Usuarios.query.filter_by(id=user_id).first()
         try:
             disponibilidad = usuario.disponibilidad
         except AttributeError:
@@ -308,10 +308,13 @@ def set_disp():
             availability_matrix[idx] = 1
         result_dict = {"disponibilidad": availability_matrix}
         result_json = json.dumps(result_dict)
-        resp = (
-            db.table("usuario").where("id", user_id).update(disponibilidad=result_json)
-        )
-        return str(resp)
+        
+        usuario = Usuarios.query.filter_by(id=user_id).first()
+        
+        if usuario:
+            usuario.disponibilidad = result_json
+            db.session.commit()
+            return jsonify({"success": True, "message": "Disponibilidad actualizada correctamente"})
     return redirect("/")
 
 
@@ -347,13 +350,8 @@ def docentes():
             userid = None
         username = user["username"]
         carrera = user["carrera"]
-        d = (
-            db.table("usuario")
-            .where("user_type", docente)
-            .where("carrera", carrera)
-            .order_by("apellido_pat", "desc")
-            .get()
-        )
+        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).order_by(Usuarios.apellido_pat).all()
+        
         return render_template(
             "docentes.html", user=username, docentes=d, userid=userid
         )
@@ -368,14 +366,9 @@ def materias():
     """
     user = verificate_session()
     if user:
-        username = user.username
-        carrera = user.carrera
-        """d = (
-            db.table("materia")
-            .where("carrera", carrera)
-            .order_by("semestre", "asc")
-            .get()
-        )"""
+        username = user["username"]
+        carrera = user["carrera"]
+        d = Materias.query.filter_by(carrera=carrera).order_by(Materias.semestre).all()
         return render_template("materias.html", user=username, materias=d)
     return redirect("/")
 
@@ -403,14 +396,9 @@ def asignacion():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        d = (
-            db.table("usuario")
-            .where("user_type", docente)
-            .where("carrera", carrera)
-            .get()
-        )
-        a = db.table("materia").where("carrera", carrera).get()
-        aula = db.table("aula").get()
+        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
+        a = Materias.query.filter_by(carrera=carrera).all()
+        aula = Aulas.query.all()        
         return render_template(
             "asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula
         )
