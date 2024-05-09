@@ -6,6 +6,7 @@
 import hashlib
 import json
 from configparser import ConfigParser
+from datetime import timedelta
 
 from flask import Flask
 from flask import jsonify
@@ -14,11 +15,12 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import session
-
-from datetime import timedelta
 from sqlalchemy import desc
+
 from extensions import db
-from models.tables_db import Usuarios, Materias, Aulas
+from models.tables_db import Aulas
+from models.tables_db import Materias
+from models.tables_db import Usuarios
 
 
 app = Flask(__name__)
@@ -32,10 +34,14 @@ DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
 
-app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=15) #el tiempo de vida de la cookie
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(
+    minutes=15
+)  # el tiempo de vida de la cookie
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DB}'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DB}"
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # TODO: Hay que mejorar esto por favor
 ETAPA = config.get("APP", "ETAPA")
@@ -55,6 +61,7 @@ admin = 1
 db.init_app(app)
 with app.app_context():
     db.create_all()
+
 
 def get_hex_digest(cadena):
     """
@@ -121,9 +128,11 @@ def index():
 
     return render_template("index.html")
 
+
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template("error.html"),404
+    return render_template("error.html"), 404
+
 
 @app.route("/logout")
 def logout():
@@ -151,12 +160,12 @@ def login():
             "index.html", mensaje="Usuario y/o contraseña incorrectos"
         )
     session["user"] = {
-            "userid": user.id,
-            "name": user.nombre,
-            "carrera": user.carrera,
-    }#'user' hace referencia a la tabla de la base de datos
+        "userid": user.id,
+        "name": user.nombre,
+        "carrera": user.carrera,
+    }  #'user' hace referencia a la tabla de la base de datos
 
-    if user.first_login:    
+    if user.first_login:
         user.first_login = False
         db.session.commit()
         return redirect("/dashboard")
@@ -222,17 +231,19 @@ def change():
             mensaje = (
                 "La contraseña se cambió exitosamente. En 3 segundos serás redirigido"
             )
-            usactual.password=new_password
+            usactual.password = new_password
             db.session.commit()
-            
+
     return jsonify({"success": True, "message": mensaje})
 
-@app.route('/getDisponibilidad')
+
+@app.route("/getDisponibilidad")
 def getDisponibilidad():
-    user_id = request.args['id']
+    user_id = request.args["id"]
     usuario = Usuarios.query.filter_by(id=user_id).first()
     disponibilidad = usuario.disponibilidad
     return jsonify(disponibilidad)
+
 
 @app.route("/homeDocente")
 def home_docente():
@@ -259,6 +270,7 @@ def horario():
 
         return render_template("horario.html", user=user, disponibilidad=disponibilidad)
     return redirect("/")
+
 
 @app.route("/horarioJ")
 def horarioJefe():
@@ -308,13 +320,15 @@ def set_disp():
             availability_matrix[idx] = 1
         result_dict = {"disponibilidad": availability_matrix}
         result_json = json.dumps(result_dict)
-        
+
         usuario = Usuarios.query.filter_by(id=user_id).first()
-        
+
         if usuario:
             usuario.disponibilidad = result_json
             db.session.commit()
-            return jsonify({"success": True, "message": "Disponibilidad actualizada correctamente"})
+            return jsonify(
+                {"success": True, "message": "Disponibilidad actualizada correctamente"}
+            )
     return redirect("/")
 
 
@@ -350,8 +364,12 @@ def docentes():
             userid = None
         username = user["username"]
         carrera = user["carrera"]
-        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).order_by(Usuarios.apellido_pat).all()
-        
+        d = (
+            Usuarios.query.filter_by(user_type=docente, carrera=carrera)
+            .order_by(Usuarios.apellido_pat)
+            .all()
+        )
+
         return render_template(
             "docentes.html", user=username, docentes=d, userid=userid
         )
@@ -398,7 +416,7 @@ def asignacion():
         carrera = user["carrera"]
         d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
         a = Materias.query.filter_by(carrera=carrera).all()
-        aula = Aulas.query.all()        
+        aula = Aulas.query.all()
         return render_template(
             "asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula
         )
