@@ -65,6 +65,6 @@ Table escolar.ciclo [headercolor: #FFCCCC] {
 }
 Table escolar.asignatura_carrera [headercolor: #FFCCCC] {
   id integer [primary key, increment]
-  asignatura_id integer [ref: >escolar.asignatura.id] 
+  asignatura_id integer [ref: >escolar.asignatura.id]
   carrera_id integer [ref: >escolar.carrera.id]
 }
