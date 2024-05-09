@@ -16,7 +16,6 @@ from flask import send_from_directory
 from flask import session
 
 from datetime import timedelta
-from sqlalchemy import desc
 from extensions import db
 from models.tables_db import Usuarios, Materias, Aulas
 
