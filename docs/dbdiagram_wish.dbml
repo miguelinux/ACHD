@@ -21,6 +21,7 @@ Table usuario.acceso [headercolor: #CCCCFF] {
   google_id varchar(30) [null]
   email varchar(50) [not null]
   tipo integer [ref: > usuario.tipo.id]
+  habilitado bool [not null]
   indexes {
 	email [name: 'email_index']
   }
@@ -61,10 +62,30 @@ Table escolar.ciclo [headercolor: #FFCCCC] {
   inicio date [not null]
   fin date [not null]
   nombre varchar(30) [not null]
-
 }
 Table escolar.asignatura_carrera [headercolor: #FFCCCC] {
   id integer [primary key, increment]
   asignatura_id integer [ref: >escolar.asignatura.id] 
   carrera_id integer [ref: >escolar.carrera.id]
+}
+
+Table escolar.grupo {
+  id integer [primary key, increment]
+  docente_id integer [ref: >usuario.persona.id]
+  asignatura_carrera_id integer [ref: >escolar.asignatura_carrera.id]
+  ciclo_id integer [ref: >escolar.ciclo.id]
+  identificador varchar(5) [not null]
+} 
+Table escolar.alumnos{
+  alumno_id integer [ref: >usuario.persona.id]
+  grupo_id integer [ref: >escolar.grupo.id]
+}
+
+Table escolar.asistencia{
+  fecha date [not null]
+  alumno_id integer [ref: >usuario.persona.id]
+  grupo_id integer [ref: >escolar.grupo.id]
+  indexes {
+	  fecha [name: 'fecha_index']
+  }
 }
