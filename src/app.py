@@ -31,7 +31,7 @@ DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
 
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15) #el tiempo de vida de la cookie
+#app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15) #el tiempo de vida de la cookie
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DB}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

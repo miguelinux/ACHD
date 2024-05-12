@@ -328,6 +328,7 @@
 
 <script>
   let diasOriginales = obtenerDiasOriginales();
+  let disponibilidad;
   // Controlador de eventos para los botones de turno
   const horasOriginales = obtenerHorasOriginales();
   const turnA = document.getElementById("turnA");
@@ -350,33 +351,40 @@
     cambiarTurno("N");
   });
 
+  function handleClickDocente() {
+    // Obtener la disponibilidad del docente desde el atributo data-disponibilidad
+    disponibilidad = JSON.parse(this.getAttribute('data-disponibilidad'));
+    // Llamar a la función para actualizar los colores de la tabla
+    actualizarColoresTablaPorDisponibilidad(disponibilidad);
+}
   function cambiarTurno(turno) {
     document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
     document.getElementById(`turn${turno}`).classList.add('selected');
     const dias = document.querySelectorAll(".dia");
     if (turno === "N") {
-      dias.forEach(function (dia, index) {
-        const id = parseInt(diasOriginales[index]) + 7;
-        dia.id = id.toString(); // Actualizar el ID del día
-      });
-      const horas = document.querySelectorAll(".hora");
-      horas.forEach(function (hora, index) {
-        let inicio = 14 + index;
-        let fin = 15 + index;
-        if (fin > 22) {
-          fin = 22;
-        }
-        hora.textContent = inicio.toString().padStart(2, '0') + '-' + fin.toString().padStart(2, '0');
-      });
+        dias.forEach(function (dia, index) {
+            const id = parseInt(diasOriginales[index]) + 7;
+            dia.id = id.toString(); // Actualizar el ID del día
+        });
+        const horas = document.querySelectorAll(".hora");
+        horas.forEach(function (hora, index) {
+            let inicio = 14 + index;
+            let fin = 15 + index;
+            if (fin > 22) {
+                fin = 22;
+            }
+            hora.textContent = inicio.toString().padStart(2, '0') + '-' + fin.toString().padStart(2, '0');
+        });
     } else {
-      // Restaurar los IDs originales
-      dias.forEach(function (dia, index) {
-        dia.id = diasOriginales[index]; // Restaurar el ID del día
-      });
+        // Restaurar los IDs originales
+        dias.forEach(function (dia, index) {
+            dia.id = diasOriginales[index]; // Restaurar el ID del día
+        });
     }
+    
     // Actualizar los colores de la tabla según la disponibilidad de los docentes después de cambiar el turno
     actualizarColoresTablaPorDisponibilidad(disponibilidad);
-  }
+}
   function actualizarColoresTablaPorDisponibilidad(disponibilidad) {
   // Obtener todos los elementos .dia de la tabla
   const dias = document.querySelectorAll(".dia");
@@ -392,16 +400,10 @@
     }
   });
 }
-function handleClickDocente() {
-  // Obtener la disponibilidad del docente desde el atributo data-disponibilidad
-  const disponibilidad = JSON.parse(this.getAttribute('data-disponibilidad'));
-  // Llamar a la función para actualizar los colores de la tabla
-  actualizarColoresTablaPorDisponibilidad(disponibilidad);
-}
+
 document.querySelectorAll(".docente").forEach(docente => {
   docente.addEventListener("click", handleClickDocente);
 });
-  
 
   function obtenerDiasOriginales() {
     const diasOriginales = [];
@@ -433,42 +435,63 @@ document.querySelectorAll(".docente").forEach(docente => {
 
   document.querySelectorAll(".docente, .materia, .aula").forEach(item => {
     item.addEventListener("click", function () {
-      const elementType = this.classList.contains('docente') ? 'docente' : this.classList.contains('materia') ? 'materia' : 'aula';
-      const elementText = this.textContent.trim();
+        const elementType = this.classList.contains('docente') ? 'docente' : this.classList.contains('materia') ? 'materia' : 'aula';
+        const elementText = this.textContent.trim();
+        const elementId = this.getAttribute(`data-id-${elementType}`); // Obtener el data-id correspondiente
 
-      // Deseleccionar cualquier otro elemento del mismo tipo
-      selectedElements = selectedElements.filter(element => element.type !== elementType);
-      document.querySelectorAll(`.${elementType}.selected`).forEach(element => {
-        element.classList.remove('selected');
-      });
+        // Deseleccionar cualquier otro elemento del mismo tipo
+        selectedElements = selectedElements.filter(element => element.type !== elementType);
+        document.querySelectorAll(`.${elementType}.selected`).forEach(element => {
+            element.classList.remove('selected');
+        });
 
-      // Agregar el nuevo elemento seleccionado
-      let trimmedText = elementType === 'materia' ? elementText.replace(/Créditos.*/g, '').trim() : elementText.trim();
-      selectedElements.push({ type: elementType, text: trimmedText });
-      this.classList.add('selected');
+        // Agregar el nuevo elemento seleccionado
+        let trimmedText = elementType === 'materia' ? elementText.replace(/Créditos.*/g, '').trim() : elementText.trim();
+        
+        // Verificar el tipo de elemento y su posición en el arreglo selectedElements
+        if (elementType === 'docente') {
+            selectedElements.unshift({ type: elementType, text: trimmedText, id: elementId }); // Agregar al principio del arreglo
+        } else if (elementType === 'materia') {
+            selectedElements.splice(1, 0, { type: elementType, text: trimmedText, id: elementId }); // Agregar en la segunda posición del arreglo
+        } else {
+            selectedElements.push({ type: elementType, text: trimmedText, id: elementId }); // Agregar al final del arreglo
+        }
+        
+        this.classList.add('selected');
+        
+        // Verificar si hay un conjunto completo de elementos seleccionados
+        if (selectedElements.length === 3) {
+            // Obtener los IDs en el mismo orden que los elementos seleccionados
+            const ids = selectedElements.map(element => element.id);
+        }
     });
-  });
+});
 
   // Controlador de eventos para las celdas vacías de la tabla
   document.querySelectorAll(".horario td:not(.hora)").forEach(cell => {
     cell.addEventListener("click", function () {
-      const hasOneOfEachType = selectedElements.filter(element => element.type === 'docente').length > 0 &&
-        selectedElements.filter(element => element.type === 'materia').length > 0 &&
-        selectedElements.filter(element => element.type === 'aula').length > 0;
+        const hasOneOfEachType = selectedElements.filter(element => element.type === 'docente').length > 0 &&
+            selectedElements.filter(element => element.type === 'materia').length > 0 &&
+            selectedElements.filter(element => element.type === 'aula').length > 0;
 
-      if (hasOneOfEachType) {
-        cell.textContent = "";
+        if (hasOneOfEachType) {
+            cell.textContent = "";
 
-        cell.style.backgroundColor = "white";
-        // Crear elementos de div para cada uno de los elementos seleccionados y agregarlos a la celda
-        selectedElements.forEach(element => {
-          const newContent = document.createElement("div");
-          newContent.textContent = element.text;
-          cell.appendChild(newContent);
-        });
-      }
+            cell.style.backgroundColor = "white";
+            // Crear elementos de div para cada uno de los elementos seleccionados y agregarlos a la celda
+            selectedElements.forEach(element => {
+                const newContent = document.createElement("div");
+                newContent.textContent = element.text;
+                newContent.setAttribute('data-id', element.id); // Guardar el valor data-id del elemento seleccionado
+                cell.appendChild(newContent);
+            });
+
+            // Obtener los IDs de los elementos seleccionados y mostrarlos en la consola
+            const ids = selectedElements.map(element => element.id);
+        }
     });
-  });
+});
+
 
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.semestre').forEach(function (button) {
@@ -509,7 +532,6 @@ document.querySelectorAll(".docente").forEach(docente => {
     btn.addEventListener("click", function () {
       document.querySelectorAll(".dia").forEach(cell => {
         cell.textContent = "";
-      actualizarColoresTabla();
       });
     });
   });
@@ -517,12 +539,10 @@ document.querySelectorAll(".docente").forEach(docente => {
     button.addEventListener('click', function () {
       document.querySelectorAll(".dia").forEach(cell => {
         cell.textContent = "";
-        actualizarColoresTabla();
       });
     });
   });
 
 </script>
-
 
 {% endblock %}
