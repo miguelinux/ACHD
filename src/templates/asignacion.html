@@ -53,7 +53,6 @@
     color: white;
   }
 
-
   .container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -172,6 +171,14 @@
   }
   table td{
     border: 1px solid;
+  }
+
+  table td {
+    max-width: 100px; /* Ajusta el valor según sea necesario */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 11px; /* Ajusta el tamaño de la letra según sea necesario */
   }
 
   .semestre.selected {
@@ -474,7 +481,11 @@ document.querySelectorAll(".docente").forEach(docente => {
             selectedElements.filter(element => element.type === 'materia').length > 0 &&
             selectedElements.filter(element => element.type === 'aula').length > 0;
 
-        if (hasOneOfEachType) {
+        // Verificar si la celda tiene color de fondo rojo
+        const backgroundColor = getComputedStyle(this).getPropertyValue('background-color');
+        const isRedBackground = backgroundColor === "rgb(255, 110, 51)" || backgroundColor === "#FF6E33";
+
+        if (hasOneOfEachType && !isRedBackground) {
             cell.textContent = "";
 
             cell.style.backgroundColor = "white";
@@ -488,10 +499,25 @@ document.querySelectorAll(".docente").forEach(docente => {
 
             // Obtener los IDs de los elementos seleccionados y mostrarlos en la consola
             const ids = selectedElements.map(element => element.id);
+        } else if (isRedBackground) {
+            // Mostrar notificación de que no se puede colocar un elemento en la celda con fondo rojo
+            mostrarNotificacion("El docente no tiene disponibilidad en ese horario.");
         }
     });
 });
 
+function mostrarNotificacion(mensaje) {
+    // Verificar si el navegador soporta notificaciones
+    if ('Notification' in window) {
+        // Solicitar permiso al usuario para mostrar notificaciones
+        Notification.requestPermission().then(function (permission) {
+            // Si el permiso es concedido, mostrar la notificación
+            if (permission === "granted") {
+                new Notification(mensaje);
+            }
+        });
+    }
+}
 
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.semestre').forEach(function (button) {
