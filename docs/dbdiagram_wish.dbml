@@ -65,7 +65,7 @@ Table escolar.ciclo [headercolor: #FFCCCC] {
 }
 Table escolar.asignatura_carrera [headercolor: #FFCCCC] {
   id integer [primary key, increment]
-  asignatura_id integer [ref: >escolar.asignatura.id]
+  asignatura_id integer [ref: >escolar.asignatura.id] 
   carrera_id integer [ref: >escolar.carrera.id]
 }
 
@@ -77,14 +77,14 @@ Table escolar.grupo {
   identificador varchar(5) [not null]
 } 
 Table escolar.alumnos{
+  id integer [primary key, increment]
   alumno_id integer [ref: >usuario.persona.id]
   grupo_id integer [ref: >escolar.grupo.id]
 }
 
 Table escolar.asistencia{
   fecha date [not null]
-  alumno_id integer [ref: >usuario.persona.id]
-  grupo_id integer [ref: >escolar.grupo.id]
+  alumnos_id integer [ref: >escolar.alumnos.id]
   indexes {
 	  fecha [name: 'fecha_index']
   }
