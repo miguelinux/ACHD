@@ -17,7 +17,7 @@ from flask import session
 
 from datetime import timedelta
 from extensions import db
-from models.tables_db import Usuarios, Materias, Aulas
+from models.tables_db import Usuarios, Materias, Aulas, Ciclos
 
 
 app = Flask(__name__)
@@ -31,7 +31,7 @@ DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
 
-app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=15) #el tiempo de vida de la cookie
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15) #el tiempo de vida de la cookie
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DB}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -305,11 +305,12 @@ def set_disp():
         availability_matrix = [0] * 90
         for idx in selected_indices:
             availability_matrix[idx] = 1
+
         result_dict = {"disponibilidad": availability_matrix}
-        result_json = json.dumps(result_dict)
-        
+        result_json = json.dumps(result_dict)  # Esto convierte el diccionario a JSON
+
         usuario = Usuarios.query.filter_by(id=user_id).first()
-        
+
         if usuario:
             usuario.disponibilidad = result_json
             db.session.commit()
@@ -397,9 +398,10 @@ def asignacion():
         carrera = user["carrera"]
         d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
         a = Materias.query.filter_by(carrera=carrera).all()
+        c = Ciclos.query.filter_by(actual=True).first()
         aula = Aulas.query.all()        
         return render_template(
-            "asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula
+            "asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula, ciclo=c
         )
     return redirect("/")
 

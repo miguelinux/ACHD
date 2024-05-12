@@ -210,7 +210,8 @@
     <p>docentes</p>
 
     {% for docente in docentes %}
-    <div class="docente" data-disponibilidad='{{docente.disponibilidad}}'>
+    <div class="docente" data-disponibilidad='{{docente.disponibilidad}}' 
+    data-id-docente='{{docente.id}}'>
       <p><strong>{{docente.nombre}} {{docente.apellido_pat}} </strong></p>
     </div>
     {% endfor %}
@@ -304,7 +305,8 @@
   <div class="materias">
     <p>materias</p>
     {% for asignatura in asignaturas %}
-    <div class="materia" data-semestre="{{ asignatura.semestre }}">
+    <div class="materia" data-semestre="{{ asignatura.semestre }}" 
+    data-id-materia='{{asignatura.id}}'>
       <p>{{ asignatura.nombre }}</p>
       <p>Créditos: {{ asignatura.creditos }}</p>
     </div>
@@ -313,7 +315,7 @@
   <div class="aulas">
     <p>aulas</p>
     {% for aula in aulas %}
-    <div class="aula">
+    <div class="aula" data-id-aula="{{aula.id}}">
       <p>{{ aula.nombre }}</p>
       <p>{{ aula.edificio }}</p>
     </div>
@@ -326,30 +328,6 @@
 
 <script>
   let diasOriginales = obtenerDiasOriginales();
-  // Controlador de eventos para seleccionar docentes y actualizar la disponibilidad en la tabla
-  document.querySelectorAll(".docente").forEach(docente => {
-    docente.addEventListener("click", function () {
-      // Obtener la disponibilidad del docente desde el atributo data-disponibilidad
-      const disponibilidad = JSON.parse(this.getAttribute('data-disponibilidad'));
-
-      // Obtener todos los elementos .dia de la tabla
-      const dias = document.querySelectorAll(".dia");
-
-      // Iterar sobre los elementos .dia y actualizar el color según la disponibilidad del docente
-      dias.forEach(dia => {
-        // Obtener el índice del día desde el ID del elemento .dia
-        const index = parseInt(dia.id);
-
-        // Verificar si la disponibilidad del docente en el día correspondiente es 1
-        if (disponibilidad.disponibilidad[index] === 1) {
-          dia.style.backgroundColor = "#2EDC41";
-        } else {
-          dia.style.backgroundColor = "#FF6E33"; // Restaurar el color por defecto
-        }
-      });
-    });
-  });
-
   // Controlador de eventos para los botones de turno
   const horasOriginales = obtenerHorasOriginales();
   const turnA = document.getElementById("turnA");
@@ -397,30 +375,33 @@
       });
     }
     // Actualizar los colores de la tabla según la disponibilidad de los docentes después de cambiar el turno
-    actualizarColoresTabla();
+    actualizarColoresTablaPorDisponibilidad(disponibilidad);
   }
-  function actualizarColoresTabla() {
-    // Obtener el docente seleccionado
-    const docenteSeleccionado = document.querySelector(".docente.selected");
-    // Verificar si hay un docente seleccionado
-    if (docenteSeleccionado) {
-      // Obtener la disponibilidad del docente desde el atributo data-disponibilidad
-      const disponibilidad = JSON.parse(docenteSeleccionado.getAttribute('data-disponibilidad'));
-      // Obtener todos los elementos .dia de la tabla
-      const dias = document.querySelectorAll(".dia");
-      // Iterar sobre los elementos .dia y actualizar el color según la disponibilidad del docente
-      dias.forEach(dia => {
-        // Obtener el índice del día desde el ID del elemento .dia
-        const index = parseInt(dia.id);
-        // Verificar si la disponibilidad del docente en el día correspondiente es 1
-        if (disponibilidad.disponibilidad[index] === 1) {
-          dia.style.backgroundColor = "#2EDC41";
-        } else {
-          dia.style.backgroundColor = "#FF6E33"; 
-        }
-      });
+  function actualizarColoresTablaPorDisponibilidad(disponibilidad) {
+  // Obtener todos los elementos .dia de la tabla
+  const dias = document.querySelectorAll(".dia");
+  // Iterar sobre los elementos .dia y actualizar el color según la disponibilidad del docente
+  dias.forEach(dia => {
+    // Obtener el índice del día desde el ID del elemento .dia
+    const index = parseInt(dia.id);
+    // Verificar si la disponibilidad del docente en el día correspondiente es 1
+    if (disponibilidad.disponibilidad[index] === 1) {
+      dia.style.backgroundColor = "#2EDC41";
+    } else {
+      dia.style.backgroundColor = "#FF6E33"; 
     }
-  }
+  });
+}
+function handleClickDocente() {
+  // Obtener la disponibilidad del docente desde el atributo data-disponibilidad
+  const disponibilidad = JSON.parse(this.getAttribute('data-disponibilidad'));
+  // Llamar a la función para actualizar los colores de la tabla
+  actualizarColoresTablaPorDisponibilidad(disponibilidad);
+}
+document.querySelectorAll(".docente").forEach(docente => {
+  docente.addEventListener("click", handleClickDocente);
+});
+  
 
   function obtenerDiasOriginales() {
     const diasOriginales = [];
