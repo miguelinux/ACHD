@@ -15,7 +15,6 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import session
-from sqlalchemy import desc
 
 from extensions import db
 from models.tables_db import Aulas
