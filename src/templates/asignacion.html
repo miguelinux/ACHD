@@ -444,12 +444,15 @@ document.querySelectorAll(".docente").forEach(docente => {
 
   // Controlador de eventos para seleccionar docentes, materias y aulas
   let selectedElements = [];
+  let elementCounts = {}; // Objeto para almacenar el recuento de elementos por combinación de tipo y ID
 
   document.querySelectorAll(".docente, .materia, .aula").forEach(item => {
     item.addEventListener("click", function () {
         const elementType = this.classList.contains('docente') ? 'docente' : this.classList.contains('materia') ? 'materia' : 'aula';
         const elementText = this.textContent.trim();
         const elementId = this.getAttribute(`data-id-${elementType}`); // Obtener el data-id correspondiente
+        const creditosSeleccionados = elementType === 'materia' ? parseInt(this.getAttribute('data-credito')) : null;
+
 
         // Deseleccionar cualquier otro elemento del mismo tipo
         selectedElements = selectedElements.filter(element => element.type !== elementType);
@@ -461,11 +464,11 @@ document.querySelectorAll(".docente").forEach(docente => {
         let trimmedText = elementType === 'materia' ? elementText.replace(/Créditos.*/g, '').trim() : elementText.trim();
         // Verificar el tipo de elemento y su posición en el arreglo selectedElements
         if (elementType === 'docente') {
-            selectedElements.unshift({ type: elementType, text: trimmedText, id: elementId }); // Agregar al principio del arreglo
+            selectedElements.unshift({ type: elementType, text: trimmedText, id: elementId, creditos: creditosSeleccionados }); // Agregar al principio del arreglo
         } else if (elementType === 'materia') {
-            selectedElements.splice(1, 0, { type: elementType, text: trimmedText, id: elementId }); // Agregar en la segunda posición del arreglo
+            selectedElements.splice(1, 0, { type: elementType, text: trimmedText, id: elementId, creditos: creditosSeleccionados }); // Agregar en la segunda posición del arreglo
         } else {
-            selectedElements.push({ type: elementType, text: trimmedText, id: elementId }); // Agregar al final del arreglo
+            selectedElements.push({ type: elementType, text: trimmedText, id: elementId, creditos: creditosSeleccionados }); // Agregar al final del arreglo
         }
         
         this.classList.add('selected');
@@ -492,6 +495,7 @@ function stringToColor(str) {
     return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
+
 document.querySelectorAll(".horario td:not(.hora)").forEach(cell => {
     cell.addEventListener("click", function () {
         const hasOneOfEachType = selectedElements.filter(element => element.type === 'docente').length > 0 &&
@@ -507,22 +511,32 @@ document.querySelectorAll(".horario td:not(.hora)").forEach(cell => {
         const isUnavailable = disponibilidad.disponibilidad[parseInt(cellId)] === 0;
 
         if (hasOneOfEachType && !isUnavailable) {
-            cell.textContent = "";
-
-            // Generar un color único basado en los IDs de los elementos seleccionados
-            const color = stringToColor(selectedElements.map(element => element.id).join('-'));
-            cell.style.backgroundColor = color;
-
-            // Crear elementos de div para cada uno de los elementos seleccionados y agregarlos a la celda
             selectedElements.forEach(element => {
-                const newContent = document.createElement("div");
-                newContent.textContent = element.text;
-                newContent.setAttribute('data-id', element.id); // Guardar el valor data-id del elemento seleccionado
-                cell.appendChild(newContent);
+              if (element.type === 'materia') {
+                const combinationKey = `${element.type}-${element.id}`;
+                elementCounts[combinationKey] = (elementCounts[combinationKey] || 0) + 1;
+                if (elementCounts[combinationKey] < (element.creditos + 1)){
+                  cell.textContent = "";
+                  // Generar un color único basado en los IDs de los elementos seleccionados
+                  const color = stringToColor(selectedElements.map(element => element.id).join('-'));
+                  cell.style.backgroundColor = color;
+                  selectedElements.forEach(element => {
+                  const newContent = document.createElement("div");
+                  newContent.textContent = element.text;
+                  newContent.setAttribute('data-id', element.id); // Guardar el valor data-id del elemento seleccionado
+                  cell.appendChild(newContent);
             });
-
             // Obtener los IDs de los elementos seleccionados y mostrarlos en la consola
             const ids = selectedElements.map(element => element.id);
+                }
+                else{
+                  mostrarNotificacion("ya no quedan creditos para esta materia.");
+                }
+                
+              } 
+            });                 
+            // Crear elementos de div para cada uno de los elementos seleccionados y agregarlos a la celda
+            
         } else if (isUnavailable && selectedElements.length !==0) {
             mostrarNotificacion("El docente no tiene disponibilidad en ese horario.");
         }
