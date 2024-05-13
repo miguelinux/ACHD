@@ -392,18 +392,21 @@
     // Actualizar los colores de la tabla según la disponibilidad de los docentes después de cambiar el turno
     actualizarColoresTablaPorDisponibilidad(disponibilidad);
 }
-  function actualizarColoresTablaPorDisponibilidad(disponibilidad) {
+function actualizarColoresTablaPorDisponibilidad(disponibilidad) {
   // Obtener todos los elementos .dia de la tabla
   const dias = document.querySelectorAll(".dia");
   // Iterar sobre los elementos .dia y actualizar el color según la disponibilidad del docente
   dias.forEach(dia => {
-    // Obtener el índice del día desde el ID del elemento .dia
-    const index = parseInt(dia.id);
-    // Verificar si la disponibilidad del docente en el día correspondiente es 1
-    if (disponibilidad.disponibilidad[index] === 1) {
-      dia.style.backgroundColor = "#2EDC41";
-    } else {
-      dia.style.backgroundColor = "#FF6E33"; 
+    // Verificar si la celda está vacía
+    if (dia.textContent.trim() === "") {
+      // Obtener el índice del día desde el ID del elemento .dia
+      const index = parseInt(dia.id);
+      // Verificar si la disponibilidad del docente en el día correspondiente es 1
+      if (disponibilidad.disponibilidad[index] === 1) {
+        dia.style.backgroundColor = "#2EDC41";
+      } else {
+        dia.style.backgroundColor = "#FF6E33"; 
+      }
     }
   });
 }
@@ -454,7 +457,6 @@ document.querySelectorAll(".docente").forEach(docente => {
 
         // Agregar el nuevo elemento seleccionado
         let trimmedText = elementType === 'materia' ? elementText.replace(/Créditos.*/g, '').trim() : elementText.trim();
-        
         // Verificar el tipo de elemento y su posición en el arreglo selectedElements
         if (elementType === 'docente') {
             selectedElements.unshift({ type: elementType, text: trimmedText, id: elementId }); // Agregar al principio del arreglo
@@ -474,21 +476,41 @@ document.querySelectorAll(".docente").forEach(docente => {
     });
 });
 
-  // Controlador de eventos para las celdas vacías de la tabla
-  document.querySelectorAll(".horario td:not(.hora)").forEach(cell => {
+
+// Función para generar un color hexadecimal único basado en una cadena de texto
+function stringToColor(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    let h = hash % 360; // Asegúrate de que el matiz esté en el rango [0, 360)
+    let s = 60 + ((hash * 2) % 40); // Saturación variable entre 60% y 100%
+    let l = 40 + ((hash * 4) % 30); // Luminosidad variable entre 40% y 70%
+
+    return `hsl(${h}, ${s}%, ${l}%)`;
+}
+
+document.querySelectorAll(".horario td:not(.hora)").forEach(cell => {
     cell.addEventListener("click", function () {
         const hasOneOfEachType = selectedElements.filter(element => element.type === 'docente').length > 0 &&
             selectedElements.filter(element => element.type === 'materia').length > 0 &&
             selectedElements.filter(element => element.type === 'aula').length > 0;
 
-        // Verificar si la celda tiene color de fondo rojo
         const backgroundColor = getComputedStyle(this).getPropertyValue('background-color');
-        const isRedBackground = backgroundColor === "rgb(255, 110, 51)" || backgroundColor === "#FF6E33";
 
-        if (hasOneOfEachType && !isRedBackground) {
+        // Obtener el ID de la celda
+        const cellId = this.id;
+
+        // Verificar si la celda tiene disponibilidad igual a 0
+        const isUnavailable = disponibilidad.disponibilidad[parseInt(cellId)] === 0;
+
+        if (hasOneOfEachType && !isUnavailable) {
             cell.textContent = "";
 
-            cell.style.backgroundColor = "white";
+            // Generar un color único basado en los IDs de los elementos seleccionados
+            const color = stringToColor(selectedElements.map(element => element.id).join('-'));
+            cell.style.backgroundColor = color;
+
             // Crear elementos de div para cada uno de los elementos seleccionados y agregarlos a la celda
             selectedElements.forEach(element => {
                 const newContent = document.createElement("div");
@@ -499,13 +521,11 @@ document.querySelectorAll(".docente").forEach(docente => {
 
             // Obtener los IDs de los elementos seleccionados y mostrarlos en la consola
             const ids = selectedElements.map(element => element.id);
-        } else if (isRedBackground) {
-            // Mostrar notificación de que no se puede colocar un elemento en la celda con fondo rojo
+        } else if (isUnavailable) {
             mostrarNotificacion("El docente no tiene disponibilidad en ese horario.");
         }
     });
 });
-
 function mostrarNotificacion(mensaje) {
     // Verificar si el navegador soporta notificaciones
     if ('Notification' in window) {
