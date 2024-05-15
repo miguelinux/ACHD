@@ -673,7 +673,7 @@
         cell.textContent = "";
         cell.style.backgroundColor = ""; // Restaurar el color de fondo
       });
-
+      resetElementCounts()
       // Deseleccionar los elementos de docente, materia y aula
       selectedElements = [];
       document.querySelectorAll('.docente.selected, .materia.selected, .aula.selected').forEach(element => {
@@ -689,6 +689,7 @@
         cell.textContent = "";
         cell.style.backgroundColor = ""; // Restaurar el color de fondo
       });
+      resetElementCounts()
 
       // Deseleccionar los elementos de docente, materia y aula
       selectedElements = [];
@@ -697,6 +698,14 @@
       });
     });
   });
+  function resetElementCounts() {
+    // Itera sobre todas las claves de elementCounts y establece su valor en cero
+    for (const key in elementCounts) {
+        if (Object.hasOwnProperty.call(elementCounts, key)) {
+            elementCounts[key] = 0;
+        }
+    }
+}
 
   document.querySelector('.savebtn').addEventListener('click', function () {
     // Array para almacenar los datos recopilados
