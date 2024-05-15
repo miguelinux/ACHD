@@ -76,23 +76,31 @@ class Asignaciones(db.Model):
     horario = db.Column(JSON, nullable=True, default=None)
     semestre = db.Column(db.Integer, nullable=False)
     carrera = db.Column(db.Integer, nullable=False)
-    turno = db.Column(db.Text, nullable=False)
-    ciclo = db.Column(db.Text, nullable=False)
+    turno = db.Column(db.Text, nullable = False)
+    ciclo = db.Column(db.Integer, nullable = False)
 
     def __repr__(self):
-        return {
-            column.name: getattr(self, column.name) for column in self.__table__.columns
-        }
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+    
+class Ciclos(db.Model):
+    __tablename__='ciclo'
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    anio = db.Column(db.Text, nullable = False)
+    estacion = db.Column(db.Text, nullable = False)
+    actual = db.Column(TINYINT(1), nullable = False)
+    
+    def __repr__(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
-
-class Logg(db.Model):
-    __tablename__ = "loggs"
+class Logg (db.Model):
+    __tablename__='loggs'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     usuario = db.Column(db.Integer, nullable=False)
     fecha = db.Column(db.DATE, nullable=False)
 
     def __repr__(self):
-        return {
-            column.name: getattr(self, column.name) for column in self.__table__.columns
-        }
+
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+

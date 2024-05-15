@@ -16,10 +16,9 @@ from flask import request
 from flask import send_from_directory
 from flask import session
 
+from datetime import timedelta
 from extensions import db
-from models.tables_db import Aulas
-from models.tables_db import Materias
-from models.tables_db import Usuarios
+from models.tables_db import Usuarios, Materias, Aulas, Ciclos
 
 
 app = Flask(__name__)
@@ -317,6 +316,7 @@ def set_disp():
         availability_matrix = [0] * 90
         for idx in selected_indices:
             availability_matrix[idx] = 1
+
         result_dict = {"disponibilidad": availability_matrix}
         result_json = json.dumps(result_dict)
 
@@ -443,9 +443,10 @@ def asignacion():
         carrera = user["carrera"]
         d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
         a = Materias.query.filter_by(carrera=carrera).all()
+        c = Ciclos.query.filter_by(actual=True).first()
         aula = Aulas.query.all()
         return render_template(
-            "asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula
+            "asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula, ciclo=c
         )
     return redirect("/")
 

@@ -22,6 +22,7 @@ Table usuario.acceso [headercolor: #CCCCFF] {
   email varchar(50) [not null]
   tipo integer [ref: > usuario.tipo.id]
   habilitado bool [not null]
+  habilitado bool [not null]
   indexes {
 	email [name: 'email_index']
   }
@@ -78,8 +79,8 @@ Table escolar.grupo {
 } 
 Table escolar.alumnos{
   id integer [primary key, increment]
-  alumno_id integer [ref: >usuario.persona.id]
   grupo_id integer [ref: >escolar.grupo.id]
+  alumno_id integer [ref: >usuario.persona.id]
 }
 
 Table escolar.asistencia{
