@@ -770,5 +770,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </script>
 
+<script>
+
+   document.addEventListener('DOMContentLoaded', function() {
+    var alerta = document.getElementById("alert");
+
+    // Obtener el botón de reinicio
+    const botonReiniciar = document.querySelector('button[name="reset"]');
+
+    // Agregar un event listener al botón de reinicio
+    botonReiniciar.addEventListener('click', function() {
+        // Preguntar al usuario con un alert si desea reiniciar
+        const confirmacion = confirm('¿Realmente desea reiniciar? Se perderán todas las selecciones realizadas.');
+
+        // Si el usuario confirma, eliminar la clase "hora_selected" de todos los elementos con esa clase
+        if (confirmacion) {
+            const elementosSeleccionados = document.querySelectorAll('.hora_selected');
+            elementosSeleccionados.forEach(elemento => {
+                elemento.classList.remove('hora_selected');
+            });
+
+            // Establecer la bandera de cambios en true
+            changes = true;
+
+            // Actualizar la alerta para indicar que se realizaron cambios
+            alerta.innerHTML = "Cambios sin guardar <i class=\"fa-solid fa-star-of-life\" style=\"color: #cb1010;\"></i>";
+        }
+    });
+});
+
+</script>
+
 
 </body></html>

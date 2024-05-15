@@ -332,6 +332,34 @@ def set_disp():
     return redirect("/")
 
 
+@app.route("/setAsignacion", methods=["POST"])
+def set_asignacion():
+    """
+    Actualiza la asignación de horarios para un usuario
+    """
+    user = verificate_session()
+    if user:
+        user_id = user["userid"]
+        asignacion_propuesta = request.json
+
+        usuario = Usuarios.query.filter_by(id=user_id).first()
+
+        if usuario:
+            asignacion_actual = json.loads(usuario.asignacion) if usuario.asignacion else {}
+            for indice, valores in asignacion_propuesta.items():
+                asignacion_actual[int(indice)] = valores
+
+            usuario.asignacion = json.dumps(asignacion_actual)
+            db.session.commit()
+            return jsonify(
+                {"success": True, "message": "Asignación actualizada correctamente"}
+            )
+    return redirect("/")
+
+
+
+
+
 @app.route("/jefeCarrera")
 def jefe_carrera():
     """
