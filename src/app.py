@@ -330,11 +330,6 @@ def set_disp():
             )
     return redirect("/")
 
-
-from flask import request
-
-from flask import request
-
 @app.route("/setAsignacion", methods=["POST"])
 def set_asignacion():
     """
@@ -349,10 +344,10 @@ def set_asignacion():
         turno = asignacion_propuesta.get("turno")
 
         ciclo = Ciclos.query.filter_by(actual=True).first()
-        
+
         # Verificar si la asignación ya existe
         asignacion = Asignaciones.query.filter_by(carrera=user_carrera, semestre=semestre, turno=turno, ciclo=ciclo.id).first()
-        
+
         # Si la asignación no existe, crear una nueva
         if not asignacion:
             asignacion = Asignaciones(
@@ -360,26 +355,17 @@ def set_asignacion():
                 semestre=semestre,
                 turno=turno,
                 ciclo=ciclo.id,
-                horario=json.dumps(asignacion_propuesta)  # Convertir el dict a JSON
+                horario=json.dumps(asignacion_propuesta.get("asignacion", {}))  # Convertir el dict a JSON
             )
             db.session.add(asignacion)
-        else:
-            # Si la asignación ya existe, actualizar su horario
-            asignacion_actual = json.loads(asignacion.horario) if asignacion.horario else {}
-            for indice, valores in asignacion_propuesta.items():
-                if indice not in ["semestre", "turno"]:  # Evitar sobrescribir semestre y turno
-                    asignacion_actual[int(indice)] = valores
-
-            asignacion.horario = json.dumps(asignacion_actual)
+        else:            
+            asignacion.horario = json.dumps(asignacion_propuesta.get("asignacion", {}))
 
         # Commit a la base de datos
         db.session.commit()
         return jsonify({"success": True, "message": "Asignación actualizada correctamente"})
 
     return redirect("/")
-
-
-
 
 
 
