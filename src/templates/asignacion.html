@@ -13,7 +13,6 @@
     margin: 0.5rem;
   }
 
-
   .btns .semestre {
     width: 100px;
     height: 30px;
@@ -687,10 +686,9 @@
       // Restaurar los colores originales de fondo de las celdas .dia
       document.querySelectorAll(".dia").forEach(cell => {
         cell.textContent = "";
-        cell.style.backgroundColor = ""; // Restaurar el color de fondo
+        cell.style.backgroundColor = ""; 
       });
       resetElementCounts()
-
       // Deseleccionar los elementos de docente, materia y aula
       selectedElements = [];
       document.querySelectorAll('.docente.selected, .materia.selected, .aula.selected').forEach(element => {
@@ -710,7 +708,6 @@
   document.querySelector('.savebtn').addEventListener('click', function () {
     // Array para almacenar los datos recopilados
     const data = [];
-
     // Recorrer las filas de la tabla, comenzando desde la segunda fila (ignorando la fila de encabezados)
     document.querySelectorAll('.horario tr:not(:first-child)').forEach(row => {
       const rowData = []; // Array para almacenar los datos de cada fila
