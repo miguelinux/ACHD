@@ -18,7 +18,7 @@ from flask import session
 
 from datetime import timedelta
 from extensions import db
-from models.tables_db import Usuarios, Materias, Aulas, Ciclos
+from models.tables_db import Usuarios, Materias, Aulas, Ciclos,Asignaciones
 
 
 app = Flask(__name__)
@@ -331,6 +331,10 @@ def set_disp():
     return redirect("/")
 
 
+from flask import request
+
+from flask import request
+
 @app.route("/setAsignacion", methods=["POST"])
 def set_asignacion():
     """
@@ -338,22 +342,43 @@ def set_asignacion():
     """
     user = verificate_session()
     if user:
-        user_id = user["userid"]
+        user_carrera = user["carrera"]
         asignacion_propuesta = request.json
 
-        usuario = Usuarios.query.filter_by(id=user_id).first()
+        semestre = asignacion_propuesta.get("semestre")
+        turno = asignacion_propuesta.get("turno")
 
-        if usuario:
-            asignacion_actual = json.loads(usuario.asignacion) if usuario.asignacion else {}
-            for indice, valores in asignacion_propuesta.items():
-                asignacion_actual[int(indice)] = valores
-
-            usuario.asignacion = json.dumps(asignacion_actual)
-            db.session.commit()
-            return jsonify(
-                {"success": True, "message": "Asignación actualizada correctamente"}
+        ciclo = Ciclos.query.filter_by(actual=True).first()
+        
+        # Verificar si la asignación ya existe
+        asignacion = Asignaciones.query.filter_by(carrera=user_carrera, semestre=semestre, turno=turno, ciclo=ciclo.id).first()
+        
+        # Si la asignación no existe, crear una nueva
+        if not asignacion:
+            asignacion = Asignaciones(
+                carrera=user_carrera,
+                semestre=semestre,
+                turno=turno,
+                ciclo=ciclo.id,
+                horario=json.dumps(asignacion_propuesta)  # Convertir el dict a JSON
             )
+            db.session.add(asignacion)
+        else:
+            # Si la asignación ya existe, actualizar su horario
+            asignacion_actual = json.loads(asignacion.horario) if asignacion.horario else {}
+            for indice, valores in asignacion_propuesta.items():
+                if indice not in ["semestre", "turno"]:  # Evitar sobrescribir semestre y turno
+                    asignacion_actual[int(indice)] = valores
+
+            asignacion.horario = json.dumps(asignacion_actual)
+
+        # Commit a la base de datos
+        db.session.commit()
+        return jsonify({"success": True, "message": "Asignación actualizada correctamente"})
+
     return redirect("/")
+
+
 
 
 
