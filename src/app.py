@@ -357,10 +357,11 @@ def set_asignacion():
         user_carrera = user["carrera"]
         asignacion_propuesta = request.json
 
-        semestre = asignacion_propuesta.get("semestre")
-        turno = asignacion_propuesta.get("turno")
+        semestre = asignacion_propuesta.pop("semestre")
+        turno = asignacion_propuesta.pop("turno")
 
         ciclo = Ciclos.query.filter_by(actual=True).first()
+        
 
         # Verificar si la asignación ya existe
         asignacion = Asignaciones.query.filter_by(carrera=user_carrera, semestre=semestre, turno=turno, ciclo=ciclo.id).first()
@@ -374,22 +375,39 @@ def set_asignacion():
                 ciclo=ciclo.id,
                 horario=json.dumps(asignacion_propuesta.get("asignacion", {}))  # Convertir el dict a JSON
             )
+            horariov = None
             db.session.add(asignacion)
         else:
+            horariov = json.loads(asignacion.horario)
             asignacion.horario = json.dumps(asignacion_propuesta.get("asignacion", {}))
+        
         
         # Commit a la base de datos para la asignación
         db.session.commit()
-
-        # Obtener los valores de docente y cell_ids
-        horario = json.loads(asignacion.horario)
-        docentes = horario.get("docente", [])
-        cell_ids = horario.get("cell_ids", [])
-
-        # Contador para llevar un registro de los docentes actualizados
-        docentes_actualizados = 0
-
-        # Iterar sobre los docentes y sus IDs de celda correspondientes
+        horarion = json.loads(asignacion.horario)
+        docentes = horarion.get("docente", [])
+        cell_ids = horarion.get("cell_ids", [])
+        
+        docentes_actualizados=0
+        
+        if horariov:
+            actualizar= detectar_cambios(horarion,horariov)
+        
+            docentesold = actualizar.get("docente", [])
+            cell_idsold = actualizar.get("cell_ids", [])
+        
+            # Iterar sobre los docentes y sus IDs de celda correspondientes
+            for i, doc_id in enumerate(docentesold):
+                # Verificar si el docente tiene un ID válido (diferente de cadena vacía)
+                if doc_id != '':
+                    # Obtener el índice de la celda correspondiente a este docente
+                    cell_id = int(cell_idsold[i])
+                    
+                    # Actualizar la disponibilidad del docente en el índice dado por cell_id
+                    if update_disp(doc_id, [cell_id], 1):
+                        # Incrementar el contador de docentes actualizados
+                        docentes_actualizados += 1
+        
         for i, doc_id in enumerate(docentes):
             # Verificar si el docente tiene un ID válido (diferente de cadena vacía)
             if doc_id != '':
@@ -409,6 +427,16 @@ def set_asignacion():
 
     return redirect("/")
 
+def detectar_cambios(jsnew, jsold):
+    cambios = {"docente": [], "cell_ids": []}
+    
+    # Verificar si hay cambios en "docente"
+    for old_docente, new_docente, cell_id in zip(jsold["docente"], jsnew["docente"], jsnew["cell_ids"]):
+        if old_docente != new_docente and old_docente != "":
+            cambios["docente"].append(old_docente)
+            cambios["cell_ids"].append(cell_id)
+    
+    return cambios
 
 
 def update_disp(user_id, indices_to_update, value):
@@ -428,7 +456,6 @@ def update_disp(user_id, indices_to_update, value):
         db.session.commit()
         return True
     return False
-
             
 
 @app.route("/jefeCarrera")
