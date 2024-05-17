@@ -379,7 +379,8 @@
         });
     } else {
         document.querySelectorAll(".dia").forEach(cell => {
-            if (cell.style.backgroundColor === "rgb(46, 220, 65)" || cell.style.backgroundColor === "rgb(255, 110, 51)") {
+            if (cell.style.backgroundColor === "rgb(46, 220, 65)" || cell.style.backgroundColor === "rgb(255, 110, 51)" ||
+                cell.style.backgroundColor === "rgb(209,203,203)") {
                 cell.style.backgroundColor = "";
             }
         });
@@ -448,7 +449,11 @@ function obtenerDisponibilidadDocente(idDocente, callback) {
         // Verificar si la disponibilidad del docente en el día correspondiente es 1
         if (disponibilidad.disponibilidad[index] === 1) {
           dia.style.backgroundColor = "#2EDC41"; // Verde
-        } else {
+        } else if(disponibilidad.disponibilidad[index] === 3)
+        {
+          dia.style.backgroundColor = "#D1CBCB"; // gris
+        }
+        else{
           dia.style.backgroundColor = "#FF6E33"; // Rojo
         }
       }
@@ -565,11 +570,11 @@ function obtenerDisponibilidadDocente(idDocente, callback) {
                         alert('Error al obtener la disponibilidad del docente');
                     } else {
                         docenteSelected.disponibilidad = disponibilidad;
-                        manejarClickCelda(this, disponibilidadGlobal);
+                        manejarClickCelda(this, disponibilidadGlobal, docenteSelected.disponibilidad);
                     }
                 });
             } else {
-                manejarClickCelda(this, disponibilidadGlobal);
+                manejarClickCelda(this, disponibilidadGlobal, docenteSelected.disponibilidad);
             }
         } else {
             alert("Seleccione un docente");
@@ -577,13 +582,8 @@ function obtenerDisponibilidadDocente(idDocente, callback) {
     });
 });
 
-function manejarClickCelda(cell, disponibilidadDocente) {
+function manejarClickCelda(cell, disponibilidadGlobal, disponibilidadDocente) {
     const cellId = parseInt(cell.id);
-    if (disponibilidadDocente[cellId] === 0) {
-        alert("El docente no tiene disponibilidad en ese horario.");
-        return;
-    }
-
     if (selectedElements.length === 3) {
         const hasValues = cell.children.length > 0;
         if (!hasValues) {
@@ -591,8 +591,10 @@ function manejarClickCelda(cell, disponibilidadDocente) {
                 selectedElements.filter(element => element.type === 'materia').length > 0 &&
                 selectedElements.filter(element => element.type === 'aula').length > 0;
 
-            const isUnavailable = disponibilidadDocente[cellId] === 0;
-            if (hasOneOfEachType && !isUnavailable) {
+            const isUnavailable = disponibilidadDocente.disponibilidad[cellId] === 0;
+            const isOccupied = disponibilidadDocente.disponibilidad[cellId] === 3;
+
+            if (hasOneOfEachType && !isUnavailable && !isOccupied) {
                 selectedElements.forEach(element => {
                     if (element.type === 'materia') {
                         const combinationKey = `${element.type}-${element.id}`;
@@ -615,6 +617,10 @@ function manejarClickCelda(cell, disponibilidadDocente) {
                 });
             } else if (isUnavailable && selectedElements.length !== 0) {
                 alert("El docente no tiene disponibilidad en ese horario.");
+            }
+            else if (isOccupied && selectedElements.length !== 0){
+              alert("El docente ya tiene ocupada esta hora.");
+
             }
         } else {
             const cellContentIds = Array.from(cell.children).map(content => content.getAttribute('data-id'));

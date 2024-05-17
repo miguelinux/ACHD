@@ -377,7 +377,7 @@ def set_asignacion():
             db.session.add(asignacion)
         else:
             asignacion.horario = json.dumps(asignacion_propuesta.get("asignacion", {}))
-
+        
         # Commit a la base de datos para la asignación
         db.session.commit()
 
@@ -386,16 +386,30 @@ def set_asignacion():
         docentes = horario.get("docente", [])
         cell_ids = horario.get("cell_ids", [])
 
-        # Encontrar los índices donde el docente coincide con el user_id
-        indices_to_update = [int(cell_ids[i]) for i, doc_id in enumerate(docentes) if doc_id == str(user["userid"])]
+        # Contador para llevar un registro de los docentes actualizados
+        docentes_actualizados = 0
 
-        # Actualizar la disponibilidad del docente
-        if update_disp(user["userid"], indices_to_update, 3):
-            return jsonify({"success": True, "message": "Asignación y disponibilidad actualizadas correctamente"})
+        # Iterar sobre los docentes y sus IDs de celda correspondientes
+        for i, doc_id in enumerate(docentes):
+            # Verificar si el docente tiene un ID válido (diferente de cadena vacía)
+            if doc_id != '':
+                # Obtener el índice de la celda correspondiente a este docente
+                cell_id = int(cell_ids[i])
+                
+                # Actualizar la disponibilidad del docente en el índice dado por cell_id
+                if update_disp(doc_id, [cell_id], 3):
+                    # Incrementar el contador de docentes actualizados
+                    docentes_actualizados += 1
+
+        # Verificar si se actualizó al menos un docente
+        if docentes_actualizados > 0:
+            return jsonify({"success": True, "message": f"Disponibilidad actualizada para {docentes_actualizados} docente(s)"})
         else:
-            return jsonify({"success": False, "message": "Error al actualizar la disponibilidad del docente"})
+            return jsonify({"success": False, "message": "No se encontraron docentes con disponibilidad para actualizar"})
 
     return redirect("/")
+
+
 
 def update_disp(user_id, indices_to_update, value):
     """
