@@ -341,6 +341,7 @@
 <script>
   let diasOriginales = obtenerDiasOriginales();
   let disponibilidad;
+  let disponibilidadGlobal = {};
   // Controlador de eventos para los botones de turno
   const horasOriginales = obtenerHorasOriginales();
   const turnA = document.getElementById("turnA");
@@ -362,22 +363,54 @@
   turnN.addEventListener("click", function () {
     cambiarTurno("N");
   });
-
   function handleClickDocente() {
-    // Verificar si el docente está seleccionado
+    const idDocente = this.getAttribute('data-id-docente');
+
     if (!this.classList.contains('selected')) {
-      disponibilidad = JSON.parse(this.getAttribute('data-disponibilidad'));
-      actualizarColoresTablaPorDisponibilidad(disponibilidad);
+        obtenerDisponibilidadDocente(idDocente, (error, disponibilidad) => {
+            if (error) {
+                console.error('Error:', error);
+                alert('Error al obtener la disponibilidad del docente');
+            } else {
+                disponibilidadGlobal = disponibilidad;
+                this.setAttribute('data-disponibilidad', JSON.stringify(disponibilidad)); // Guardar la disponibilidad en el elemento
+                actualizarColoresTablaPorDisponibilidad(disponibilidad);
+            }
+        });
+    } else {
+        document.querySelectorAll(".dia").forEach(cell => {
+            if (cell.style.backgroundColor === "rgb(46, 220, 65)" || cell.style.backgroundColor === "rgb(255, 110, 51)") {
+                cell.style.backgroundColor = "";
+            }
+        });
     }
-    else {
-      document.querySelectorAll(".dia").forEach(cell => {
-        // Verificar si la celda tiene un color de fondo establecido por la disponibilidad del docente
-        if (cell.style.backgroundColor === "rgb(46, 220, 65)" || cell.style.backgroundColor === "rgb(255, 110, 51)") {
-          cell.style.backgroundColor = ""; // Restaurar el color de fondo
+}
+
+function obtenerDisponibilidadDocente(idDocente, callback) {
+    fetch(`/getDisponibilidad/${idDocente}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
         }
-      });
-    }
-  }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            callback(null, data.disponibilidad);
+        } else {
+            callback(new Error(data.message));
+        }
+    })
+    .catch(error => {
+        callback(error);
+    });
+}
+
   function cambiarTurno(turno) {
     document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
     document.getElementById(`turn${turno}`).classList.add('selected');
@@ -479,7 +512,6 @@
       }
       else {
 
-
         // Deseleccionar cualquier otro elemento del mismo tipo
         selectedElements = selectedElements.filter(element => element.type !== elementType);
         document.querySelectorAll(`.${elementType}.selected`).forEach(element => {
@@ -524,92 +556,86 @@
 
   document.querySelectorAll(".horario td:not(.hora)").forEach(cell => {
     cell.addEventListener("click", function () {
-      // Verificar si no hay elementos seleccionados
-
-
-      // Verificar disponibilidad del docente
-      const docenteSelected = selectedElements.find(element => element.type === 'docente');
-      if (docenteSelected) {
-        const disponibilidadDocente = disponibilidad.disponibilidad[parseInt(this.id)];
-        if (disponibilidadDocente === 0) {
-          alert("El docente no tiene disponibilidad en ese horario.");
-          return;
-        }
-      }
-
-      if (selectedElements.length === 3) {
-
-
-        // Verificar si la celda tiene valores
-        const hasValues = this.children.length > 0;
-        if (!hasValues) { // Solo realizar acciones si la celda está vacía
-          const hasOneOfEachType = selectedElements.filter(element => element.type === 'docente').length > 0 &&
-            selectedElements.filter(element => element.type === 'materia').length > 0 &&
-            selectedElements.filter(element => element.type === 'aula').length > 0;
-
-          const backgroundColor = getComputedStyle(this).getPropertyValue('background-color');
-
-          // Obtener el ID de la celda
-          const cellId = this.id;
-
-          // Verificar si la celda tiene disponibilidad igual a 0
-          const isUnavailable = disponibilidad.disponibilidad[parseInt(cellId)] === 0;
-
-          if (hasOneOfEachType && !isUnavailable) {
-            selectedElements.forEach(element => {
-              if (element.type === 'materia') {
-                const combinationKey = `${element.type}-${element.id}`;
-                elementCounts[combinationKey] = (elementCounts[combinationKey] || 0) + 1;
-                if (elementCounts[combinationKey] < (element.creditos + 1)) {
-
-                  cell.textContent = "";
-                  // Generar un color único basado en los IDs de los elementos seleccionados
-                  const color = stringToColor(selectedElements.map(element => element.id).join('-'));
-                  cell.style.backgroundColor = color;
-                  selectedElements.forEach(element => {
-                    const newContent = document.createElement("div");
-                    newContent.textContent = element.text;
-                    newContent.setAttribute('data-id', element.id); // Guardar el valor data-id del elemento seleccionado
-                    cell.appendChild(newContent);
-                  });
-                  // Obtener los IDs de los elementos seleccionados y mostrarlos en la consola
-                  const ids = selectedElements.map(element => element.id);
-                } else {
-                  elementCounts[combinationKey] = (elementCounts[combinationKey] || 0) - 1;
-
-                  alert("Ya no quedan créditos para esta materia.");
-                }
-              }
-            });
-          } else if (isUnavailable && selectedElements.length !== 0) {
-            alert("El docente no tiene disponibilidad en ese horario.");
-          }
+        const docenteSelected = selectedElements.find(element => element.type === 'docente');
+        if (docenteSelected) {
+            if (!docenteSelected.disponibilidad) {
+                obtenerDisponibilidadDocente(docenteSelected.id, (error, disponibilidad) => {
+                    if (error) {
+                        console.error('Error:', error);
+                        alert('Error al obtener la disponibilidad del docente');
+                    } else {
+                        docenteSelected.disponibilidad = disponibilidad;
+                        manejarClickCelda(this, disponibilidadGlobal);
+                    }
+                });
+            } else {
+                manejarClickCelda(this, disponibilidadGlobal);
+            }
         } else {
-          // Eliminar el contenido de la celda al hacer clic si coincide con la combinación seleccionada
-          const cellContentIds = Array.from(cell.children).map(content => content.getAttribute('data-id'));
-          const selectedElementIds = selectedElements.map(element => element.id);
-          if (JSON.stringify(cellContentIds.sort()) === JSON.stringify(selectedElementIds.sort())) {
-            // Restar 1 a elementCounts[combinationKey] para cada elemento seleccionado en la celda
-            selectedElements.forEach(element => {
-              const combinationKey = `${element.type}-${element.id}`;
-              elementCounts[combinationKey] = (elementCounts[combinationKey] || 0) - 1;
-            });
-
-            // Limpiar la celda
-            cell.textContent = "";
-            actualizarColoresTablaPorDisponibilidad(disponibilidad)
-          } else {
-            // Mostrar una notificación si la celda tiene valores pero no coincide con la combinación seleccionada
-            alert("Esta celda ya contiene valores diferentes a los seleccionados. No puedes modificarla.");
-          }
+            alert("Seleccione un docente");
         }
-      }
-      else {
-        alert("Seleccione 3 elementos");
-      }
-
     });
-  });
+});
+
+function manejarClickCelda(cell, disponibilidadDocente) {
+    const cellId = parseInt(cell.id);
+    if (disponibilidadDocente[cellId] === 0) {
+        alert("El docente no tiene disponibilidad en ese horario.");
+        return;
+    }
+
+    if (selectedElements.length === 3) {
+        const hasValues = cell.children.length > 0;
+        if (!hasValues) {
+            const hasOneOfEachType = selectedElements.filter(element => element.type === 'docente').length > 0 &&
+                selectedElements.filter(element => element.type === 'materia').length > 0 &&
+                selectedElements.filter(element => element.type === 'aula').length > 0;
+
+            const isUnavailable = disponibilidadDocente[cellId] === 0;
+            if (hasOneOfEachType && !isUnavailable) {
+                selectedElements.forEach(element => {
+                    if (element.type === 'materia') {
+                        const combinationKey = `${element.type}-${element.id}`;
+                        elementCounts[combinationKey] = (elementCounts[combinationKey] || 0) + 1;
+                        if (elementCounts[combinationKey] < (element.creditos + 1)) {
+                            cell.textContent = "";
+                            const color = stringToColor(selectedElements.map(element => element.id).join('-'));
+                            cell.style.backgroundColor = color;
+                            selectedElements.forEach(element => {
+                                const newContent = document.createElement("div");
+                                newContent.textContent = element.text;
+                                newContent.setAttribute('data-id', element.id);
+                                cell.appendChild(newContent);
+                            });
+                        } else {
+                            elementCounts[combinationKey] = (elementCounts[combinationKey] || 0) - 1;
+                            alert("Ya no quedan créditos para esta materia.");
+                        }
+                    }
+                });
+            } else if (isUnavailable && selectedElements.length !== 0) {
+                alert("El docente no tiene disponibilidad en ese horario.");
+            }
+        } else {
+            const cellContentIds = Array.from(cell.children).map(content => content.getAttribute('data-id'));
+            const selectedElementIds = selectedElements.map(element => element.id);
+            if (JSON.stringify(cellContentIds.sort()) === JSON.stringify(selectedElementIds.sort())) {
+                selectedElements.forEach(element => {
+                    const combinationKey = `${element.type}-${element.id}`;
+                    elementCounts[combinationKey] = (elementCounts[combinationKey] || 0) - 1;
+                });
+
+                cell.textContent = "";
+                cell.style.backgroundColor = ""; // Restaurar el color original de la celda
+                actualizarColoresTablaPorDisponibilidad(disponibilidadGlobal); // Actualizar los colores de la tabla
+            } else {
+                alert("Esta celda ya contiene valores diferentes a los seleccionados. No puedes modificarla.");
+            }
+        }
+    } else {
+        alert("Seleccione 3 elementos");
+    }
+}
 
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.semestre').forEach(function (button) {
@@ -698,28 +724,38 @@
       // Obtener el valor del turno seleccionado
       const turnoSeleccionadoElemento = document.querySelector('.turno.selected');
       const turnoSeleccionado = turnoSeleccionadoElemento ? turnoSeleccionadoElemento.textContent.trim() : '';
-      // Array para almacenar los datos recopilados
-      const asignacion = [];
+
+      // Objeto para almacenar los datos recopilados
+      const asignacion = {
+        docente: [],
+        materia: [],
+        aula: [],
+        cell_ids: [] // Array para almacenar los IDs de las celdas
+      };
 
       // Recorrer las filas de la tabla, comenzando desde la segunda fila (ignorando la fila de encabezados)
       document.querySelectorAll('.horario tr:not(:first-child)').forEach(row => {
         // Recorrer las celdas de la fila actual
         row.querySelectorAll('.dia').forEach(cell => {
+          // Obtener el ID de la celda
+          const cellId = cell.getAttribute('id');
+
           // Obtener los IDs de los elementos en la celda
           const ids = Array.from(cell.querySelectorAll('[data-id]')).map(info => info.getAttribute('data-id'));
 
-          // Agregar los IDs de docente, materia y aula si están presentes, de lo contrario, agregar un valor vacío
-          const cellData = ids.length === 3 ? ids.join(',') : '';
+          // Agregar los IDs a los arrays correspondientes en el objeto asignacion
+          asignacion.docente.push(ids[0] || '');
+          asignacion.materia.push(ids[1] || '');
+          asignacion.aula.push(ids[2] || '');
 
-          // Agregar el valor de la celda al array asignacion
-          asignacion.push(cellData);
+          // Agregar el ID de la celda al array de IDs de celdas
+          asignacion.cell_ids.push(cellId);
         });
       });
 
-      // Crear un objeto JSON con los datos recopilados y los valores del semestre y turno seleccionados
+      // Convertir el objeto asignacion a JSON
       const jsonData = JSON.stringify({ asignacion, semestre: semestreSeleccionado, turno: turnoSeleccionado });
 
-      // Mostrar el objeto JSON en la consola
       // Enviar los datos al servidor Flask usando fetch
       fetch('/setAsignacion', {
         method: 'POST',
@@ -735,10 +771,10 @@
           return response.json();
         })
         .then(data => {
-          console.log('Respuesta del servidor:', data);
+          alert('Cambios guardados correctamente');
         })
         .catch(error => {
-          console.error('Error al enviar la solicitud:', error);
+          alert('Error al enviar la solicitud, intente recargar la página');
         });
     });
   });

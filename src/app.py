@@ -32,10 +32,10 @@ DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
 
-app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(
+"""app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(
     minutes=15
 )  # el tiempo de vida de la cookie
-
+"""
 app.config["SQLALCHEMY_DATABASE_URI"] = (
     f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DB}"
 )
@@ -330,10 +330,27 @@ def set_disp():
             )
     return redirect("/")
 
+@app.route("/getDisponibilidad/<int:idDocente>", methods=["GET"])
+def get_dispo(idDocente):
+    """
+    Función que permite al cliente obtener la disponibilidad del docente
+    """
+    user = verificate_session()
+    if user:
+        usuario = Usuarios.query.filter_by(id=idDocente).first()
+        if usuario:
+            disponibilidad = json.loads(usuario.disponibilidad)
+            return jsonify({"success": True, "disponibilidad": disponibilidad})
+        else:
+            return jsonify({"success": False, "message": "Docente no encontrado"})
+    else:
+        return jsonify({"success": False, "message": "Usuario no autenticado"})
+
+
 @app.route("/setAsignacion", methods=["POST"])
 def set_asignacion():
     """
-    Actualiza la asignación de horarios para un usuario
+    Actualiza la asignación de horarios para un usuario y actualiza la disponibilidad del docente.
     """
     user = verificate_session()
     if user:
@@ -358,17 +375,47 @@ def set_asignacion():
                 horario=json.dumps(asignacion_propuesta.get("asignacion", {}))  # Convertir el dict a JSON
             )
             db.session.add(asignacion)
-        else:            
+        else:
             asignacion.horario = json.dumps(asignacion_propuesta.get("asignacion", {}))
 
-        # Commit a la base de datos
+        # Commit a la base de datos para la asignación
         db.session.commit()
-        return jsonify({"success": True, "message": "Asignación actualizada correctamente"})
+
+        # Obtener los valores de docente y cell_ids
+        horario = json.loads(asignacion.horario)
+        docentes = horario.get("docente", [])
+        cell_ids = horario.get("cell_ids", [])
+
+        # Encontrar los índices donde el docente coincide con el user_id
+        indices_to_update = [int(cell_ids[i]) for i, doc_id in enumerate(docentes) if doc_id == str(user["userid"])]
+
+        # Actualizar la disponibilidad del docente
+        if update_disp(user["userid"], indices_to_update, 3):
+            return jsonify({"success": True, "message": "Asignación y disponibilidad actualizadas correctamente"})
+        else:
+            return jsonify({"success": False, "message": "Error al actualizar la disponibilidad del docente"})
 
     return redirect("/")
 
+def update_disp(user_id, indices_to_update, value):
+    """
+    Actualiza la disponibilidad de un docente dado su ID y los índices a actualizar.
+    """
+    usuario = Usuarios.query.filter_by(id=user_id).first()
+    if usuario:
+        current_availability = json.loads(usuario.disponibilidad)["disponibilidad"]
+        for idx in indices_to_update:
+            current_availability[idx] = value
 
+        result_dict = {"disponibilidad": current_availability}
+        result_json = json.dumps(result_dict)
 
+        usuario.disponibilidad = result_json
+        db.session.commit()
+        return True
+    return False
+
+            
 
 @app.route("/jefeCarrera")
 def jefe_carrera():
@@ -454,10 +501,9 @@ def asignacion():
         carrera = user["carrera"]
         d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
         a = Materias.query.filter_by(carrera=carrera).all()
-        c = Ciclos.query.filter_by(actual=True).first()
         aula = Aulas.query.all()
         return render_template(
-            "asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula, ciclo=c
+            "asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula
         )
     return redirect("/")
 
