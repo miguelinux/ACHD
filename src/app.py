@@ -435,9 +435,7 @@ def detectar_cambios(jsnew, jsold):
         if old_docente != new_docente and old_docente != "":
             cambios["docente"].append(old_docente)
             cambios["cell_ids"].append(cell_id)
-    
     return cambios
-
 
 def update_disp(user_id, indices_to_update, value):
     """
@@ -457,6 +455,21 @@ def update_disp(user_id, indices_to_update, value):
         return True
     return False
             
+@app.route("/get_horario", methods=['GET'])
+def get_horario():
+    user = verificate_session()
+    if user:
+        carrera = user["carrera"]
+        turno = request.args.get('turno')
+        semestre = request.args.get('semestre')
+        ciclo = Ciclos.query.filter_by(actual=True).first()
+        asignacion = Asignaciones.query.filter_by(semestre=semestre, carrera=carrera, turno=turno, ciclo=ciclo.id).first()
+        if asignacion:
+            horarios = json.loads(asignacion.horario)
+            return jsonify({"success": True, "horario": horarios})
+        return jsonify({'error': 'Horario no encontrado'})
+    return redirect("/")
+        
 
 @app.route("/jefeCarrera")
 def jefe_carrera():
