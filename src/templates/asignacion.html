@@ -17,13 +17,14 @@
     width: 100px;
     height: 30px;
     margin-left: 10px;
+    border:none;
     margin-right: 10px;
     border-radius: 15px;
     transition: .5s;
   }
 
   .btns .semestre:hover {
-    background-color: blue;
+    background-color: #37109b;
     color: white;
   }
 
@@ -31,15 +32,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
+      font-family: Montserrat;
   }
 
   .btnsturn .turno:hover {
-    background-color: blue;
+    background-color: #37109b;
+      border:none;
     color: white;
   }
 
   .btnsturn .turno {
     width: 100px;
+      border:none;
     height: 30px;
     margin-left: 10px;
     margin-right: 10px;
@@ -48,7 +52,7 @@
   }
 
   .btnsturn .turno.selected {
-    background-color: blue;
+    background-color: #37109b;
     color: white;
   }
 
@@ -61,6 +65,7 @@
     grid-template-areas:
       "docentes horario"
       "materias aulas";
+      font-family: Montserrat;
   }
 
   .docentes {
@@ -82,14 +87,20 @@
     background-color: lightyellow;
     height: 22rem;
     display: flex;
+    align-content: flex-start;
     text-align: center;
     flex-wrap: wrap;
+    gap:1rem;
+  }
+  title{
+
   }
 
   .aulas {
     grid-area: aulas;
     background-color: lightcoral;
     height: 22rem;
+    gap:1rem;
     display: flex;
     text-align: center;
     flex-wrap: wrap;
@@ -120,10 +131,16 @@
   }
 
   .docente {
-    height: 55px;
-    background-color: green;
-    border-radius: 5px;
+    height: 30px;
+    background-color: #37109b;
+    border-radius: 10px;
+    color:white;
     margin: 5px;
+    font-synthesis: none;
+    padding:0.3rem;
+    font-family: Montserrat;
+    font-style: initial;
+
   }
 
   .docente p {
@@ -138,7 +155,8 @@
     background-color: #897baf;
     color: white;
     border-radius: 5px;
-    margin: 5px;
+    margin-top: 10px;
+    padding:0.4rem;
   }
 
   .materia p {
@@ -152,7 +170,8 @@
     height: 55px;
     background-color: #897baf;
     border-radius: 5px;
-    margin: 5px;
+    margin-top: 5px;
+    padding: 0.4rem;
   }
 
   .aula p {
@@ -165,16 +184,18 @@
     user-select: none;
     background-color: black;
     width: 50rem;
-    max-width: auto;
     height: 20rem;
+
   }
 
   table tr {
     background-color: white;
+    border:none;
   }
 
   table td {
-    border: 1px solid;
+    border: 0px solid;
+    border-radius: 1px;
   }
 
   table td {
@@ -183,12 +204,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 11px;
+    font-size: 10px;
     /* Ajusta el tamaño de la letra según sea necesario */
   }
 
   .semestre.selected {
-    background-color: blue;
+    background-color: #37109b;
+    border:none;
     color: white;
   }
 
@@ -220,7 +242,7 @@
 
 <div class="container">
   <div class="docentes">
-    <p>docentes</p>
+        <p>Docentes</p>
 
     {% for docente in docentes %}
     <div class="docente" data-id-docente='{{docente.id}}' data-nombre="{{ docente.nombre }}"
@@ -233,13 +255,13 @@
   <div class="horario">
     <table id="TablaHorario">
       <tr>
-        <th>horas</th>
-        <th>lunes</th>
-        <th>martes</th>
-        <th>miercoles</th>
-        <th>jueves</th>
-        <th>viernes</th>
-        <th>sabado</th>
+        <th>Horas</th>
+        <th>Lunes</th>
+        <th>Martes</th>
+        <th>Miercoles</th>
+        <th>Jueves</th>
+        <th>Viernes</th>
+        <th>Sábado</th>
       </tr>
       <tr>
         <td class="hora hora-1">7-8</td>
@@ -316,7 +338,7 @@
     </table>
   </div>
   <div class="materias">
-    <p>materias</p>
+    <p>Materias</p>
     {% for asignatura in asignaturas %}
     <div class="materia" data-semestre="{{ asignatura.semestre }}" data-id-materia='{{asignatura.id}}'
       data-credito="{{asignatura.creditos}}" data-nombre="{{ asignatura.nombre }}">
@@ -326,7 +348,7 @@
     {% endfor %}
   </div>
   <div class="aulas">
-    <p>aulas</p>
+    <p><strong>Aulas</strong></p>
     {% for aula in aulas %}
     <div class="aula" data-id-aula="{{aula.id}}" data-nombre="{{ aula.nombre }}">
       <p>{{ aula.nombre }}</p>
@@ -338,7 +360,6 @@
 <div class="btn">
   <button class="savebtn"> guardar</button>
 </div>
-
 <script>
   let diasOriginales = obtenerDiasOriginales();
   let disponibilidad;
