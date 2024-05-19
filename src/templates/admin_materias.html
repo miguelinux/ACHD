@@ -104,7 +104,7 @@
 
 {% block content %}
 <section id="table">
-    <form action="/crear_usuario" method="POST" id="user-form">
+    <form action="/crear_materia" method="POST" id="user-form">
         <div id="input-data">
             <input name="nombre" class="input-text" placeholder="Nombre" type="text" required />
             <input name="apellido_pat" class="input-text" placeholder="Apellido Paterno" type="text" required />
@@ -127,36 +127,28 @@
     <table id="myTable">
         <tr>
             <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Tipo de usuario</th>
-            <th>Carera</th>
-            <th>habilitado</th>
+            <th>nombre</th>
+            <th>clave</th>
+            <th>semestre</th>
+            <th>horas practicas</th>
+            <th>horas teoria</th>
+            <th>creditos</th>
+            <th>carrera</th>
         </tr>
-        {% for usuario in usuarios %}
-        <tr onclick="redirectToUserPage('{{ usuario.id }}')">
-            <td>{{ usuario.id }}</td>
-            <td>{{ usuario.nombre }} {{ usuario.apellido_pat }} {{ usuario.apellido_mat }}</td>
-            <td>{{ usuario.email }}</td>
-            <td>{% if usuario.user_type == 1 %}
-                Admin
-                {% elif usuario.user_type == 2 %}
-                Jefe de carrera
-                {% elif usuario.user_type == 3 %}
-                Docente
-                {% endif %}
-            </td>
+        {% for materia in materias %}
+        <tr onclick="redirectToUserPage('{{ materia.id }}')">
+            <td>{{ materia.id }}</td>
+            <td>{{ materia.nombre }} </td>
+            <td>{{ materia.clave }}</td>
+            <td>{{ materia.semestre }}</td>
+            <td>{{ materia.horas_practica }}</td>
+            <td>{{ materia.horas_teoria }}</td>
+            <td>{{ materia.creditos }}</td>
             <td>{% for carrera in carreras %}
-                {% if usuario.carrera == carrera.id %}
+                {% if materia.carrera == carrera.id %}
                 {{ carrera.nombre }}
                 {% endif %}
                 {% endfor %}
-            </td>
-            <td>{% if usuario.habilitado == True %}
-                si
-                {% else %}
-                no
-                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -166,9 +158,9 @@
 <script>
     
 
-    function redirectToUserPage(userId) {
+    function redirectToUserPage(materiaId) {
         // Redirecciona a la página del usuario pasando su ID como parámetro
-        window.location.href = "/admin/modificar/usuario/" + userId;
+        window.location.href = "/admin/modificar/materia/" + materiaId;
     }
 </script>
 {% endblock %}

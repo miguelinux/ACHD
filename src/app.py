@@ -603,7 +603,7 @@ def admin_docentes():
         )
     return redirect("/")
 
-@app.route("/admin/modificar/<int:userId>", methods=['GET'])
+@app.route("/admin/modificar/usuario/<int:userId>", methods=['GET'])
 def admin_modificar(userId):
     """
     Vista para modificar un usuario por parte del administrador
@@ -614,7 +614,7 @@ def admin_modificar(userId):
         usuari = Usuarios.query.filter_by(id=userId).first()
         carrera = Carreras.query.all()
         return render_template(
-            "Modificar_usuario", user=username, usuario=usuari,carreras =carrera
+            "modificar_usuario.html", user=username, usuario=usuari,carreras =carrera
         )  
     return redirect("/")
 
@@ -699,6 +699,38 @@ def crear_usuario():
         return redirect("/admin/usuarios")
     else:
         return redirect("/")
+
+
+@app.route("/admin/materias")
+def admin_materias():
+    """
+    vista administrador con todas las materias
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        materia = Materias.query.all()
+        carrera = Carreras.query.all()
+        
+        return render_template(
+            "admin_materias.html", user=username, materias=materia,carreras=carrera
+        )
+    return redirect("/")
+
+@app.route("/admin/modificar/materia/<int:materiaId>", methods=['GET'])
+def admin_modificar_materia(materiaId):
+    """
+    Vista para modificar una materia por parte del administrador
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        materia = Materias.query.filter_by(id=materiaId).first()
+        carrera = Carreras.query.all()
+        return render_template(
+            "modificar_materia.html", user=username, materia=materia,carreras =carrera
+        )  
+    return redirect("/")
 
 if __name__ == "__main__":
     app.debug=True
