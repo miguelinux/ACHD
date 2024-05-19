@@ -31,6 +31,8 @@ class Usuarios(db.Model):
     first_login = db.Column(TINYINT(1), nullable=False)
     horas_semana = db.Column(db.Integer, nullable=True, default=None)
     carrera = db.Column(db.Integer, nullable=True, default=None)
+    habilitado = db.Column(TINYINT(1), nullable=False)
+    
 
     def __repr__(self):
         return {
