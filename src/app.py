@@ -591,6 +591,20 @@ def admin_docentes():
         )
     return redirect("/")
 
+@app.route("/admin/modificar/<int:userId>", methods=['GET'])
+def admin_modificar(userId):
+    """
+    Vista para modificar un usuario por parte del administrador
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        usuari = Usuarios.query.filter_by(id=userId).first()
+        return render_template(
+            "Modificar_usuario", user=username, usuario=usuari
+        )  
+    return redirect("/")
+
 
 if __name__ == "__main__":
     app.run()

@@ -123,7 +123,7 @@
             <th>habilitado</th>
         </tr>
         {% for usuario in usuarios %}
-        <tr>
+        <tr onclick="redirectToUserPage('{{ usuario.id }}')">
             <td>{{ usuario.id }}</td>
             <td>{{ usuario.nombre }} {{ usuario.apellido_pat }} {{ usuario.apellido_mat }}</td>
             <td>{{ usuario.email }}</td>
@@ -141,7 +141,12 @@
                 {% endif %}
             {% endfor %}
             </td>
-            <td><button class="remove-btn" onclick="removeToTable(this)">Remover</button></td>
+            <td>{% if usuario.habilitado == True %}
+                si
+                {% else %}
+                no
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>
@@ -182,9 +187,9 @@
         document.getElementById('carrera').value = "";
     });
 
-    function removeToTable(button) {
-        let row = button.parentNode.parentNode;
-        row.parentNode.removeChild(row);
+    function redirectToUserPage(userId) {
+        // Redirecciona a la página del usuario pasando su ID como parámetro
+        window.location.href = "/admin/modificar/" + userId;
     }
 </script>
 {% endblock %}

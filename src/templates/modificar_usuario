@@ -1,0 +1,97 @@
+{% extends 'layout.html' %}
+
+{% block title %}Modificar{% endblock %}
+{% block css %}
+<style>
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat';
+    margin: auto;
+    margin-top: 100px;
+    width: 400px;
+    border: 2px solid rgba(255, 255, 255, .2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    color: white;
+    border-radius: 10px;
+    padding: 30px 40px;
+    background-color: white;
+}
+.main .input {
+    width: 19rem;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+ .input input {
+    width: 80%;
+    background: rgb(174, 190, 235);
+    box-shadow: 0 0 10px rgba(85, 76, 141, 0.349);
+    border-radius: 40px;
+    border: solid 2px rgba(255, 255, 255, .2);
+    font-size: 15px;
+    color: black;
+    padding: 20px 45px 20px 20px;
+}
+ .input input::placeholder {
+    color: rgb(63, 39, 4);
+}
+
+.main .Confirmar {
+    width: 19.5rem;
+    height: 50px;
+    margin-bottom: 10px;
+    background: white;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    cursor: pointer;
+    font-size: 15px;
+    color: #333;
+    transition: .3s;
+}
+
+.main .Confirmar:hover {
+    background-color: #37109b;
+    color: white;
+}
+
+.main h2 {
+    font-size: 25px;
+    text-align: center;
+    color: black;
+}
+
+.main p {
+    color: #333;
+}
+
+</style>
+{% endblock %}
+
+{% block body_class %}modificador{% endblock %}
+
+
+{% block content %}
+
+<div class="main">
+    <h2>Modificando a {{usuario.nombre}} {{usuario.apellido_pat}}</h2>
+    <form action="/update" method="post">
+        <div class="input">
+            <input type="password" placeholder="Contraseña actual" name="password">
+        </div>
+        <div class="input">
+            <input type="password" placeholder="Nueva Contraseña" name="newpass">
+        </div>
+        <div class="input">
+            <input type="password" placeholder="Confirmar Contraseña" name="conf_newpass">
+        </div>
+        <button class="Confirmar" type="submit">Confirmar</button>
+    </form>
+</div>
+
+
+<script>
+    
+</script>
+    {% endblock %}
