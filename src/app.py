@@ -637,6 +637,22 @@ def update():
     
     return redirect("/")
 
+@app.route("/delete/user", methods=["POST"])
+def delete_user():
+    """
+    Método para borrar un usuario de la base de datos
+    """
+    user = verificate_session()
+    if user:
+        user_id = request.form.get("id")
+        usuario = Usuarios.query.get(user_id)
+        if usuario:
+            db.session.delete(usuario)
+            db.session.commit()
+        return redirect("/admin/usuarios")
+    
+    return redirect("/")
+
 if __name__ == "__main__":
     app.debug=True
     app.run()

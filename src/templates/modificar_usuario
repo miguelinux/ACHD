@@ -58,9 +58,11 @@
         background-color: #37109b;
         color: white;
     }
+
     .main .btn-delete:hover {
-            background-color: #d32f2f;
-        }
+        background-color: darkred;
+    }
+
     .main h2 {
         font-size: 25px;
         text-align: center;
@@ -89,6 +91,7 @@
         margin-top: 5px;
 
     }
+
     .input-field-carrera {
         width: 117%;
         background: rgb(174, 190, 235);
@@ -155,7 +158,11 @@
         </div>
         <button class="btn" type="submit">Confirmar</button>
     </form>
-    <button class="btn btn-delete" type="submit">Borrar</button>
+    <form action="/delete/user" method="post" style="margin-top: 10px;">
+        <input type="hidden" name="id" value="{{ usuario.id }}">
+        <button class="btn btn-delete" type="submit"
+            onclick="return confirm('¿Estás seguro de que deseas borrar este usuario?')">Borrar</button>
+    </form>
 
 </div>
 
