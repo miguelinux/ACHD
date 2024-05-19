@@ -21,7 +21,10 @@
     margin-right: 10px;
     border-radius: 15px;
     transition: .5s;
-  }
+  }.materia.selected{
+      border: #32aa32  2px solid;
+      background: #37109b;
+     }
 
   .btns .semestre:hover {
     background-color: #37109b;
@@ -54,6 +57,7 @@
   .btnsturn .turno.selected {
     background-color: #37109b;
     color: white;
+    border: #32aa32 2px solid;
   }
 
   .container {
@@ -74,6 +78,11 @@
     display: flex;
     text-align: center;
     flex-wrap: wrap;
+  }
+  .aula.selected{
+      border: #32aa32 2px solid;
+      background: #37109b;
+      color:white;
   }
 
   .horario {
@@ -105,6 +114,9 @@
     text-align: center;
     flex-wrap: wrap;
   }
+  .docente.selected{
+      border: #37109b 2px solid;
+  }
 
   .btn {
     display: flex;
@@ -127,12 +139,13 @@
 
   .semestre.selected {
     background-color: blue;
+    border: #32aa32 2px solid;
     color: white;
   }
 
   .docente {
     height: 30px;
-    background-color: #37109b;
+    background-color: #897baf;
     border-radius: 10px;
     color:white;
     margin: 5px;
@@ -141,6 +154,10 @@
     font-family: Montserrat;
     font-style: initial;
 
+  }
+  .docente.selected{
+      background: #37109b;
+      border: #32aa32 2px solid;
   }
 
   .docente p {
@@ -210,7 +227,8 @@
 
   .semestre.selected {
     background-color: #37109b;
-    border:none;
+    border: #32aa32 2px solid;
+
     color: white;
   }
 
