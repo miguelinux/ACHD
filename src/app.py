@@ -5,6 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 import hashlib
 import json
+import random
 from configparser import ConfigParser
 from datetime import timedelta
 
@@ -70,6 +71,16 @@ def get_hex_digest(cadena):
     sha256.update(cadena.encode("utf-8"))
     hexdigest = sha256.hexdigest()
     return hexdigest
+
+def random_number():
+    """
+    Funcion para generar numeros randoms, para asignarlos de contraseña principal
+    """
+    number =0
+    for _ in range(5):
+        numero = random.randint(0, 100)
+        number=numero+number
+    return number
 
 
 def verificate_session():
@@ -582,8 +593,9 @@ def admin_docentes():
     """
     user = verificate_session()
     if user:
+        userid = user["userid"]
         username = user["username"]
-        usuarios = Usuarios.query.all()
+        usuarios = Usuarios.query.offset(userid).all()
         carrera = Carreras.query.all()
         
         return render_template(
@@ -621,9 +633,9 @@ def update():
         email = form.get("email")
         user_type = form.get("user_type")
         carrera_id = form.get("carrera")
-        habilitado = form.get("habilitado")
+        habilitado = form.get("habilitado") == 'true'
 
-        usuario = Usuarios.query.get(user_id)
+        usuario = db.session.get(Usuarios, user_id)
         if usuario:
             usuario.nombre = nombre
             usuario.apellido_pat = apellido_pat
@@ -652,6 +664,41 @@ def delete_user():
         return redirect("/admin/usuarios")
     
     return redirect("/")
+
+@app.route("/crear_usuario", methods=["POST"])
+def crear_usuario():
+    """
+    Metodo para agregar usuario a la base de datos
+    """
+    user = verificate_session()
+    if user:
+        # Obtener los datos del formulario
+        nombre = request.form.get("nombre")
+        apellido_pat = request.form.get("apellido_pat")
+        apellido_mat = request.form.get("apellido_mat")
+        email = request.form.get("email")
+        password = get_hex_digest(str(random_number()))
+        user_type = request.form.get("user_type")
+        first_login = True  
+        carrera = request.form.get("carrera")
+        habilitado = True
+        
+        nuevo_usuario = Usuarios(
+            nombre=nombre,
+            apellido_pat=apellido_pat,
+            apellido_mat=apellido_mat,
+            email=email,
+            password=password,
+            user_type=user_type,
+            first_login=first_login,
+            carrera=carrera,
+            habilitado=habilitado
+        )
+        db.session.add(nuevo_usuario)
+        db.session.commit()
+        return redirect("/admin/usuarios")
+    else:
+        return redirect("/")
 
 if __name__ == "__main__":
     app.debug=True

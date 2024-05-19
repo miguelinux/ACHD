@@ -104,15 +104,26 @@
 
 {% block content %}
 <section id="table">
-    <form id="user-form">
+    <form action="/crear_usuario" method="POST" id="user-form">
         <div id="input-data">
-            <input id="name" class="input-text" placeholder="Nome" type="text" required />
-            <input id="email" class="input-text" placeholder="Email" type="email" required />
-            <input id="usuario" class="input-text" placeholder="tipo de usuario" type="number" required />
-            <input id="carrera" class="input-text" placeholder="carrera" type="number" required />
+            <input name="nombre" class="input-text" placeholder="Nombre" type="text" required />
+            <input name="apellido_pat" class="input-text" placeholder="Apellido Paterno" type="text" required />
+            <input name="apellido_mat" class="input-text" placeholder="Apellido Materno" type="text" required />
+            <input name="email" class="input-text" placeholder="Email" type="email" required />
+            <select name="user_type" class="input-text" required>
+                <option value="1">Admin</option>
+                <option value="2">Jefe de carrera</option>
+                <option value="3">Docente</option>
+            </select>
+            <select name="carrera" class="input-text" required>
+                {% for carrera in carreras %}
+                <option value="{{ carrera.id }}">{{ carrera.nombre }}</option>
+                {% endfor %}
+            </select>
             <input class="input-btn" type="submit" value="Enviar" />
         </div>
     </form>
+    
     <table id="myTable">
         <tr>
             <th>ID</th>
@@ -137,9 +148,9 @@
             </td>
             <td>{% for carrera in carreras %}
                 {% if usuario.carrera == carrera.id %}
-                    {{ carrera.nombre }}
+                {{ carrera.nombre }}
                 {% endif %}
-            {% endfor %}
+                {% endfor %}
             </td>
             <td>{% if usuario.habilitado == True %}
                 si
@@ -153,39 +164,7 @@
 </section>
 
 <script>
-    document.getElementById('user-form').addEventListener('submit', function (event) {
-        event.preventDefault();  // Previene el comportamiento por defecto del formulario
-
-        let name = document.getElementById('name').value;
-        let email = document.getElementById('email').value;
-        let usuario = document.getElementById('usuario').value;
-        let carrera = document.getElementById('carrera').value;
-        let table = document.getElementById("myTable");
-
-        let tableSize = table.rows.length;
-        let row = table.insertRow(tableSize);
-        let cell1 = row.insertCell(0);
-        let cell2 = row.insertCell(1);
-        let cell3 = row.insertCell(2);
-        let cell4 = row.insertCell(3);
-        let cell5 = row.insertCell(4);
-        let cell6 = row.insertCell(5);
-        row.id = tableSize;
-
-        let btnCode = "<button class='remove-btn' onclick='removeToTable(this)'>Remover</button>";
-
-        cell1.innerHTML = tableSize;
-        cell2.innerHTML = name;
-        cell3.innerHTML = email;
-        cell4.innerHTML = usuario; // Corrige esto para reflejar el campo correcto
-        cell5.innerHTML = carrera; // Corrige esto para reflejar el campo correcto
-        cell6.innerHTML = btnCode;
-
-        document.getElementById('name').value = "";
-        document.getElementById('email').value = "";
-        document.getElementById('usuario').value = "";
-        document.getElementById('carrera').value = "";
-    });
+    
 
     function redirectToUserPage(userId) {
         // Redirecciona a la página del usuario pasando su ID como parámetro

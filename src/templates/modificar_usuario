@@ -151,9 +151,10 @@
             </select>
         </div>
         <div class="input">
+            <label for="habilitado" class="label">Estado:</label>
             <select id="habilitado" name="habilitado" class="input-field">
-                <option value="1" {% if usuario.habilitado==1 %} selected {% endif %}>habilitado</option>
-                <option value="2" {% if usuario.user_type==2 %} selected {% endif %}>deshabilitado</option>
+                <option value="true" {% if usuario.habilitado %} selected {% endif %}>Habilitado</option>
+                <option value="false" {% if not usuario.habilitado %} selected {% endif %}>Deshabilitado</option>
             </select>
         </div>
         <button class="btn" type="submit">Confirmar</button>
