@@ -100,9 +100,7 @@
     flex-wrap: wrap;
     gap:1rem;
   }
-  title{
 
-  }
 
   .aulas {
     grid-area: aulas;
@@ -907,6 +905,7 @@ function gethorario(turno, semestre) {
                     const materiaDiv = document.createElement("div");
                     materiaDiv.textContent = `${materiaNombre}`;
                     materiaDiv.setAttribute('data-id', materiaId); // Agregar el atributo data-id
+                    materiaDiv.setAttribute('title', materiaDiv.textContent)
 
 
                     const aulaDiv = document.createElement("div");
