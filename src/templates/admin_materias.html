@@ -107,14 +107,11 @@
     <form action="/crear_materia" method="POST" id="user-form">
         <div id="input-data">
             <input name="nombre" class="input-text" placeholder="Nombre" type="text" required />
-            <input name="apellido_pat" class="input-text" placeholder="Apellido Paterno" type="text" required />
-            <input name="apellido_mat" class="input-text" placeholder="Apellido Materno" type="text" required />
-            <input name="email" class="input-text" placeholder="Email" type="email" required />
-            <select name="user_type" class="input-text" required>
-                <option value="1">Admin</option>
-                <option value="2">Jefe de carrera</option>
-                <option value="3">Docente</option>
-            </select>
+            <input name="clave" class="input-text" placeholder="Clave" type="text" required />
+            <input name="semestre" class="input-text" placeholder="Semestre" type="number" required />
+            <input name="Hpracticas" class="input-text" placeholder="Horas practicas" type="number" required />
+            <input name="Hteoria" class="input-text" placeholder="Horas teoricas" type="number" required />
+            <input name="Creditos" class="input-text" placeholder="creditos" type="number" required />
             <select name="carrera" class="input-text" required>
                 {% for carrera in carreras %}
                 <option value="{{ carrera.id }}">{{ carrera.nombre }}</option>

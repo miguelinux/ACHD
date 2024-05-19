@@ -732,6 +732,85 @@ def admin_modificar_materia(materiaId):
         )  
     return redirect("/")
 
+
+@app.route("/update/materia", methods=["POST"])
+def update_materia():
+    """
+    Metodo para actualizar la informacion en la base de datos
+    """
+    user = verificate_session()
+    if user:
+        form = request.form
+        materia_id = form.get("id")
+        nombre = form.get("nombre")
+        clave = form.get("clave")
+        semestre = form.get("semestre")
+        hpracticas = form.get("Hpracticas")
+        hteoria = form.get("Hteoria")
+        creditos = form.get("Creditos")
+        carrera_id = form.get("carrera")
+
+        materia = db.session.get(Materias, materia_id)
+        if materia:
+            materia.clave = clave
+            materia.nombre = nombre
+            materia.semestre = semestre
+            materia.horas_practica = hpracticas
+            materia.horas_teoria = hteoria
+            materia.creditos = creditos
+            materia.carrera = carrera_id
+            db.session.commit()
+        return redirect("/admin/materias")
+    
+    return redirect("/")
+
+@app.route("/delete/materia", methods=["POST"])
+def delete_materia():
+    """
+    Método para borrar una materia de la base de datos
+    """
+    user = verificate_session()
+    if user:
+        materiaid = request.form.get("id")
+        materia = Materias.query.get(materiaid)
+        if materia:
+            db.session.delete(materia)
+            db.session.commit()
+        return redirect("/admin/materias")
+    return redirect("/")
+
+@app.route("/crear_materia", methods=["POST"])
+def crear_materia():
+    """
+    Metodo para agregar usuario a la base de datos
+    """
+    user = verificate_session()
+    if user:
+        # Obtener los datos del formulario
+        form = request.form
+        nombre = form.get("nombre")
+        clave = form.get("clave")
+        semestre = form.get("semestre")
+        hpracticas = form.get("Hpracticas")
+        hteoria = form.get("Hteoria")
+        creditos = form.get("Creditos")
+        carrera_id = form.get("carrera")
+        
+        nueva_materia = Materias(
+            clave = clave,
+            nombre = nombre,
+            semestre = semestre,
+            horas_practica = hpracticas,
+            horas_teoria = hteoria,
+            creditos = creditos,
+            carrera = carrera_id
+        )
+        db.session.add(nueva_materia)
+        db.session.commit()
+        return redirect("/admin/materias")
+    else:
+        return redirect("/")
+
 if __name__ == "__main__":
     app.debug=True
     app.run()
