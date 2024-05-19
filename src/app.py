@@ -587,7 +587,7 @@ def admin_docentes():
         carrera = Carreras.query.all()
         
         return render_template(
-            "admin_docentes.html", user=username, usuarios=usuarios,carreras=carrera
+            "admin_usuarios.html", user=username, usuarios=usuarios,carreras=carrera
         )
     return redirect("/")
 
