@@ -18,7 +18,7 @@ from flask import session
 
 from datetime import timedelta
 from extensions import db
-from models.tables_db import Usuarios, Materias, Aulas, Ciclos,Asignaciones
+from models.tables_db import Usuarios, Materias, Aulas, Ciclos,Asignaciones, Carreras
 
 
 app = Flask(__name__)
@@ -174,6 +174,7 @@ def login():
     if user.user_type == jefe_de_carrera:
         return redirect("/jefeCarrera")
 
+    return redirect("/")
 
 @app.route("/dashboard")
 def dashboard():
@@ -558,6 +559,35 @@ def asignacion():
         aula = Aulas.query.all()
         return render_template(
             "asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula
+        )
+    return redirect("/")
+
+@app.route("/admin")
+def admin():
+    """
+    Vista del administrador
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        return render_template(
+            "admin.html", user=username
+        )
+    return redirect("/")
+
+@app.route("/admin/usuarios")
+def admin_docentes():
+    """
+    vista administrador con todos los docentes
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        usuarios = Usuarios.query.all()
+        carrera = Carreras.query.all()
+        
+        return render_template(
+            "admin_docentes.html", user=username, usuarios=usuarios,carreras=carrera
         )
     return redirect("/")
 
