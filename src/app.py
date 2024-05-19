@@ -600,11 +600,42 @@ def admin_modificar(userId):
     if user:
         username = user["username"]
         usuari = Usuarios.query.filter_by(id=userId).first()
+        carrera = Carreras.query.all()
         return render_template(
-            "Modificar_usuario", user=username, usuario=usuari
+            "Modificar_usuario", user=username, usuario=usuari,carreras =carrera
         )  
     return redirect("/")
 
+@app.route("/update/user", methods=["POST"])
+def update():
+    """
+    Metodo para actualizar la informacion en la base de datos
+    """
+    user = verificate_session()
+    if user:
+        form = request.form
+        user_id = form.get("id")
+        nombre = form.get("nombre")
+        apellido_pat = form.get("paterno")
+        apellido_mat = form.get("materno")
+        email = form.get("email")
+        user_type = form.get("user_type")
+        carrera_id = form.get("carrera")
+        habilitado = form.get("habilitado")
+
+        usuario = Usuarios.query.get(user_id)
+        if usuario:
+            usuario.nombre = nombre
+            usuario.apellido_pat = apellido_pat
+            usuario.apellido_mat = apellido_mat
+            usuario.email = email
+            usuario.user_type = user_type
+            usuario.carrera = carrera_id
+            usuario.habilitado = habilitado
+            db.session.commit()
+        return redirect("/admin/usuarios")
+    
+    return redirect("/")
 
 if __name__ == "__main__":
     app.debug=True

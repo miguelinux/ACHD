@@ -3,69 +3,104 @@
 {% block title %}Modificar{% endblock %}
 {% block css %}
 <style>
-.main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Montserrat';
-    margin: auto;
-    margin-top: 100px;
-    width: 400px;
-    border: 2px solid rgba(255, 255, 255, .2);
-    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
-    color: white;
-    border-radius: 10px;
-    padding: 30px 40px;
-    background-color: white;
-}
-.main .input {
-    width: 19rem;
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
- .input input {
-    width: 80%;
-    background: rgb(174, 190, 235);
-    box-shadow: 0 0 10px rgba(85, 76, 141, 0.349);
-    border-radius: 40px;
-    border: solid 2px rgba(255, 255, 255, .2);
-    font-size: 15px;
-    color: black;
-    padding: 20px 45px 20px 20px;
-}
- .input input::placeholder {
-    color: rgb(63, 39, 4);
-}
+    .main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Montserrat';
+        margin: auto;
+        margin-top: 100px;
+        width: 400px;
+        border: 2px solid rgba(255, 255, 255, .2);
+        box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+        color: white;
+        border-radius: 10px;
+        padding: 30px 40px;
+        background-color: white;
+    }
 
-.main .Confirmar {
-    width: 19.5rem;
-    height: 50px;
-    margin-bottom: 10px;
-    background: white;
-    border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-    cursor: pointer;
-    font-size: 15px;
-    color: #333;
-    transition: .3s;
-}
+    .main .input {
+        width: 19rem;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
 
-.main .Confirmar:hover {
-    background-color: #37109b;
-    color: white;
-}
+    .input input {
+        width: 80%;
+        background: rgb(174, 190, 235);
+        box-shadow: 0 0 10px rgba(85, 76, 141, 0.349);
+        border-radius: 40px;
+        border: solid 2px rgba(255, 255, 255, .2);
+        font-size: 15px;
+        color: black;
+        padding: 20px 45px 20px 20px;
+    }
 
-.main h2 {
-    font-size: 25px;
-    text-align: center;
-    color: black;
-}
+    .input input::placeholder {
+        color: rgb(63, 39, 4);
+    }
 
-.main p {
-    color: #333;
-}
+    .main .btn {
+        width: 19.5rem;
+        height: 50px;
+        margin-bottom: 10px;
+        background: white;
+        border-radius: 40px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+        cursor: pointer;
+        font-size: 15px;
+        color: #333;
+        transition: .3s;
+    }
 
+    .main .btn:hover {
+        background-color: #37109b;
+        color: white;
+    }
+    .main .btn-delete:hover {
+            background-color: #d32f2f;
+        }
+    .main h2 {
+        font-size: 25px;
+        text-align: center;
+        color: black;
+    }
+
+    .main p {
+        color: #333;
+    }
+
+    label {
+        color: black;
+        margin-bottom: 5px;
+        /* Ajusta el margen según sea necesario */
+    }
+
+    .input-field {
+        width: 64%;
+        background: rgb(174, 190, 235);
+        box-shadow: 0 0 10px rgba(85, 76, 141, 0.349);
+        border-radius: 40px;
+        border: solid 2px rgba(255, 255, 255, .2);
+        font-size: 16px;
+        color: black;
+        padding: 7px 24px 11px 33px;
+        margin-top: 5px;
+
+    }
+    .input-field-carrera {
+        width: 117%;
+        background: rgb(174, 190, 235);
+        box-shadow: 0 0 10px rgba(85, 76, 141, 0.349);
+        border-radius: 40px;
+        border: solid 2px rgba(255, 255, 255, .2);
+        font-size: 16px;
+        color: black;
+        padding: 7px 0px 11px 21px;
+        margin-top: 5px;
+
+    }
 </style>
 {% endblock %}
 
@@ -76,22 +111,56 @@
 
 <div class="main">
     <h2>Modificando a {{usuario.nombre}} {{usuario.apellido_pat}}</h2>
-    <form action="/update" method="post">
+    <form action="/update/user" method="post">
+        <input type="hidden" name="id" value="{{ usuario.id }}">
         <div class="input">
-            <input type="password" placeholder="Contraseña actual" name="password">
+            <label for="nombre">Nombre: </label>
+            <input type="text" placeholder="nombre" name="nombre" value="{{usuario.nombre}}">
         </div>
         <div class="input">
-            <input type="password" placeholder="Nueva Contraseña" name="newpass">
+            <label for="paterno">apellido paterno: </label>
+            <input type="text" placeholder="apellido paterno" name="paterno" value="{{usuario.apellido_pat}}">
         </div>
         <div class="input">
-            <input type="password" placeholder="Confirmar Contraseña" name="conf_newpass">
+            <label for="nombre">apellido materono: </label>
+            <input type="text" placeholder="apellido materno" name="materno" value="{{usuario.apellido_mat}}">
         </div>
-        <button class="Confirmar" type="submit">Confirmar</button>
+        <div class="input">
+            <label for="email">email: </label>
+            <input type="email" placeholder="email" name="email" value="{{usuario.email}}">
+        </div>
+        <div class="input">
+            <label for="user_type" class="label">Tipo:</label>
+            <select id="user_type" name="user_type" class="input-field">
+                <option value="1" {% if usuario.user_type==1 %} selected {% endif %}>Admin</option>
+                <option value="2" {% if usuario.user_type==2 %} selected {% endif %}>Jefe de carrera</option>
+                <option value="3" {% if usuario.user_type==3 %} selected {% endif %}>Docente</option>
+            </select>
+        </div>
+        <div class="input">
+            <label for="carrera" class="label">carrera:</label>
+            <select id="carrear" name="carrera" class="input-field-carrera">
+                {% for carrera in carreras %}
+                <option value="{{ carrera.id }}" {% if usuario.carrera==carrera.id %} selected {% endif %}>
+                    {{ carrera.nombre }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="input">
+            <select id="habilitado" name="habilitado" class="input-field">
+                <option value="1" {% if usuario.habilitado==1 %} selected {% endif %}>habilitado</option>
+                <option value="2" {% if usuario.user_type==2 %} selected {% endif %}>deshabilitado</option>
+            </select>
+        </div>
+        <button class="btn" type="submit">Confirmar</button>
     </form>
+    <button class="btn btn-delete" type="submit">Borrar</button>
+
 </div>
 
 
 <script>
-    
+
 </script>
-    {% endblock %}
+{% endblock %}
