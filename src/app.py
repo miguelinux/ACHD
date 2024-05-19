@@ -811,6 +811,95 @@ def crear_materia():
     else:
         return redirect("/")
 
+@app.route("/admin/aulas")
+def admin_aulas():
+    """
+    vista administrador con todas las materias
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        materia = Materias.query.all()
+        aula = Aulas.query.all()
+        
+        return render_template(
+            "admin_aulas.html", user=username, materias=materia,aulas=aula
+        )
+    return redirect("/")
+
+@app.route("/admin/modificar/aula/<int:aulaId>", methods=['GET'])
+def admin_modificar_aula(aulaId):
+    """
+    Vista para modificar una aula por parte del administrador
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        aula = Aulas.query.filter_by(id=aulaId).first()
+        return render_template(
+            "modificar_aula.html", user=username, aula=aula
+        )  
+    return redirect("/")
+
+
+@app.route("/update/aula", methods=["POST"])
+def update_aula():
+    """
+    Metodo para actualizar la informacion en la base de datos
+    """
+    user = verificate_session()
+    if user:
+        form = request.form
+        aula_id = form.get("id")
+        nombre = form.get("nombre")
+        edificio = form.get("edificio")
+
+        aula = db.session.get(Aulas, aula_id)
+        if aula:
+            aula.nombre = nombre
+            aula.edificio = edificio
+            db.session.commit()
+        return redirect("/admin/aulas")
+    
+    return redirect("/")
+
+@app.route("/delete/aula", methods=["POST"])
+def delete_aula():
+    """
+    Método para borrar una materia de la base de datos
+    """
+    user = verificate_session()
+    if user:
+        aulaid = request.form.get("id")
+        aula = Aulas.query.get(aulaid)
+        if aula:
+            db.session.delete(aula)
+            db.session.commit()
+        return redirect("/admin/aulas")
+    return redirect("/")
+
+@app.route("/crear_aula", methods=["POST"])
+def crear_aula():
+    """
+    Metodo para agregar usuario a la base de datos
+    """
+    user = verificate_session()
+    if user:
+        # Obtener los datos del formulario
+        form = request.form
+        nombre = form.get("nombre")
+        edificio = form.get("edificio")
+        
+        nueva_aula = Aulas(
+            nombre = nombre,
+            edificio = edificio
+        )
+        db.session.add(nueva_aula)
+        db.session.commit()
+        return redirect("/admin/aulas")
+    else:
+        return redirect("/")
+
 if __name__ == "__main__":
     app.debug=True
     app.run()
