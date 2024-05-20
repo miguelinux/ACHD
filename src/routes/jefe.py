@@ -54,6 +54,7 @@ def asignacion():
         return render_template("asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula)
     return redirect("/")
 
+
 @jefe_bp.route("/setAsignacion", methods=["POST"])
 def set_asignacion():
     user = verificate_session()
@@ -132,3 +133,15 @@ def update_disp(user_id, indices_to_update, value):
         db.session.commit()
         return True
     return False
+
+@jefe_bp.route("/jefeCarrera/grupos")
+def grupos():
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        carrera = user["carrera"]
+        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
+        a = Materias.query.filter_by(carrera=carrera).all()
+        aula = Aulas.query.all()
+        return render_template("grupos.html", user=username, asignaturas=a, docentes=d, aulas=aula)
+    return redirect("/")

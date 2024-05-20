@@ -3,7 +3,6 @@
 # :indentSize=4:tabSize=8:noTabs=true:
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
-import json
 from configparser import ConfigParser
 from flask import Flask
 from flask import send_from_directory
