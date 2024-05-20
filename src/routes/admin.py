@@ -1,0 +1,529 @@
+from flask import Blueprint, render_template, request, redirect
+from extensions import db
+
+from models.tables_db import Usuarios, Materias, Aulas, Ciclos, Carreras
+from functions import verificate_session, get_hex_digest, random_number
+
+
+admin_bp = Blueprint('admin', __name__)
+
+@admin_bp.route("/admin")
+def admin():
+    """
+    Vista del administrador
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        return render_template(
+            "admin.html", user=username
+        )
+    return redirect("/")
+
+@admin_bp.route("/admin/usuarios")
+def admin_docentes():
+    """
+    vista administrador con todos los docentes
+    """
+    user = verificate_session()
+    if user:
+        userid = user["userid"]
+        username = user["username"]
+        usuarios = Usuarios.query.offset(userid).all()
+        carrera = Carreras.query.all()
+        
+        return render_template(
+            "admin_usuarios.html", user=username, usuarios=usuarios,carreras=carrera
+        )
+    return redirect("/")
+
+@admin_bp.route("/admin/modificar/usuario/<int:userId>", methods=['GET'])
+def admin_modificar(userId):
+    """
+    Vista para modificar un usuario por parte del administrador
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        usuario = Usuarios.query.filter_by(id=userId).first()
+        carrera = Carreras.query.all()
+        return render_template(
+            "modificar_usuario.html", user=username, usuario=usuario,carreras =carrera
+        )  
+    return redirect("/")
+
+@admin_bp.route("/update/user", methods=["POST"])
+def update():
+    """
+    Metodo para actualizar la informacion en la base de datos
+    """
+    user = verificate_session()
+    if user:
+        form = request.form
+        user_id = form.get("id")
+        nombre = form.get("nombre")
+        apellido_pat = form.get("paterno")
+        apellido_mat = form.get("materno")
+        email = form.get("email")
+        user_type = form.get("user_type")
+        carrera_id = form.get("carrera")
+        habilitado = form.get("habilitado") == 'true'
+
+        usuario = db.session.get(Usuarios, user_id)
+        if usuario:
+            usuario.nombre = nombre
+            usuario.apellido_pat = apellido_pat
+            usuario.apellido_mat = apellido_mat
+            usuario.email = email
+            usuario.user_type = user_type
+            usuario.carrera = carrera_id
+            usuario.habilitado = habilitado
+            db.session.commit()
+        return redirect("/admin/usuarios")
+    
+    return redirect("/")
+
+@admin_bp.route("/delete/user", methods=["POST"])
+def delete_user():
+    """
+    Método para borrar un usuario de la base de datos
+    """
+    user = verificate_session()
+    if user:
+        user_id = request.form.get("id")
+        usuario = Usuarios.query.get(user_id)
+        if usuario:
+            db.session.delete(usuario)
+            db.session.commit()
+        return redirect("/admin/usuarios")
+    
+    return redirect("/")
+
+@admin_bp.route("/crear_usuario", methods=["POST"])
+def crear_usuario():
+    """
+    Metodo para agregar usuario a la base de datos
+    """
+    user = verificate_session()
+    if user:
+        # Obtener los datos del formulario
+        nombre = request.form.get("nombre")
+        apellido_pat = request.form.get("apellido_pat")
+        apellido_mat = request.form.get("apellido_mat")
+        email = request.form.get("email")
+        password = get_hex_digest(str(random_number()))
+        user_type = request.form.get("user_type")
+        first_login = True  
+        carrera = request.form.get("carrera")
+        habilitado = True
+        
+        nuevo_usuario = Usuarios(
+            nombre=nombre,
+            apellido_pat=apellido_pat,
+            apellido_mat=apellido_mat,
+            email=email,
+            password=password,
+            user_type=user_type,
+            first_login=first_login,
+            carrera=carrera,
+            habilitado=habilitado
+        )
+        db.session.add(nuevo_usuario)
+        db.session.commit()
+        return redirect("/admin/usuarios")
+    else:
+        return redirect("/")
+
+
+@admin_bp.route("/admin/materias")
+def admin_materias():
+    """
+    vista administrador con todas las materias
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        materia = Materias.query.all()
+        carrera = Carreras.query.all()
+        
+        return render_template(
+            "admin_materias.html", user=username, materias=materia,carreras=carrera
+        )
+    return redirect("/")
+
+@admin_bp.route("/admin/modificar/materia/<int:materiaId>", methods=['GET'])
+def admin_modificar_materia(materiaId):
+    """
+    Vista para modificar una materia por parte del administrador
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        materia = Materias.query.filter_by(id=materiaId).first()
+        carrera = Carreras.query.all()
+        return render_template(
+            "modificar_materia.html", user=username, materia=materia,carreras =carrera
+        )  
+    return redirect("/")
+
+
+@admin_bp.route("/update/materia", methods=["POST"])
+def update_materia():
+    """
+    Metodo para actualizar la informacion en la base de datos
+    """
+    user = verificate_session()
+    if user:
+        form = request.form
+        materia_id = form.get("id")
+        nombre = form.get("nombre")
+        clave = form.get("clave")
+        semestre = form.get("semestre")
+        hpracticas = form.get("Hpracticas")
+        hteoria = form.get("Hteoria")
+        creditos = form.get("Creditos")
+        carrera_id = form.get("carrera")
+
+        materia = db.session.get(Materias, materia_id)
+        if materia:
+            materia.clave = clave
+            materia.nombre = nombre
+            materia.semestre = semestre
+            materia.horas_practica = hpracticas
+            materia.horas_teoria = hteoria
+            materia.creditos = creditos
+            materia.carrera = carrera_id
+            db.session.commit()
+        return redirect("/admin/materias")
+    
+    return redirect("/")
+
+@admin_bp.route("/delete/materia", methods=["POST"])
+def delete_materia():
+    """
+    Método para borrar una materia de la base de datos
+    """
+    user = verificate_session()
+    if user:
+        materiaid = request.form.get("id")
+        materia = Materias.query.get(materiaid)
+        if materia:
+            db.session.delete(materia)
+            db.session.commit()
+        return redirect("/admin/materias")
+    return redirect("/")
+
+@admin_bp.route("/crear_materia", methods=["POST"])
+def crear_materia():
+    """
+    Metodo para agregar usuario a la base de datos
+    """
+    user = verificate_session()
+    if user:
+        # Obtener los datos del formulario
+        form = request.form
+        nombre = form.get("nombre")
+        clave = form.get("clave")
+        semestre = form.get("semestre")
+        hpracticas = form.get("Hpracticas")
+        hteoria = form.get("Hteoria")
+        creditos = form.get("Creditos")
+        carrera_id = form.get("carrera")
+        
+        nueva_materia = Materias(
+            clave = clave,
+            nombre = nombre,
+            semestre = semestre,
+            horas_practica = hpracticas,
+            horas_teoria = hteoria,
+            creditos = creditos,
+            carrera = carrera_id
+        )
+        db.session.add(nueva_materia)
+        db.session.commit()
+        return redirect("/admin/materias")
+    else:
+        return redirect("/")
+
+@admin_bp.route("/admin/aulas")
+def admin_aulas():
+    """
+    vista administrador con todas las materias
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        aula = Aulas.query.all()
+        
+        return render_template(
+            "admin_aulas.html", user=username,aulas=aula
+        )
+    return redirect("/")
+
+@admin_bp.route("/admin/modificar/aula/<int:aulaId>", methods=['GET'])
+def admin_modificar_aula(aulaId):
+    """
+    Vista para modificar una aula por parte del administrador
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        aula = Aulas.query.filter_by(id=aulaId).first()
+        return render_template(
+            "modificar_aula.html", user=username, aula=aula
+        )  
+    return redirect("/")
+
+
+@admin_bp.route("/update/aula", methods=["POST"])
+def update_aula():
+    """
+    Metodo para actualizar la informacion en la base de datos
+    """
+    user = verificate_session()
+    if user:
+        form = request.form
+        aula_id = form.get("id")
+        nombre = form.get("nombre")
+        edificio = form.get("edificio")
+
+        aula = db.session.get(Aulas, aula_id)
+        if aula:
+            aula.nombre = nombre
+            aula.edificio = edificio
+            db.session.commit()
+        return redirect("/admin/aulas")
+    
+    return redirect("/")
+
+@admin_bp.route("/delete/aula", methods=["POST"])
+def delete_aula():
+    """
+    Método para borrar una materia de la base de datos
+    """
+    user = verificate_session()
+    if user:
+        aulaid = request.form.get("id")
+        aula = Aulas.query.get(aulaid)
+        if aula:
+            db.session.delete(aula)
+            db.session.commit()
+        return redirect("/admin/aulas")
+    return redirect("/")
+
+@admin_bp.route("/crear_aula", methods=["POST"])
+def crear_aula():
+    """
+    Metodo para agregar usuario a la base de datos
+    """
+    user = verificate_session()
+    if user:
+        # Obtener los datos del formulario
+        form = request.form
+        nombre = form.get("nombre")
+        edificio = form.get("edificio")
+        
+        nueva_aula = Aulas(
+            nombre = nombre,
+            edificio = edificio
+        )
+        db.session.add(nueva_aula)
+        db.session.commit()
+        return redirect("/admin/aulas")
+    else:
+        return redirect("/")
+
+
+
+@admin_bp.route("/admin/carreras")
+def admin_carreras():
+    """
+    vista administrador con todas las carreras
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        carreras = Carreras.query.all()
+        
+        return render_template(
+            "admin_carreras.html", user=username, carreras=carreras
+        )
+    return redirect("/")
+
+@admin_bp.route("/admin/modificar/carrera/<int:carreraId>", methods=['GET'])
+def admin_modificar_carrera(carreraId):
+    """
+    Vista para modificar una carrera por parte del administrador
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        carrera = Carreras.query.filter_by(id=carreraId).first()
+        return render_template(
+            "modificar_carrera.html", user=username, carrera=carrera
+        )  
+    return redirect("/")
+
+
+@admin_bp.route("/update/carrera", methods=["POST"])
+def update_carrera():
+    """
+    Metodo para actualizar la informacion en la base de datos
+    """
+    user = verificate_session()
+    if user:
+        form = request.form
+        carrera_id = form.get("id")
+        nombre = form.get("nombre")
+        plan = form.get("plan")
+
+        carrera = db.session.get(Carreras, carrera_id)
+        if carrera:
+            carrera.nombre = nombre
+            carrera.plan_de_estudio = plan
+            db.session.commit()
+        return redirect("/admin/carreras")
+    
+    return redirect("/")
+
+@admin_bp.route("/delete/carrera", methods=["POST"])
+def delete_carrera():
+    """
+    Método para borrar una carrera de la base de datos
+    """
+    user = verificate_session()
+    if user:
+        carreraid = request.form.get("id")
+        carrera = Carreras.query.get(carreraid)
+        if carrera:
+            db.session.delete(carrera)
+            db.session.commit()
+        return redirect("/admin/carreras")
+    return redirect("/")
+
+@admin_bp.route("/crear_carrera", methods=["POST"])
+def crear_carrera():
+    """
+    Metodo para agregar una carrera a la base de datos
+    """
+    user = verificate_session()
+    if user:
+        # Obtener los datos del formulario
+        form = request.form
+        nombre = form.get("nombre")
+        plan = form.get("plan")
+        
+        nueva_carrera = Carreras(
+            nombre = nombre,
+            plan_de_estudio = plan
+        )
+        db.session.add(nueva_carrera)
+        db.session.commit()
+        return redirect("/admin/carreras")
+    else:
+        return redirect("/")
+
+@admin_bp.route("/admin/ciclos")
+def admin_ciclos():
+    """
+    vista administrador con todas las ciclos
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        ciclos = Ciclos.query.all()
+        
+        return render_template(
+            "admin_ciclos.html", user=username, ciclos=ciclos
+        )
+    return redirect("/")
+
+@admin_bp.route("/admin/modificar/ciclo/<int:cicloId>", methods=['GET'])
+def admin_modificar_ciclo(cicloId):
+    """
+    Vista para modificar una carrera por parte del administrador
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        ciclo = Ciclos.query.filter_by(id=cicloId).first()
+        return render_template(
+            "modificar_ciclo.html", user=username, ciclo=ciclo
+        )  
+    return redirect("/")
+
+
+@admin_bp.route("/update/ciclo", methods=["POST"])
+def update_ciclo():
+    """
+    Metodo para actualizar la informacion en la base de datos
+    """
+    user = verificate_session()
+    if user:
+        form = request.form
+        ciclo_id = form.get("id")
+        anio = form.get("anio")
+        estacion = form.get("estacion")
+        actua = form.get("actual") == 'true'
+        
+        if actua:
+            change = Ciclos.query.filter_by(actual= True).first()
+            if change:
+                change.actual = False
+                db.session.commit()
+                       
+        ciclo = db.session.get(Ciclos, ciclo_id)
+        if ciclo:
+            ciclo.anio = anio
+            ciclo.estacion = estacion
+            ciclo.actual = actua
+            
+            db.session.commit()
+        return redirect("/admin/ciclos")
+    
+    return redirect("/")
+
+@admin_bp.route("/delete/ciclo", methods=["POST"])
+def delete_ciclo():
+    """
+    Método para borrar una carrera de la base de datos
+    """
+    user = verificate_session()
+    if user:
+        cicloid = request.form.get("id")
+        ciclo = Ciclos.query.get(cicloid)
+        if ciclo:
+            db.session.delete(ciclo)
+            db.session.commit()
+        return redirect("/admin/ciclos")
+    return redirect("/")
+
+@admin_bp.route("/crear_ciclo", methods=["POST"])
+def crear_ciclo():
+    """
+    Metodo para agregar una carrera a la base de datos
+    """
+    user = verificate_session()
+    if user:
+        # Obtener los datos del formulario
+        form = request.form
+        anio = form.get("anio")
+        estacion = form.get("estacion")
+        actua = form.get("actual") == 'true'
+        
+        if actua:
+            change = Ciclos.query.filter_by(actual= True).first()
+            if change:
+                change.actual = False
+                db.session.commit()
+            
+        nuevo_ciclo = Ciclos(
+            anio = anio,
+            estacion = estacion,
+            actual = actua
+        )
+        db.session.add(nuevo_ciclo)
+        db.session.commit()
+        return redirect("/admin/ciclos")
+    else:
+        return redirect("/")
