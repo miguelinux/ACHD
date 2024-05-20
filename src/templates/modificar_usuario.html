@@ -118,19 +118,19 @@
         <input type="hidden" name="id" value="{{ usuario.id }}">
         <div class="input">
             <label for="nombre">Nombre: </label>
-            <input type="text" placeholder="nombre" name="nombre" value="{{usuario.nombre}}">
+            <input type="text" placeholder="Nombre" name="nombre" value="{{usuario.nombre}}">
         </div>
         <div class="input">
-            <label for="paterno">apellido paterno: </label>
-            <input type="text" placeholder="apellido paterno" name="paterno" value="{{usuario.apellido_pat}}">
+            <label for="paterno">Apellido Paterno: </label>
+            <input type="text" placeholder="Apellido Paterno" name="paterno" value="{{usuario.apellido_pat}}">
         </div>
         <div class="input">
-            <label for="nombre">apellido materono: </label>
-            <input type="text" placeholder="apellido materno" name="materno" value="{{usuario.apellido_mat}}">
+            <label for="nombre">Apellido Materno: </label>
+            <input type="text" placeholder="Apellido Materno" name="materno" value="{{usuario.apellido_mat}}">
         </div>
         <div class="input">
-            <label for="email">email: </label>
-            <input type="email" placeholder="email" name="email" value="{{usuario.email}}">
+            <label for="email">Email: </label>
+            <input type="email" placeholder="Correo Electrónico" name="email" value="{{usuario.email}}">
         </div>
         <div class="input">
             <label for="user_type" class="label">Tipo:</label>
@@ -141,7 +141,7 @@
             </select>
         </div>
         <div class="input">
-            <label for="carrera" class="label">carrera:</label>
+            <label for="carrera" class="label">Carrera:</label>
             <select id="carrear" name="carrera" class="input-field-carrera">
                 {% for carrera in carreras %}
                 <option value="{{ carrera.id }}" {% if usuario.carrera==carrera.id %} selected {% endif %}>
