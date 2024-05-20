@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, redirect, request
 from functions import verificate_session
-from models.tables_db import Usuarios, Materias, Aulas
+from models.tables_db import Usuarios, Materias, Aulas,Asignaciones, Ciclos
+import json
+
 
 docente_bp = Blueprint('docente', __name__)
 
@@ -50,9 +52,25 @@ def clases():
     user = verificate_session()
     if user:
         user_name = user["username"]
-        user_id = user["username"]
-        usuario = Usuarios.query.filter_by(id=user_id).first()
-        materia = Materias.query.all()
-        aula = Aulas.query.all()
-        return render_template("clases.html", user=user_name, materias = materia, aulas=aula)
+        user_id = str(user["userid"])  # Convertimos el user_id a string para la comparación
+        user_carrera = user["carrera"]
+        ciclo = Ciclos.query.filter_by(actual=True).first()
+        
+        asignaciones = Asignaciones.query.filter_by(carrera=user_carrera, ciclo=ciclo.id).all()
+        
+        if asignaciones:
+            materias_asignadas = set()  # Conjunto para almacenar las materias asignadas al docente
+
+            for asignacion in asignaciones:
+                horarios = json.loads(asignacion.horario)
+                
+                for i, docente_id in enumerate(horarios["docente"]):
+                    if docente_id == user_id:
+                        materia_id = horarios["materia"][i]
+                        materia = Materias.query.get(materia_id)
+                        if materia:
+                            materias_asignadas.add(materia)  # Añadimos la materia asignada al conjunto
+
+            return render_template("clases.html", user=user_name, materias=list(materias_asignadas))
+        
     return redirect("/")

@@ -2,7 +2,7 @@
 
 from flask import Blueprint, render_template, redirect, request, session, jsonify
 from functions import verificate_session, get_hex_digest
-from models.tables_db import Usuarios, Ciclos, Asignaciones
+from models.tables_db import Usuarios, Ciclos, Asignaciones, Materias, Aulas
 from extensions import db
 import json
 
@@ -122,4 +122,48 @@ def set_disp():
             usuario.disponibilidad = result_json
             db.session.commit()
             return jsonify({"success": True, "message": "Disponibilidad actualizada correctamente"})
+    return redirect("/")
+
+
+@main_bp.route("/get_materia", methods=['GET'])
+def get_materias():
+    user = verificate_session()
+    if user:
+        carrera = user["carrera"]
+        user_id = str(user["userid"])  # Convertimos el user_id a string para la comparación
+        ciclo = Ciclos.query.filter_by(actual=True).first()
+        asignaciones = Asignaciones.query.filter_by(carrera=carrera, ciclo=ciclo.id).all()
+        
+        if asignaciones:
+            filtered_horarios = {
+                "docente": [],
+                "materia": [],
+                "aula": [],
+                "cell_ids": []
+            }
+
+            for asignacion in asignaciones:
+                horarios = json.loads(asignacion.horario)
+                
+                for i, docente_id in enumerate(horarios["docente"]):
+                    if docente_id == user_id:
+                        filtered_horarios["docente"].append(horarios["docente"][i])
+                        
+                        materia_id = horarios["materia"][i]
+                        materia = Materias.query.get(materia_id)
+                        materia_nombre = materia.nombre if materia else 'Desconocida'
+                        filtered_horarios["materia"].append(materia_nombre)
+                        
+                        aula_id = horarios["aula"][i]
+                        aula = Aulas.query.get(aula_id)
+                        aula_nombre = aula.nombre if aula else 'Desconocida'
+                        filtered_horarios["aula"].append(aula_nombre)
+                        
+                        filtered_horarios["cell_ids"].append(horarios["cell_ids"][i])
+
+            if filtered_horarios["docente"]:
+                return jsonify({"success": True, "horario": filtered_horarios})
+            return jsonify({'error': 'Horario no encontrado'})
+        
+        return jsonify({'error': 'Horario no encontrado'})
     return redirect("/")

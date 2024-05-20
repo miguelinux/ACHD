@@ -3,7 +3,6 @@
 {% block title %}Horario{% endblock %}
 
 {% block css %}
-
 <style>
     .principal {
         display: flex;
@@ -13,13 +12,10 @@
 
     .seccion {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         width: 50%;
-        gap: 3rem;
-    }
-
-    .subseccion {
-        width: 100%;
+        gap: 0rem;
+        flex-wrap: wrap;
     }
 
     .materia {
@@ -30,94 +26,267 @@
         margin: 0.9rem;
         max-width: 25rem;
         text-decoration: none;
+        display: block;
     }
 
-    .boton i {
-        font-size: 5rem;
-    }
-
-    .boton:hover {
-        transition: ease .3s;
+    .materia:hover {
+        transition: ease 0.3s;
         background: #a98bf5;
-    }
-
-    .materias {
-        margin: 1rem;
-    }
-
-    .boton {
-        background: rgb(168, 187, 241);
-        padding: 2rem;
-        border-radius: 1rem;
-        display: flex;
-        font-size: 1.2rem;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        font-family: 'Montserrat', sans-serif;
-        width: 90%;
-        text-decoration: none;
-        color: black;
     }
 
     #contenedor {
         width: 100%;
-        /* Ancho del div contenedor */
         height: 100%;
-        /* Alto del div contenedor */
         border: none;
-        /* Borde para el div contenedor */
     }
 
     iframe {
         width: 100%;
-        /* Para que el iframe ocupe todo el ancho del contenedor */
         height: 100%;
-        /* Para que el iframe ocupe todo el alto del contenedor */
         border: none;
-        /* Sin borde para el iframe */
+    }
+
+    table {
+        user-select: none;
+        background-color: black;
+        width: 100%;
+        height: 100%;
+        border-collapse: collapse;
+    }
+
+    table tr {
+        background-color: white;
+        border: none;
+    }
+
+    table td,
+    table th {
+        border: 1px solid black;
+        padding: 5px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    table th {
+        background-color: #ddd;
+    }
+
+    table td {
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        /* Permite el ajuste de línea */
+        word-wrap: break-word;
+        /* Rompe las palabras largas */
+        font-size: 15px;
     }
 </style>
-
-
 {% endblock %}
 
 {% block body_class %}mihorario{% endblock %}
 
-
-
 {% block content %}
-
-
 <div class="principal">
-
     <div class="seccion">
-
         <div class="materias">
-
             {% for materia in materias %}
             <div class="materia">
                 <p>{{ materia.nombre }}</p>
-                </a>
             </div>
             {% endfor %}
         </div>
     </div>
 
     <div class="seccion" style="text-align: center; align-items: center">
-
-
-
-
+        <table id="TablaHorario">
+            <tr>
+                <th>Horas</th>
+                <th>Lunes</th>
+                <th>Martes</th>
+                <th>Miercoles</th>
+                <th>Jueves</th>
+                <th>Viernes</th>
+                <th>Sábado</th>
+            </tr>
+            <tr>
+                <td class="hora hora-1">7-8</td>
+                <td class="dia" id="0"></td>
+                <td class="dia" id="15"></td>
+                <td class="dia" id="30"></td>
+                <td class="dia" id="45"></td>
+                <td class="dia" id="60"></td>
+                <td class="dia" id="75"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-2">8-9</td>
+                <td class="dia" id="1"></td>
+                <td class="dia" id="16"></td>
+                <td class="dia" id="31"></td>
+                <td class="dia" id="46"></td>
+                <td class="dia" id="61"></td>
+                <td class="dia" id="76"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-3">9-10</td>
+                <td class="dia" id="2"></td>
+                <td class="dia" id="17"></td>
+                <td class="dia" id="32"></td>
+                <td class="dia" id="47"></td>
+                <td class="dia" id="62"></td>
+                <td class="dia" id="77"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-4">10-11</td>
+                <td class="dia" id="3"></td>
+                <td class="dia" id="18"></td>
+                <td class="dia" id="33"></td>
+                <td class="dia" id="48"></td>
+                <td class="dia" id="63"></td>
+                <td class="dia" id="78"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-5">11-12</td>
+                <td class="dia" id="4"></td>
+                <td class="dia" id="19"></td>
+                <td class="dia" id="34"></td>
+                <td class="dia" id="49"></td>
+                <td class="dia" id="64"></td>
+                <td class="dia" id="79"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-6">12-13</td>
+                <td class="dia" id="5"></td>
+                <td class="dia" id="20"></td>
+                <td class="dia" id="35"></td>
+                <td class="dia" id="50"></td>
+                <td class="dia" id="65"></td>
+                <td class="dia" id="80"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-7">13-14</td>
+                <td class="dia" id="6"></td>
+                <td class="dia" id="21"></td>
+                <td class="dia" id="36"></td>
+                <td class="dia" id="51"></td>
+                <td class="dia" id="66"></td>
+                <td class="dia" id="81"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-8">14-15</td>
+                <td class="dia" id="7"></td>
+                <td class="dia" id="22"></td>
+                <td class="dia" id="37"></td>
+                <td class="dia" id="52"></td>
+                <td class="dia" id="67"></td>
+                <td class="dia" id="82"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-9">15-16</td>
+                <td class="dia" id="8"></td>
+                <td class="dia" id="23"></td>
+                <td class="dia" id="38"></td>
+                <td class="dia" id="53"></td>
+                <td class="dia" id="68"></td>
+                <td class="dia" id="83"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-10">16-17</td>
+                <td class="dia" id="9"></td>
+                <td class="dia" id="24"></td>
+                <td class="dia" id="39"></td>
+                <td class="dia" id="54"></td>
+                <td class="dia" id="69"></td>
+                <td class="dia" id="84"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-11">17-18</td>
+                <td class="dia" id="10"></td>
+                <td class="dia" id="25"></td>
+                <td class="dia" id="40"></td>
+                <td class="dia" id="55"></td>
+                <td class="dia" id="70"></td>
+                <td class="dia" id="85"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-12">18-19</td>
+                <td class="dia" id="11"></td>
+                <td class="dia" id="26"></td>
+                <td class="dia" id="41"></td>
+                <td class="dia" id="56"></td>
+                <td class="dia" id="71"></td>
+                <td class="dia" id="86"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-13">19-20</td>
+                <td class="dia" id="12"></td>
+                <td class="dia" id="27"></td>
+                <td class="dia" id="42"></td>
+                <td class="dia" id="57"></td>
+                <td class="dia" id="72"></td>
+                <td class="dia" id="87"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-14">20-21</td>
+                <td class="dia" id="13"></td>
+                <td class="dia" id="28"></td>
+                <td class="dia" id="43"></td>
+                <td class="dia" id="58"></td>
+                <td class="dia" id="73"></td>
+                <td class="dia" id="88"></td>
+            </tr>
+            <tr>
+                <td class="hora hora-15">21-22</td>
+                <td class="dia" id="14"></td>
+                <td class="dia" id="29"></td>
+                <td class="dia" id="44"></td>
+                <td class="dia" id="59"></td>
+                <td class="dia" id="74"></td>
+                <td class="dia" id="89"></td>
+            </tr>
+        </table>
     </div>
-
-
 </div>
 
+<script>
+    function getmateria() {
+        fetch(`/get_materia`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener los datos de la base de datos');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            if (data.success) {
+                // Aquí puedes manejar los datos obtenidos y actualizar el DOM según sea necesario
+                data.horario.cell_ids.forEach((cellId, index) => {
+                    const cell = document.getElementById(cellId);
+                    if (cell) {
+                        const materia = data.horario.materia[index];
+                        const aula = data.horario.aula[index];
+                        cell.innerHTML = `<strong>${materia}</strong><br>${aula}`; // Muestra el nombre de la materia y del aula en la celda correspondiente
+                    }
+                });
+            } else {
+                console.error('Error en la respuesta:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos de la base de datos:', error);
+        });
+    }
 
-
-
-
+    document.addEventListener('DOMContentLoaded', (event) => {
+        getmateria(); // Llama a la función cuando el DOM esté completamente cargado
+    });
+</script>
+</script>
 
 {% endblock %}
