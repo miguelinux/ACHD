@@ -104,7 +104,7 @@
     }
 
     table td {
-        white-space: normal; 
+        white-space: normal;
         font-size: 15px;
     }
 </style>
@@ -240,6 +240,10 @@
 </div>
 
 <script>
+
+    let diasOriginales = obtenerDiasOriginales();
+
+    const horasOriginales = obtenerHorasOriginales();
     const turnA = document.getElementById("turnA");
     const turnB = document.getElementById("turnB");
     const turnN = document.getElementById("turnN");
@@ -247,10 +251,12 @@
     turnA.classList.add('selected');
 
     turnA.addEventListener("click", function () {
+        restaurarHorasOriginales();
         cambiarTurno("A");
     });
 
     turnB.addEventListener("click", function () {
+        restaurarHorasOriginales();
         cambiarTurno("B");
     });
 
@@ -284,6 +290,30 @@
         }
     }
 
+    function obtenerDiasOriginales() {
+        const diasOriginales = [];
+        const dias = document.querySelectorAll(".dia");
+        dias.forEach(function (dia) {
+            diasOriginales.push(dia.id);
+        });
+        return diasOriginales;
+    }
+
+    function obtenerHorasOriginales() {
+        const horasOriginales = [];
+        const horas = document.querySelectorAll(".hora");
+        horas.forEach(function (hora) {
+            horasOriginales.push(hora.textContent);
+        });
+        return horasOriginales;
+    }
+
+    function restaurarHorasOriginales() {
+        const horas = document.querySelectorAll(".hora");
+        horas.forEach(function (hora, index) {
+            hora.textContent = horasOriginales[index];
+        });
+    }
     function stringToColor(str) {
         let hash = 0;
         for (let i = 0; i < str.length; i++) {

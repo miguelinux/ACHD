@@ -4,61 +4,57 @@
 
 Table usuario {
   id integer [primary key, increment]
-  nombre varchar
-  apellido_pat varchar
-  apellido_Mat varchar
-  email varchar
-  password varchar
+  nombre char (30) [not null]
+  apellido_pat char(20) [not null]
+  apellido_Mat char(20) [not null]
+  email char(40) [not null]
+  password char(65) [not null]
   disponibilidad json
-  materias_asignadas json
-  user_type integer
-  first_log bool
-  horas_semana integer
-  carrera integer
+  user_type integer(3) [not null]
+  first_log bool [not null]
+  carrera_id integer [ref: > carrera.id]
+  habilitado bool [not null]
 }
 
 Table carrera {
  id integer [primary key, increment]
- nombre varchar
- plan_de_estudio varchar
+ nombre char(30) [not null]
+ plan_de_estudio char(15) [not null]
 }
 
 Table materia{
   id integer [primary key, increment]
-  clave varchar
-  nombre varchar
-  semestre varchar
-  horas_practica integer
-  horas_teoria integer
-  creditos integer
-  carrera integer
+  clave char(10) [not null]
+  nombre char(30)
+  semestre integer(2) [not null]
+  horas_practica integer(2) [not null]
+  horas_teoria integer(2) [not null]
+  creditos integer (2) [not null]
+  carrera_id integer [ref: > carrera.id]
 }
 
 Table aula{
 id integer [primary key, increment]
-nombre varchar
-edificio varchar
+nombre char(10) [not null]
+edificio varchar(15) [not null]
 }
 
 table asignacion{
   id integer [primary key, increment]
-  horario json
-  semestre integer
-  carrera integer
+  horario json [not null]
+  semestre integer [not null]
+  turno char(3) [not null]
+  carrera_id integer [ref: > carrera.id]
+  ciclo_id integer [ref: > ciclo.id]
 }
 
 
-Table log{
+Table ciclo{
   id integer [primary key, increment]
-  usuario integer
-  fecha datetime
-  tabla_change varchar
-  change varchar
+  anio integer
+  estacion char(2)
+  actual bool
 }
 
 
 
-Ref: usuario.carrera < carrera.id
-Ref: carrera.id > materia.carrera
-Ref: log.usuario < usuario.id
-Ref: asignacion.carrera < carrera.id
