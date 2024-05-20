@@ -33,10 +33,10 @@ DB_PASSWORD = config.get("DB", "DB_PASSWORD")
 DB_DB = config.get("DB", "DB_DB")
 DB_USER = config.get("DB", "DB_USER")
 
-"""app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(
-    minutes=15
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(
+    minutes=30
 )  # el tiempo de vida de la cookie
-"""
+
 app.config["SQLALCHEMY_DATABASE_URI"] = (
     f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DB}"
 )
@@ -1034,8 +1034,9 @@ def update_ciclo():
         
         if actua:
             change = Ciclos.query.filter_by(actual= True).first()
-            change.actual = False
-            db.session.commit()
+            if change:
+                change.actual = False
+                db.session.commit()
                        
         ciclo = db.session.get(Ciclos, ciclo_id)
         if ciclo:
@@ -1078,8 +1079,9 @@ def crear_ciclo():
         
         if actua:
             change = Ciclos.query.filter_by(actual= True).first()
-            change.actual = False
-            db.session.commit()
+            if change:
+                change.actual = False
+                db.session.commit()
             
         nuevo_ciclo = Ciclos(
             anio = anio,
