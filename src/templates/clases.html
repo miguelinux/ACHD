@@ -8,6 +8,8 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+        font-family: Montserrat,Arial;
+        margin:0;
     }
 
     .seccion {
@@ -52,6 +54,7 @@
         width: 100%;
         height: 100%;
         border-collapse: collapse;
+        border-radius: 3rem;
     }
 
     table tr {
@@ -249,6 +252,12 @@
 </div>
 
 <script>
+    // Lista de colores disponibles
+    const colores = ['#308fff', '#54c98f', '#ffae31', '#634fbb', '#ff4d63', '#6c757d','#fd7e14','#6c757d','#d8d8d8'];
+
+    // Objeto para rastrear los colores asignados a cada materia
+    const asignacionesColor = {};
+
     function getmateria() {
         fetch(`/get_materia`, {
             method: 'GET',
@@ -272,6 +281,13 @@
                         const materia = data.horario.materia[index];
                         const aula = data.horario.aula[index];
                         cell.innerHTML = `<strong>${materia}</strong><br>${aula}`; // Muestra el nombre de la materia y del aula en la celda correspondiente
+
+                        // Asignar color a la materia y registrar la asignación
+                        if (!asignacionesColor[materia]) {
+                            asignacionesColor[materia] = colores.shift(); // Obtener el primer color de la lista
+                            colores.push(asignacionesColor[materia]); // Devolver el color usado al final de la lista
+                        }
+                        cell.style.backgroundColor = asignacionesColor[materia]; // Aplicar el color a la celda
                     }
                 });
             } else {
@@ -287,6 +303,6 @@
         getmateria(); // Llama a la función cuando el DOM esté completamente cargado
     });
 </script>
-</script>
+
 
 {% endblock %}
