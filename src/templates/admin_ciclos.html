@@ -6,6 +6,9 @@
 {% block css %}
 
 <style>
+    body{
+        font-family: Montserrat,Arial;
+    }
     #input-data {
         width: 90vw;
         margin: 0 auto;
@@ -87,7 +90,10 @@
     }
 
     #myTable tr:hover {
-        background-color: #ddd;
+        background-color: #352875;
+        color:white;
+        transition: 0.2s ease-in-out;
+        cursor: pointer;
     }
 
     .remove-btn {
@@ -112,7 +118,7 @@
             </select>
             <select name="actual" class="input-text" required>
                 <option value="true">Es el actual</option>
-                <option value="false">No es el actual</option>
+                <option selected value="false">No es el actual</option>
             </select>
             <input class="input-btn" type="submit" value="Enviar" />
         </div>

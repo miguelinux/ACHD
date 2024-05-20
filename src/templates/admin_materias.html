@@ -94,7 +94,10 @@ body{
     }
 
     #myTable tr:hover {
-        background-color: #ddd;
+        background-color: #352875;
+        color:white;
+        transition: 0.2s ease-in-out;
+        cursor: pointer;
     }
 
     .remove-btn {
@@ -115,15 +118,15 @@ body{
             <input name="nombre" class="input-text" placeholder="Nombre" type="text" required />
             <input name="clave" class="input-text" placeholder="Clave" type="text" required />
             <input name="semestre" class="input-text" placeholder="Semestre" type="number" required />
-            <input name="Hpracticas" class="input-text" placeholder="Horas practicas" type="number" required />
-            <input name="Hteoria" class="input-text" placeholder="Horas teoricas" type="number" required />
+            <input name="Hpracticas" class="input-text" placeholder="Horas Prácticas" type="number" required />
+            <input name="Hteoria" class="input-text" placeholder="Horas Teóricas" type="number" required />
             <input name="Creditos" class="input-text" placeholder="Créditos" type="number" required />
             <select name="carrera" class="input-text" required>
                 {% for carrera in carreras %}
                 <option value="{{ carrera.id }}">{{ carrera.nombre }}</option>
                 {% endfor %}
             </select>
-            <input class="input-btn" type="submit" value="Enviar" />
+            <input class="input-btn" type="submit" value="Agregar" />
         </div>
     </form>
     
