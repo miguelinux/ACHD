@@ -900,6 +900,99 @@ def crear_aula():
     else:
         return redirect("/")
 
+
+
+@app.route("/admin/carreras")
+def admin_carreras():
+    """
+    vista administrador con todas las carreras
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        materia = Materias.query.all()
+        carreras = Carreras.query.all()
+        
+        return render_template(
+            "admin_carreras.html", user=username, materias=materia,carreras=carreras
+        )
+    return redirect("/")
+
+@app.route("/admin/modificar/carrera/<int:carreraId>", methods=['GET'])
+def admin_modificar_carrera(carreraId):
+    """
+    Vista para modificar una carrera por parte del administrador
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        carrera = Carreras.query.filter_by(id=carreraId).first()
+        return render_template(
+            "modificar_carrera.html", user=username, carrera=carrera
+        )  
+    return redirect("/")
+
+
+@app.route("/update/carrera", methods=["POST"])
+def update_carrera():
+    """
+    Metodo para actualizar la informacion en la base de datos
+    """
+    user = verificate_session()
+    if user:
+        form = request.form
+        carrera_id = form.get("id")
+        nombre = form.get("nombre")
+        plan = form.get("plan")
+
+        carrera = db.session.get(Carreras, carrera_id)
+        if carrera:
+            carrera.nombre = nombre
+            carrera.plan_de_estudio = plan
+            db.session.commit()
+        return redirect("/admin/carreras")
+    
+    return redirect("/")
+
+@app.route("/delete/carrera", methods=["POST"])
+def delete_carrera():
+    """
+    Método para borrar una carrera de la base de datos
+    """
+    user = verificate_session()
+    if user:
+        carreraid = request.form.get("id")
+        carrera = Carreras.query.get(carreraid)
+        if carrera:
+            db.session.delete(carrera)
+            db.session.commit()
+        return redirect("/admin/carreras")
+    return redirect("/")
+
+@app.route("/crear_carrera", methods=["POST"])
+def crear_carrera():
+    """
+    Metodo para agregar una carrera a la base de datos
+    """
+    user = verificate_session()
+    if user:
+        # Obtener los datos del formulario
+        form = request.form
+        nombre = form.get("nombre")
+        plan = form.get("plan")
+        
+        nueva_carrera = Carreras(
+            nombre = nombre,
+            plan_de_estudio = plan
+        )
+        db.session.add(nueva_carrera)
+        db.session.commit()
+        return redirect("/admin/carreras")
+    else:
+        return redirect("/")
+
+
+
 if __name__ == "__main__":
     app.debug=True
     app.run()
