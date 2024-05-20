@@ -611,10 +611,10 @@ def admin_modificar(userId):
     user = verificate_session()
     if user:
         username = user["username"]
-        usuari = Usuarios.query.filter_by(id=userId).first()
+        usuario = Usuarios.query.filter_by(id=userId).first()
         carrera = Carreras.query.all()
         return render_template(
-            "modificar_usuario.html", user=username, usuario=usuari,carreras =carrera
+            "modificar_usuario.html", user=username, usuario=usuario,carreras =carrera
         )  
     return redirect("/")
 
@@ -819,11 +819,10 @@ def admin_aulas():
     user = verificate_session()
     if user:
         username = user["username"]
-        materia = Materias.query.all()
         aula = Aulas.query.all()
         
         return render_template(
-            "admin_aulas.html", user=username, materias=materia,aulas=aula
+            "admin_aulas.html", user=username,aulas=aula
         )
     return redirect("/")
 
@@ -910,11 +909,10 @@ def admin_carreras():
     user = verificate_session()
     if user:
         username = user["username"]
-        materia = Materias.query.all()
         carreras = Carreras.query.all()
         
         return render_template(
-            "admin_carreras.html", user=username, materias=materia,carreras=carreras
+            "admin_carreras.html", user=username, carreras=carreras
         )
     return redirect("/")
 
@@ -991,7 +989,108 @@ def crear_carrera():
     else:
         return redirect("/")
 
+@app.route("/admin/ciclos")
+def admin_ciclos():
+    """
+    vista administrador con todas las ciclos
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        ciclos = Ciclos.query.all()
+        
+        return render_template(
+            "admin_ciclos.html", user=username, ciclos=ciclos
+        )
+    return redirect("/")
 
+@app.route("/admin/modificar/ciclo/<int:cicloId>", methods=['GET'])
+def admin_modificar_ciclo(cicloId):
+    """
+    Vista para modificar una carrera por parte del administrador
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        ciclo = Ciclos.query.filter_by(id=cicloId).first()
+        return render_template(
+            "modificar_ciclo.html", user=username, ciclo=ciclo
+        )  
+    return redirect("/")
+
+
+@app.route("/update/ciclo", methods=["POST"])
+def update_ciclo():
+    """
+    Metodo para actualizar la informacion en la base de datos
+    """
+    user = verificate_session()
+    if user:
+        form = request.form
+        ciclo_id = form.get("id")
+        anio = form.get("anio")
+        estacion = form.get("estacion")
+        actua = form.get("actual") == 'true'
+        
+        if actua:
+            change = Ciclos.query.filter_by(actual= True).first()
+            change.actual = False
+            db.session.commit()
+                       
+        ciclo = db.session.get(Ciclos, ciclo_id)
+        if ciclo:
+            ciclo.anio = anio
+            ciclo.estacion = estacion
+            ciclo.actual = actua
+            
+            db.session.commit()
+        return redirect("/admin/ciclos")
+    
+    return redirect("/")
+
+@app.route("/delete/ciclo", methods=["POST"])
+def delete_ciclo():
+    """
+    Método para borrar una carrera de la base de datos
+    """
+    user = verificate_session()
+    if user:
+        cicloid = request.form.get("id")
+        ciclo = Ciclos.query.get(cicloid)
+        if ciclo:
+            db.session.delete(ciclo)
+            db.session.commit()
+        return redirect("/admin/ciclos")
+    return redirect("/")
+
+@app.route("/crear_ciclo", methods=["POST"])
+def crear_ciclo():
+    """
+    Metodo para agregar una carrera a la base de datos
+    """
+    user = verificate_session()
+    if user:
+        # Obtener los datos del formulario
+        form = request.form
+        anio = form.get("anio")
+        estacion = form.get("estacion")
+        actua = form.get("actual") == 'true'
+        
+        if actua:
+            change = Ciclos.query.filter_by(actual= True).first()
+            change.actual = False
+            db.session.commit()
+            
+        nuevo_ciclo = Ciclos(
+            anio = anio,
+            estacion = estacion,
+            actual = actua
+        )
+        db.session.add(nuevo_ciclo)
+        db.session.commit()
+        return redirect("/admin/ciclos")
+    else:
+        return redirect("/")
 
 if __name__ == "__main__":
     app.debug=True
