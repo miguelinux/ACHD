@@ -6,6 +6,9 @@
 {% block css %}
 
 <style>
+    body{
+        font-family: Montserrat,Arial;
+    }
     #input-data {
         width: 90vw;
         font-family: Ubuntu;
@@ -130,8 +133,8 @@
             <th>Nombre</th>
             <th>Email</th>
             <th>Tipo de usuario</th>
-            <th>Carera</th>
-            <th>habilitado</th>
+            <th>Carrera</th>
+            <th>Activo</th>
         </tr>
         {% for usuario in usuarios %}
         <tr onclick="redirectToUserPage('{{ usuario.id }}')">

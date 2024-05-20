@@ -6,9 +6,12 @@
 {% block css %}
 
 <style>
+body{
+    font-family: Montserrat,Arial;
+}
     #input-data {
         width: 90vw;
-        font-family: Ubuntu;
+        font-family: Montserrat,Arial;
         margin: 0 auto;
         margin-top: 5vh;
         display: flex;
@@ -18,7 +21,10 @@
         flex: 1;
         min-width: 210px;
         margin: 5px;
+        box-shadow: #717171 1px 1px;
+        border:none;
         height: 35px;
+        font-family: Montserrat,Arial;
         padding-left: 5px;
         border-radius: 10px;
         border-style: solid;
@@ -111,7 +117,7 @@
             <input name="semestre" class="input-text" placeholder="Semestre" type="number" required />
             <input name="Hpracticas" class="input-text" placeholder="Horas practicas" type="number" required />
             <input name="Hteoria" class="input-text" placeholder="Horas teoricas" type="number" required />
-            <input name="Creditos" class="input-text" placeholder="creditos" type="number" required />
+            <input name="Creditos" class="input-text" placeholder="Créditos" type="number" required />
             <select name="carrera" class="input-text" required>
                 {% for carrera in carreras %}
                 <option value="{{ carrera.id }}">{{ carrera.nombre }}</option>
@@ -124,13 +130,13 @@
     <table id="myTable">
         <tr>
             <th>ID</th>
-            <th>nombre</th>
-            <th>clave</th>
-            <th>semestre</th>
-            <th>horas practicas</th>
-            <th>horas teoria</th>
-            <th>creditos</th>
-            <th>carrera</th>
+            <th>Nombre</th>
+            <th>Clave</th>
+            <th>Semestre</th>
+            <th>Horas Prácticas</th>
+            <th>Horas Teóricas</th>
+            <th>Créditos</th>
+            <th>Carrera</th>
         </tr>
         {% for materia in materias %}
         <tr onclick="redirectToUserPage('{{ materia.id }}')">
