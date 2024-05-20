@@ -127,7 +127,7 @@
     <table id="myTable">
         <tr>
             <th>ID</th>
-            <th>Año</th>
+            <th>Ciclo</th>
             <th>Actual</th>
         </tr>
         {% for ciclo in ciclos %}
@@ -135,9 +135,9 @@
             <td>{{ ciclo.id }}</td>
             <td>{{ ciclo.anio }}{{ ciclo.estacion }} </td>
             <td>{% if ciclo.actual == True %}
-                si
+                Sí
                 {% else %}
-                no
+                No
                 {% endif %}
             </td>
         </tr>

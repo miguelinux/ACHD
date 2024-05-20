@@ -129,19 +129,19 @@
             <input type="text" placeholder="semestre" name="semestre" value="{{materia.semestre}}">
         </div>
         <div class="input">
-            <label for="Horas practicas">Horas practias: </label>
+            <label for="Horas practicas">Horas Práctica: </label>
             <input type="text" placeholder="Hpracticas" name="Hpracticas" value="{{materia.horas_practica}}">
         </div>
         <div class="input">
-            <label for="Horas teoria">Horas de teoria: </label>
+            <label for="Horas teoria">Horas Teoría: </label>
             <input type="text" placeholder="Hteoria" name="Hteoria" value="{{materia.horas_teoria}}">
         </div>
         <div class="input">
-            <label for="Creditos">Creditos: </label>
+            <label for="Creditos">Créditos: </label>
             <input type="text" placeholder="Creditos" name="Creditos" value="{{materia.creditos}}">
         </div>
         <div class="input">
-            <label for="carrera" class="label">carrera:</label>
+            <label for="carrera" class="label">Carrera:</label>
             <select id="carrear" name="carrera" class="input-field-carrera">
                 {% for carrera in carreras %}
                 <option value="{{ carrera.id }}" {% if materia.carrera==carrera.id %} selected {% endif %}>
