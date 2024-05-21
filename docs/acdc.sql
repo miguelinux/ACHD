@@ -24,9 +24,9 @@ DROP TABLE IF EXISTS `asignacion`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `asignacion` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `horario` json NOT NULL,
+  `horario` json DEFAULT NULL,
   `semestre` int NOT NULL,
-  `turno` char(3) NOT NULL,
+  `grupo` char(5) NOT NULL,
   `carrera_id` int DEFAULT NULL,
   `ciclo_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -56,7 +56,7 @@ DROP TABLE IF EXISTS `aula`;
 CREATE TABLE `aula` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` char(10) NOT NULL,
-  `edificio` varchar(15) NOT NULL,
+  `edificio` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -79,8 +79,8 @@ DROP TABLE IF EXISTS `carrera`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `carrera` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `nombre` char(30) NOT NULL,
-  `plan_de_estudio` char(15) NOT NULL,
+  `nombre` varchar(30) NOT NULL,
+  `plan_de_estudio` varchar(15) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -103,9 +103,9 @@ DROP TABLE IF EXISTS `ciclo`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ciclo` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `anio` int DEFAULT NULL,
-  `estacion` char(2) DEFAULT NULL,
-  `actual` tinyint(1) DEFAULT NULL,
+  `anio` int NOT NULL,
+  `estacion` char(2) NOT NULL,
+  `habil` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -120,6 +120,63 @@ LOCK TABLES `ciclo` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `disponibilidad`
+--
+
+DROP TABLE IF EXISTS `disponibilidad`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `disponibilidad` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `horas` json DEFAULT NULL,
+  `usuario_id` int DEFAULT NULL,
+  `ciclo_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `usuario_id` (`usuario_id`),
+  KEY `ciclo_id` (`ciclo_id`),
+  CONSTRAINT `disponibilidad_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`),
+  CONSTRAINT `disponibilidad_ibfk_2` FOREIGN KEY (`ciclo_id`) REFERENCES `ciclo` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `disponibilidad`
+--
+
+LOCK TABLES `disponibilidad` WRITE;
+/*!40000 ALTER TABLE `disponibilidad` DISABLE KEYS */;
+/*!40000 ALTER TABLE `disponibilidad` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `docente_carrera`
+--
+
+DROP TABLE IF EXISTS `docente_carrera`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `docente_carrera` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `carrera_id` int DEFAULT NULL,
+  `usuario_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `carrera_id` (`carrera_id`),
+  KEY `usuario_id` (`usuario_id`),
+  CONSTRAINT `docente_carrera_ibfk_1` FOREIGN KEY (`carrera_id`) REFERENCES `carrera` (`id`),
+  CONSTRAINT `docente_carrera_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `docente_carrera`
+--
+
+LOCK TABLES `docente_carrera` WRITE;
+/*!40000 ALTER TABLE `docente_carrera` DISABLE KEYS */;
+/*!40000 ALTER TABLE `docente_carrera` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `materia`
 --
 
@@ -128,16 +185,13 @@ DROP TABLE IF EXISTS `materia`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `materia` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `clave` char(10) NOT NULL,
-  `nombre` char(30) DEFAULT NULL,
+  `clave` char(15) NOT NULL,
+  `nombre` varchar(30) NOT NULL,
   `semestre` int NOT NULL,
   `horas_practica` int NOT NULL,
   `horas_teoria` int NOT NULL,
   `creditos` int NOT NULL,
-  `carrera_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `carrera_id` (`carrera_id`),
-  CONSTRAINT `materia_ibfk_1` FOREIGN KEY (`carrera_id`) REFERENCES `carrera` (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -151,6 +205,34 @@ LOCK TABLES `materia` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `materias_carrera`
+--
+
+DROP TABLE IF EXISTS `materias_carrera`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `materias_carrera` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `carrera_id` int DEFAULT NULL,
+  `materia_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `carrera_id` (`carrera_id`),
+  KEY `materia_id` (`materia_id`),
+  CONSTRAINT `materias_carrera_ibfk_1` FOREIGN KEY (`carrera_id`) REFERENCES `carrera` (`id`),
+  CONSTRAINT `materias_carrera_ibfk_2` FOREIGN KEY (`materia_id`) REFERENCES `materia` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `materias_carrera`
+--
+
+LOCK TABLES `materias_carrera` WRITE;
+/*!40000 ALTER TABLE `materias_carrera` DISABLE KEYS */;
+/*!40000 ALTER TABLE `materias_carrera` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `usuario`
 --
 
@@ -159,19 +241,16 @@ DROP TABLE IF EXISTS `usuario`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuario` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `nombre` char(30) NOT NULL,
-  `apellido_pat` char(20) NOT NULL,
-  `apellido_Mat` char(20) NOT NULL,
-  `email` char(40) NOT NULL,
+  `email` char(50) NOT NULL,
   `password` char(65) NOT NULL,
-  `disponibilidad` json DEFAULT NULL,
   `user_type` int NOT NULL,
-  `first_log` tinyint(1) NOT NULL,
-  `carrera_id` int DEFAULT NULL,
+  `fist_login` tinyint(1) NOT NULL,
+  `nombre` varchar(20) NOT NULL,
+  `apellido_pat` varchar(20) NOT NULL,
+  `apellido_mat` varchar(20) NOT NULL,
   `habilitado` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `carrera_id` (`carrera_id`),
-  CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`carrera_id`) REFERENCES `carrera` (`id`)
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -193,4 +272,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-20 12:28:33
+-- Dump completed on 2024-05-21 17:02:34

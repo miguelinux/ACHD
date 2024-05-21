@@ -2,58 +2,77 @@
 // Docs: https://dbml.dbdiagram.io/docs
 // https://dbdiagram.io/
 
+
+
 Table usuario {
   id integer [primary key, increment]
-  nombre char (30) [not null]
-  apellido_pat char(20) [not null]
-  apellido_Mat char(20) [not null]
-  email char(40) [not null]
-  password char(65) [not null]
-  disponibilidad json
+  email char(50) [not null, unique]
+  password char (65) [not null]
   user_type integer(3) [not null]
-  first_log bool [not null]
-  carrera_id integer [ref: > carrera.id]
+  fist_login bool [not null]
+  nombre varchar(20) [not null]
+  apellido_pat varchar(20) [not null]
+  apellido_mat varchar(20) [not null]
   habilitado bool [not null]
 }
 
-Table carrera {
- id integer [primary key, increment]
- nombre char(30) [not null]
- plan_de_estudio char(15) [not null]
-}
-
-Table materia{
+Table docente_carrera{
   id integer [primary key, increment]
-  clave char(10) [not null]
-  nombre char(30)
-  semestre integer(2) [not null]
-  horas_practica integer(2) [not null]
-  horas_teoria integer(2) [not null]
-  creditos integer (2) [not null]
   carrera_id integer [ref: > carrera.id]
+  usuario_id integer [ref: > usuario.id]
 }
 
-Table aula{
-id integer [primary key, increment]
-nombre char(10) [not null]
-edificio varchar(15) [not null]
-}
-
-table asignacion{
+table disponibilidad{
   id integer [primary key, increment]
-  horario json [not null]
-  semestre integer [not null]
-  turno char(3) [not null]
-  carrera_id integer [ref: > carrera.id]
+  horas json
+  usuario_id integer [ref: > usuario.id]
   ciclo_id integer [ref: > ciclo.id]
 }
 
 
-Table ciclo{
+Table carrera {
   id integer [primary key, increment]
-  anio integer
-  estacion char(2)
-  actual bool
+  nombre varchar (30) [not null]
+  plan_de_estudio varchar(15) [not null]
+}
+
+Table materia{
+  id integer [primary key, increment]
+  clave char(15) [not null]
+  nombre varchar(30) [not null]
+  semestre integer(3) [not null]
+  horas_practica integer(2) [not null]
+  horas_teoria integer(2) [not null]
+  creditos integer(2) [not null]
+}
+
+Table materias_carrera{
+  id integer [primary key, increment]
+  carrera_id integer [ref: > carrera.id]
+  materia_id integer [ref: > materia.id]
+}
+
+
+Table aula{
+  id integer [primary key, increment]
+  nombre char(10) [not null]
+  edificio varchar(20) [not null]
+}
+
+table asignacion{
+  id integer [primary key, increment]
+  horario json
+  semestre integer(3) [not null]
+  grupo char(5) [not null]
+  carrera_id integer [ref: > carrera.id]
+  ciclo_id integer [ref: > ciclo.id]
+}
+
+table ciclo{
+  id integer [primary key, increment]
+  anio integer [not null]
+  estacion char(2) [not null]
+  habil bool [not null]
 }
 
 

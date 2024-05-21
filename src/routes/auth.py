@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, session
 from models.tables_db import Usuarios
-from extensions import db
 from functions import get_hex_digest
 from functions import admin, docente, jefe_de_carrera
 auth_bp = Blueprint('auth', __name__)
@@ -22,16 +21,15 @@ def login():
     session["user"] = {
         "userid": user.id,
         "name": user.nombre,
-        "carrera": user.carrera,
+        "carrera":user.docente_carrera[0].carrera.nombre if user.user_type == docente or user.user_type == jefe_de_carrera else None,
     }
 
     if user.user_type == admin:
-        return redirect("/homeDocente")
+        return redirect("/admin")
     if user.user_type == docente:
         return redirect("/homeDocente")
     if user.user_type == jefe_de_carrera:
         return redirect("/jefeCarrera")
-
     return redirect("/")
 
 @auth_bp.route("/check", methods=['POST'])
@@ -46,7 +44,7 @@ def check_email():
     session["user"] = {
         "userid": usuario.id,
         "name": usuario.nombre,
-        "carrera": usuario.carrera,
+        "carrera":usuario.docente_carrera[0].carrera.nombre if usuario.user_type == docente or usuario.user_type == jefe_de_carrera else None,
     }
     
     if usuario.first_login:
