@@ -1,0 +1,96 @@
+{% extends 'layout.html' %}
+{% block title %}Mi cuenta{% endblock %}
+
+
+{% block css %}
+
+<script src="https://kit.fontawesome.com/80905f653a.js" crossorigin="anonymous"></script>
+
+<style>
+
+
+
+.main{
+    font-family: Montserrat,Arial;
+    font-size: large;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    background: rgba(168, 168, 168, 0.25);
+    padding: 1rem;
+    gap:1rem;
+    border-radius: 1rem;
+    max-width: 100%;
+}
+
+.seccion{
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1rem;
+    width: 25%;
+}
+
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="main">
+    <h2>Para cambiar algún dato, ponte en contacto con el administrador</h2>
+
+    <div class="seccion">
+        <p><strong>Nombre:</strong></p>
+        <p>{{ usuario.nombre }}</p>
+        <p><strong>Apellido Paterno:</strong></p>
+        <p>{{ usuario.apellido_pat }}</p>
+        <p><strong>Apellido Materno:</strong></p>
+        <p>{{ usuario.apellido_mat }}</p>
+    </div>
+    <div class="seccion">
+        <p><strong>Correo:</strong></p>
+        <p>{{ usuario.email }}</p>
+    </div>
+
+    <div class="seccion">
+        <p><strong>Tipo de usuario:</strong></p>
+        <p>{% if usuario.user_type==1 %}Administrador{% elif usuario.user_type==2 %}Jefe de Carrera{% elif usuario.user_type==3 %}Docente{% endif %}</p>
+    </div>
+
+    <div class="seccion">
+        <p><strong>Horas frente a grupo:</strong></p>
+        <p id="resultado">Cargando...</p>
+    </div>
+
+    </div>
+
+<script>
+        // Función para obtener el JSON y contar los elementos en 'materia'
+        async function obtenerYContarMateria() {
+            try {
+                const response = await fetch('/get_materia');
+                if (!response.ok) {
+                    throw new Error('Error en la solicitud');
+                }
+
+                const data = await response.json();
+                const materiaCount = data.horario.materia.length;
+
+                document.getElementById('resultado').textContent = `${materiaCount}`;
+            } catch (error) {
+                document.getElementById('resultado').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        // Llamada a la función al cargar la página
+        obtenerYContarMateria();
+    </script>
+
+
+
+
+
+{% endblock %}

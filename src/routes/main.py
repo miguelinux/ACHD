@@ -201,3 +201,16 @@ def get_materias():
         return jsonify({'error': 'Horario no encontrado'})
     return redirect("/")
 
+<<<<<<< HEAD
+=======
+@main_bp.route("/myAccount", methods=['GET'])
+def myAccount():
+    user = verificate_session()
+    if user:
+        usuario = Usuarios.query.filter_by(id=user["userid"]).first()
+        return render_template("myAccount.html",user=usuario.nombre,usuario=usuario)
+    return redirect("/")
+
+
+
+>>>>>>> 3c1bf44cd3f3e225d252cc0772972d00aa5b09c3
