@@ -131,6 +131,10 @@ def get_materias():
     if user:
         carrera = user["carrera"]
         user_id = str(user["userid"])  # Convertimos el user_id a string para la comparación
+        try:
+            user_id = str(request.args["userid"])
+        except:
+            pass
         ciclo = Ciclos.query.filter_by(actual=True).first()
         asignaciones = Asignaciones.query.filter_by(carrera=carrera, ciclo=ciclo.id).all()
         

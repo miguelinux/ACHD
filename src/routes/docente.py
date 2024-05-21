@@ -43,7 +43,7 @@ def horarioJefe():
         if not disponibilidad:
             return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
 
-        return render_template("horarioJ.html", user=user, disponibilidad=disponibilidad)
+        return render_template("horarioJ.html", user=user, disponibilidad=disponibilidad,usuario=usuario)
     return redirect("/")
 
 
@@ -63,7 +63,7 @@ def clases():
 
             for asignacion in asignaciones:
                 horarios = json.loads(asignacion.horario)
-                
+
                 for i, docente_id in enumerate(horarios["docente"]):
                     if docente_id == user_id:
                         materia_id = horarios["materia"][i]

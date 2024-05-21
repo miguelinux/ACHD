@@ -15,7 +15,7 @@
       .container{
         display:flex;
         flex-direction:row;
-        gap:1rem;
+        gap:0.1rem;
         font-family:'Montserrat';
         justify-content: center;
 
@@ -25,25 +25,29 @@
         align-items: center;
         flex-direction: column;
         justify-content: center;
-        gap:2rem;
+        gap:0.1rem;
           overflow: hidden;
       }
       .dia{
         display:flex;
         flex-direction:column;
-        gap:0.5rem;
+        gap:0.1rem;
       }
       .hora{
         display:flex;
         flex-direction:row;
+          flex-wrap: nowrap;
+          width: 100%;
+          height: 100%;
         background:#e1e1e1;
         border-radius:0.5rem;
         padding:0.5rem;
-        width: 5rem;
-        gap:0.5rem;
-        height:1rem;
+        width: 8rem;
+        gap:0.1rem;
+        height:1.8rem;
         align-items:center;
         text-align:center;
+          font-size: x-small;
         justify-content:center;
         transition: 0.3s
       }
@@ -53,9 +57,9 @@
         background:#a1a1a1;
         border-radius:0.5rem;
         padding:0.5rem;
-        width: 5rem;
+        width: 8rem;
         color:white;
-        gap:0.5rem;
+        gap:0.1rem;
         height:1rem;
         align-items:center;
         text-align:center;
@@ -75,7 +79,7 @@
         border-radius:0.5rem;
         padding:0.5rem;
         gap:0.5rem;
-        height:1rem;
+        height:1.8rem;
         align-items:center;
         text-align:center;
         justify-content:center;
@@ -171,63 +175,63 @@
             <p></p>
           </div>
 
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>7:00 - 8:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>8:00 - 9:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>9:00 - 10:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>10:00 - 11:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>11:00 - 12:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>12:00 - 13:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>13:00 - 14:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>14:00 - 15:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>15:00 - 16:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>16:00 - 17:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>17:00 - 18:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>18:00 - 19:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>19:00 - 20:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>20:00 - 21:00</p>
           </div>
-          <div style="font-size: small;width: 6rem;" class="horaT">
+          <div style="font-size: small;width: 6rem;height: 1.8rem;" class="horaT">
 
             <p>21:00 - 22:00</p>
           </div>
@@ -670,5 +674,74 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </script>
 
+
+  <script>
+    // Función para obtener los datos del servidor
+    async function fetchData() {
+      try {
+        const response = await fetch('/get_materia?userid={{ usuario.id }}');
+        if (!response.ok) {
+          throw new Error('Error en la solicitud: ' + response.statusText);
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error al obtener los datos:', error);
+      }
+    }
+
+    // Función para procesar y mostrar los datos en el DOM
+    function generateColorMap(materias, colors) {
+      const colorMap = {};
+      let colorIndex = 0;
+
+      materias.forEach(materia => {
+        if (!colorMap[materia]) {
+          colorMap[materia] = colors[colorIndex % colors.length];
+          colorIndex++;
+        }
+      });
+
+      return colorMap;
+    }
+
+    // Función para procesar y mostrar los datos en el DOM
+    async function displayMaterias() {
+      const response = await fetchData();
+      if (response && response.success) {
+        const horario = response.horario;
+        const cellIds = horario.cell_ids;
+        const materias = horario.materia;
+
+        // Lista de colores
+        const colors = [
+          '#FF5733', '#54c98f', '#54c98f', '#6610f2', '#FF33F3',
+          '#0d6efd', '#ffc107', '#ffc107', '#FF69B4', '#8A2BE2'
+        ];
+
+        // Generamos el mapa de colores para las materias
+        const colorMap = generateColorMap(materias, colors);
+
+        // Recorremos los cell_ids y materias para insertarlas en los divs correspondientes
+        for (let i = 0; i < cellIds.length; i++) {
+          const cellId = cellIds[i];
+          const materia = materias[i];
+
+          // Seleccionamos el div por su ID y le insertamos el nombre de la materia
+          const div = document.getElementById(cellId);
+          if (div) {
+            div.innerText = materia;
+            div.title = materia;
+            div.style.backgroundColor = colorMap[materia]; // Aplicamos el color correspondiente
+          }
+        }
+      } else {
+        console.error('Error en la respuesta del servidor o respuesta no exitosa');
+      }
+    }
+
+    // Llamamos a la función para mostrar las materias cuando la página haya cargado
+    window.onload = displayMaterias;
+  </script>
 
 </body></html>
