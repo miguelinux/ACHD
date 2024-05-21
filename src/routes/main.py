@@ -205,8 +205,6 @@ def get_materias():
         return jsonify({'error': 'Horario no encontrado'})
     return redirect("/")
 
-<<<<<<< HEAD
-=======
 @main_bp.route("/myAccount", methods=['GET'])
 def myAccount():
     user = verificate_session()
@@ -217,4 +215,4 @@ def myAccount():
 
 
 
->>>>>>> 3c1bf44cd3f3e225d252cc0772972d00aa5b09c3
+
