@@ -37,3 +37,26 @@ def login():
         return redirect("/jefeCarrera")
 
     return redirect("/")
+
+@auth_bp.route("/check", methods=['POST'])
+def check_email():
+    data = request.get_json()
+    email = data.get('email')
+    
+    usuario = Usuarios.query.filter_by(email=email).first()
+    session["user"] = {
+        "userid": usuario.id,
+        "name": usuario.nombre,
+        "carrera": usuario.carrera,
+    }
+    if usuario.first_login:
+        usuario.first_login = False
+        db.session.commit()
+    if usuario.user_type == admin:
+        return redirect("/homeDocente")
+    if usuario.user_type == docente:
+        return redirect("/homeDocente")
+    if usuario.user_type == jefe_de_carrera:
+        return redirect("/jefeCarrera")
+       
+    return redirect("/")

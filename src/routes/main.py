@@ -167,3 +167,4 @@ def get_materias():
         
         return jsonify({'error': 'Horario no encontrado'})
     return redirect("/")
+
