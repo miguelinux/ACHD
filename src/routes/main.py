@@ -23,6 +23,14 @@ def dashboard():
         return render_template("dashboard.html", user=username)
     return redirect("/")
 
+@main_bp.route("/firstlogin")
+def firstlogin():
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        return render_template("firstlogin.html", user=username)
+    return redirect("/")
+
 @main_bp.route("/change", methods=["POST", "GET"])
 def change():
     user = verificate_session()
@@ -31,7 +39,7 @@ def change():
 
     user_id = user["userid"]
     mensaje = None
-
+    
     if request.method == "POST":
         current_password = request.form["password"]
         new_password = request.form["newpass"]
@@ -63,6 +71,31 @@ def change():
         db.session.commit()
 
     return jsonify({"success": True, "message": mensaje})
+
+@main_bp.route("/change_first", methods=["POST", "GET"])
+def change_first():
+    user = verificate_session()
+    if not user:
+        return redirect("/")
+    user_id = user["userid"]
+    mensaje = None
+    user_first = Usuarios.query.filter_by(id=user_id, first_login = True).first()
+    
+    if request.method == "POST":
+        new_password = request.form["newpass"]
+        confirm_password = request.form["conf_newpass"]    
+        new_password = get_hex_digest(new_password)
+        confirm_password = get_hex_digest(confirm_password)
+        if new_password != confirm_password:
+            mensaje = "La nueva contraseña no coincide"
+            return jsonify({"success": False, "message": mensaje})
+            
+        mensaje = "La contraseña se cambió exitosamente. En 3 segundos serás redirigido"
+        user_first.password = new_password
+        user_first.first_login = False
+        db.session.commit()   
+    return jsonify({"success": True, "message": mensaje})
+    
 
 @main_bp.route("/getDisponibilidad")
 def getDisponibilidad():
@@ -172,6 +205,8 @@ def get_materias():
         return jsonify({'error': 'Horario no encontrado'})
     return redirect("/")
 
+<<<<<<< HEAD
+=======
 @main_bp.route("/myAccount", methods=['GET'])
 def myAccount():
     user = verificate_session()
@@ -182,3 +217,4 @@ def myAccount():
 
 
 
+>>>>>>> 3c1bf44cd3f3e225d252cc0772972d00aa5b09c3

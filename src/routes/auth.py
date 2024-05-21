@@ -25,10 +25,6 @@ def login():
         "carrera": user.carrera,
     }
 
-    if user.first_login:
-        user.first_login = False
-        db.session.commit()
-        return redirect("/dashboard")
     if user.user_type == admin:
         return redirect("/homeDocente")
     if user.user_type == docente:
@@ -36,4 +32,30 @@ def login():
     if user.user_type == jefe_de_carrera:
         return redirect("/jefeCarrera")
 
+    return redirect("/")
+
+@auth_bp.route("/check", methods=['POST'])
+def check_email():
+    data = request.get_json()
+    email = data.get('email')
+    
+    usuario = Usuarios.query.filter_by(email=email).first()
+    if usuario is None:
+        return render_template("index.html", mensaje="El usuario no se encuentra")
+
+    session["user"] = {
+        "userid": usuario.id,
+        "name": usuario.nombre,
+        "carrera": usuario.carrera,
+    }
+    
+    if usuario.first_login:
+        return redirect("/firstlogin")
+    if usuario.user_type == admin:
+        return redirect("/admin")
+    if usuario.user_type == docente:
+        return redirect("/homeDocente")
+    if usuario.user_type == jefe_de_carrera:
+        return redirect("/jefeCarrera")
+       
     return redirect("/")

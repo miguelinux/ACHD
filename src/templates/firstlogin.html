@@ -1,0 +1,72 @@
+{% extends 'layout.html' %}
+
+{% block title %}Cambio de Contraseña{% endblock %}
+{% block css %}
+<style>
+
+</style>
+{% endblock %}
+
+{% block body_class %}cambio_contra{% endblock %}
+
+
+{% block content %}
+
+<div class="main">
+    <h1>Hola {{user}}</h1>
+    <form action="/change_first" method="post">
+        <div class="input">
+            <input type="password" placeholder="Nueva Contraseña" name="newpass">
+        </div>
+        <div class="input">
+            <input type="password" placeholder="Confirmar Contraseña" name="conf_newpass">
+        </div>
+        <button class="Confirmar" type="submit">Confirmar</button>
+    </form>
+</div>
+
+<div id="popup" class="popup" style="display: none;">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <p id="popup-message"></p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.querySelector("form");
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            fetch("/change_first", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const mensaje = data.message;
+
+
+                const popup = document.getElementById("popup");
+                popup.style.display = "block";
+                popup.style.top = "15rem"; // Ajusta la posición superior
+                document.getElementById("popup-message").innerText = mensaje;
+
+                if (data.success) {
+                    setTimeout(function() {
+                        window.location.href = "/homeDocente";
+                    }, 2500);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        });
+    });
+
+    function closePopup() {
+        document.getElementById("popup").style.display = "none";
+    }
+</script>
+    {% endblock %}
