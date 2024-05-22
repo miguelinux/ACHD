@@ -63,7 +63,7 @@ def clases():
         user_carrera = user["carrera"]
         ciclo = Ciclos.query.filter_by(actual=True).first()
         
-        asignaciones = Asignaciones.query.filter_by(carrera=user_carrera, ciclo=ciclo.id).all()
+        asignaciones = Asignaciones.query.filter_by(carrera_id=user_carrera, ciclo_id=ciclo.id).all()
         
         if asignaciones:
             materias_asignadas = set()  # Conjunto para almacenar las materias asignadas al docente

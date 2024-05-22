@@ -171,7 +171,7 @@ def get_materias():
         except:
             pass
         ciclo = Ciclos.query.filter_by(actual=True).first()
-        asignaciones = Asignaciones.query.filter_by(carrera=carrera, ciclo=ciclo.id).all()
+        asignaciones = Asignaciones.query.filter_by(carrera_id=carrera, ciclo_id=ciclo.id).all()
         
         if asignaciones:
             filtered_horarios = {

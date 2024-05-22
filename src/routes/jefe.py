@@ -69,7 +69,7 @@ def asignacion():
         .outerjoin(Disponibilidades, DocenteCarreras.usuario_id == Disponibilidades.usuario_id)
         .filter(Disponibilidades.usuario_id != None)  # Filtra los docentes que no tienen disponibilidades
         .all()
-)
+        )
         asignatura= MateriasCarreras.query.filter_by(carrera_id=carrera)
         aula = Aulas.query.all()
         return render_template("asignacion.html", user=username, asignaturas=asignatura, docentes=docentes, aulas=aula)
@@ -163,8 +163,8 @@ def grupos():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
-        a = Materias.query.filter_by(carrera=carrera).all()
+        docentes = DocenteCarreras.query.filter_by(carrera_id=carrera).all()
+        asignaturas = MateriasCarreras.query.filter_by(carrera_id=carrera).all()
         aula = Aulas.query.all()
-        return render_template("grupos.html", user=username, asignaturas=a, docentes=d, aulas=aula)
+        return render_template("grupos.html", user=username, asignaturas=asignaturas, docentes=docentes, aulas=aula)
     return redirect("/")
