@@ -1,6 +1,7 @@
 from extensions import db
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import INTEGER, CHAR, VARCHAR, BOOLEAN, JSON
+from sqlalchemy.orm import relationship
 
 class Usuarios(db.Model):
     __tablename__ = 'usuario'
@@ -19,7 +20,8 @@ class DocenteCarreras(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
-
+    
+    usuario = relationship("Usuarios", backref="docentes_carreras")
 
 class Disponibilidades(db.Model):
     __tablename__ = 'disponibilidad'
@@ -49,6 +51,9 @@ class MateriasCarreras(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
     materia_id = db.Column(db.Integer, db.ForeignKey('materia.id'))
+    
+    materia = relationship("Materias", backref="materias_carrera")
+    
 
 class Aulas(db.Model):
     __tablename__ = 'aula'

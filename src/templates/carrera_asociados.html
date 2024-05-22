@@ -95,25 +95,24 @@
 {% block content %}
 <section id="table">
     <div class="top-buttons">
-        <button class="action-btn">Modificar</button>
-        <button class="action-btn">Borrar</button>
+        <button class="action-btn" id="modificarBtn" data-carrera-id="{{ carreraID }}">Modificar Carrera</button>
     </div>
     <div class="container">
         <div class="table-container">
             <h2>Docentes asociados a la carrera</h2>
             <table class="myTable">
                 <tr>
-                    <th>ID</th>
                     <th>Nombre</th>
                 </tr>
                 {% for docente in docentes %}
                 <tr>
-                    <td>{{ docente.id }}</td>
-                    <td>{{ docente.nombre }}</td>
+                    <td>{{ docente.usuario.nombre }} {{ docente.usuario.apellido_pat }} {{ docente.usuario.apellido_mat
+                        }}</td>
                 </tr>
                 {% endfor %}
             </table>
-            <button class="action-btn" onclick="location.href='/carrera/{{ carreraID }}/asociar/docentes'">Asociar Docente</button>
+            <button class="action-btn" onclick="location.href='/carrera/{{ carreraID }}/asociar/docentes'">Asociar
+                Docente</button>
 
 
         </div>
@@ -121,8 +120,8 @@
             <h2>Materias asignadas a la carrera</h2>
             <table class="myTable">
                 <tr>
-                    <th>ID</th>
                     <th>Nombre</th>
+                    <th>Clave</th>
                     <th>Semestre</th>
                     <th>Horas Práctica</th>
                     <th>Horas Teoría</th>
@@ -130,21 +129,33 @@
                 </tr>
                 {% for materia in materias %}
                 <tr>
-                    <td>{{ materia.id }}</td>
-                    <td>{{ materia.nombre }}</td>
-                    <td>{{ materia.semestre }}</td>
-                    <td>{{ materia.horas_practica }}</td>
-                    <td>{{ materia.horas_teoria }}</td>
-                    <td>{{ materia.creditos }}</td>
+                    <td>{{ materia.materia.nombre }}</td>
+                    <td>{{ materia.materia.clave }}</td>
+                    <td>{{ materia.materia.semestre }}</td>
+                    <td>{{ materia.materia.horas_practica }}</td>
+                    <td>{{ materia.materia.horas_teoria }}</td>
+                    <td>{{ materia.materia.creditos }}</td>
                 </tr>
                 {% endfor %}
             </table>
-            <button class="action-btn">Asociar Materia</button>
+            <button class="action-btn" onclick="location.href='/carrera/{{ carreraID }}/asociar/materias'">Asociar
+                Materia</button>
         </div>
     </div>
 </section>
 
 <script>
-    // Aquí puedes agregar tu JavaScript si es necesario
+
+    var modificarBtn = document.getElementById("modificarBtn");
+    modificarBtn.addEventListener("click", function() {
+        // Obtiene el ID de la carrera del atributo data-carrera-id del botón
+        var carreraId = modificarBtn.getAttribute("data-carrera-id");
+        
+        // Construye la URL con el ID de la carrera
+        var url = "/admin/modificar/carrera/" + carreraId;
+        
+        // Redirige a la URL construida
+        window.location.href = url;
+    });
 </script>
 {% endblock %}

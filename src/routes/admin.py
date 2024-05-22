@@ -373,6 +373,22 @@ def asociar_docentes(carreraId):
     
     return redirect("/")
 
+def materia_asociado(carrera_id, materia_id):
+    # Verificar si el docente está asociado a la carrera en la base de datos
+    return bool(MateriasCarreras.query.filter_by(carrera_id=carrera_id, materia_id=materia_id).first())
+
+@admin_bp.route("/carrera/<int:carreraId>/asociar/materias", methods=['GET'])
+def asociar_materia(carreraId):
+    """
+    Vista para asociar docentes a una carrera específica
+    """
+    user = verificate_session()
+    if user:
+        materias = Materias.query.all()
+        return render_template("asociar_materias.html", 
+                carreraId=carreraId, materias=materias, materia_asociado=materia_asociado)
+    
+    return redirect("/")
 
 @admin_bp.route("/guardar_docentecarrera", methods=['POST'])
 def guardar_docentecarrera():
@@ -397,11 +413,33 @@ def guardar_docentecarrera():
         db.session.commit()
 
         return jsonify({"success": True})
+    return redirect("/")
+
+@admin_bp.route("/guardar_materiacarrera", methods=['POST'])
+def guardar_materiacarrera():
+    user = verificate_session()
+    if user:
+        data = request.json
+        carrera_id = data["carreraId"]
+        materias_seleccionados = data["materiasSeleccionados"]
+        materias_deseleccionados = data["materiasDeseleccionados"]
+
+        if materias_deseleccionados:
+            MateriasCarreras.query.filter(
+                MateriasCarreras.carrera_id == carrera_id,
+                MateriasCarreras.materia_id.in_(materias_deseleccionados)
+            ).delete(synchronize_session=False)
+
+        if materias_seleccionados:
+            for materia_id in materias_seleccionados:
+                if not MateriasCarreras.query.filter_by(carrera_id=carrera_id, materia_id=materia_id).first():
+                    nueva_relacion = MateriasCarreras(carrera_id=carrera_id, materia_id=materia_id)
+                    db.session.add(nueva_relacion)
+        db.session.commit()
+
+        return jsonify({"success": True})
     return redirect("/")    
     
-    # Aquí puedes procesar y guardar los datos en la base de datos
-    
-
 
 @admin_bp.route("/admin/modificar/carrera/<int:carreraId>", methods=['GET'])
 def admin_modificar_carrera(carreraId):
