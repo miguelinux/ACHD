@@ -2,7 +2,8 @@
 
 from flask import Blueprint, render_template, redirect, request, session, jsonify
 from functions import verificate_session, get_hex_digest
-from models.tables_db import Usuarios, Ciclos, Asignaciones, Materias, Aulas
+from models.tables_db import Usuarios, Ciclos, Asignaciones, Materias, Aulas,Disponibilidades
+from models.tables_db import Disponibilidades
 from extensions import db
 import json
 
@@ -145,17 +146,23 @@ def set_disp():
         availability_matrix = [0] * 90
         for idx in selected_indices:
             availability_matrix[idx] = 1
-
+            
         result_dict = {"disponibilidad": availability_matrix}
         result_json = json.dumps(result_dict)
+        
+        ciclo = Ciclos.query.filter_by(actual=True).first()
 
-        usuario = Usuarios.query.filter_by(id=user_id).first()
+        d = Disponibilidades.query.filter_by(usuario_id=user_id, ciclo_id=ciclo.id).first()
+        if not d:
+            d = Disponibilidades(usuario_id=user_id, ciclo_id=ciclo.id, horas={'disponibilidad': [0]*90})
+            db.session.add(d)
+        d.horas = result_json
+        db.session.commit()
 
-        if usuario:
-            usuario.disponibilidad = result_json
-            db.session.commit()
-            return jsonify({"success": True, "message": "Disponibilidad actualizada correctamente"})
+        return jsonify({"status": "success", "message": "Disponibilidad guardada correctamente"})
     return redirect("/")
+
+
 
 
 @main_bp.route("/get_materia", methods=['GET'])

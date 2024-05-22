@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, request, jsonify
 from functions import verificate_session
 from models.tables_db import Usuarios, Materias, Aulas, Asignaciones, Ciclos
+from models.tables_db import DocenteCarreras
 from extensions import db
 import json
 from functions import  docente
@@ -12,10 +13,7 @@ def jefe_carrera():
     user = verificate_session()
     if user:
         username = user["username"]
-        carrera = user["carrera"]
-        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
-        a = Materias.query.filter_by(carrera=carrera).all()
-        return render_template("jefeCarrera.html", user=username, asignaturas=a, docentes=d)
+        return render_template("jefeCarrera.html", user=username)
     return redirect("/")
 
 @jefe_bp.route("/jefeCarrera/docentes")
@@ -28,7 +26,8 @@ def docentes():
             userid = None
         username = user["username"]
         carrera = user["carrera"]
-        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).order_by(Usuarios.apellido_pat).all()
+        
+        d = DocenteCarreras.query.filter_by(carrera_id=carrera).all()
         return render_template("docentes.html", user=username, docentes=d, userid=userid)
     return redirect("/")
 

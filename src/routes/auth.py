@@ -21,7 +21,7 @@ def login():
     session["user"] = {
         "userid": user.id,
         "name": user.nombre,
-        "carrera":user.docente_carrera[0].carrera.nombre if user.user_type == docente or user.user_type == jefe_de_carrera else None,
+        "carrera": user.docente_carrera[0].carrera.id if user.user_type == docente or user.user_type == jefe_de_carrera else None,
     }
 
     if user.user_type == admin:
@@ -44,7 +44,7 @@ def check_email():
     session["user"] = {
         "userid": usuario.id,
         "name": usuario.nombre,
-        "carrera":usuario.docente_carrera[0].carrera.nombre if usuario.user_type == docente or usuario.user_type == jefe_de_carrera else None,
+        "carrera": usuario.docente_carrera[0].carrera.id if usuario.user_type == docente or usuario.user_type == jefe_de_carrera else None,
     }
     
     if usuario.first_login:

@@ -72,7 +72,7 @@ table ciclo{
   id integer [primary key, increment]
   anio integer [not null]
   estacion char(2) [not null]
-  habil bool [not null]
+  actual bool [not null]
 }
 
 

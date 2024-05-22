@@ -21,7 +21,8 @@ class DocenteCarreras(db.Model):
     carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
     
-    usuario = relationship("Usuarios", backref="docentes_carreras")
+    usuario = relationship("Usuarios", backref="docente_carrera")
+    carrera = relationship("Carreras", backref="docente_carrera")
 
 class Disponibilidades(db.Model):
     __tablename__ = 'disponibilidad'
@@ -75,4 +76,4 @@ class Ciclos(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     anio = db.Column(db.Integer, nullable=False)
     estacion = db.Column(CHAR(2), nullable=False)
-    habil = db.Column(BOOLEAN, nullable=False)
+    actual = db.Column(BOOLEAN, nullable=False)

@@ -134,13 +134,11 @@
     
     <table id="myTable">
         <tr>
-            <th>ID</th>
             <th>Ciclo</th>
             <th>Actual</th>
         </tr>
         {% for ciclo in ciclos %}
         <tr onclick="redirectToUserPage('{{ ciclo.id }}')">
-            <td>{{ ciclo.id }}</td>
             <td>{{ ciclo.anio }}{{ ciclo.estacion }} </td>
             <td>{% if ciclo.actual == True %}
                 Sí

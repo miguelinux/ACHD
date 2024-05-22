@@ -130,7 +130,6 @@
     
     <table id="myTable">
         <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Clave</th>
             <th>Semestre</th>
@@ -140,7 +139,6 @@
         </tr>
         {% for materia in materias %}
         <tr onclick="redirectToUserPage('{{ materia.id }}')">
-            <td>{{ materia.id }}</td>
             <td>{{ materia.nombre }} </td>
             <td>{{ materia.clave }}</td>
             <td>{{ materia.semestre }}</td>

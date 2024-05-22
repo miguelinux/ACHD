@@ -134,7 +134,6 @@
     
     <table id="myTable">
         <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Email</th>
             <th>Tipo de usuario</th>
@@ -142,7 +141,6 @@
         </tr>
         {% for usuario in usuarios %}
         <tr onclick="redirectToUserPage('{{ usuario.id }}')">
-            <td>{{ usuario.id }}</td>
             <td>{{ usuario.nombre }} {{ usuario.apellido_pat }} {{ usuario.apellido_mat }}</td>
             <td>{{ usuario.email }}</td>
             <td>{% if usuario.user_type == 1 %}

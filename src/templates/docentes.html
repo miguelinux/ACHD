@@ -89,9 +89,9 @@
 
             {% for docente in docentes %}
                 {% set useridINT = userid | int %}
-                <div class="docente" style="background: {% if useridINT == docente.id %}#37109b;{% else %}white;{% endif %}color: {% if useridINT == docente.id %}white;{% else %}black;{% endif %}">
-                <a style="text-decoration: none;{% if useridINT == docente.id %}color:white;{% else %}{% endif %}" href="?userid={{ docente.id }}">
-                <p>{{ docente.nombre }} {{ docente.apellido_pat }} {{ docente.apellido_mat }}</p>
+                <div class="docente" style="background: {% if useridINT == docente.id %}#37109b;{% else %}white;{% endif %}color: {% if useridINT == docente.usuario.id %}white;{% else %}black;{% endif %}">
+                <a style="text-decoration: none;{% if useridINT == docente.usuario.id %}color:white;{% else %}{% endif %}" href="?userid={{ docente.usuario.id }}">
+                <p>{{ docente.usuario.nombre }} {{ docente.usuario.apellido_pat }} {{ docente.usuario.apellido_mat }}</p>
 
                 </a>
                 </div>

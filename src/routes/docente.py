@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, request
 from functions import verificate_session
-from models.tables_db import Usuarios, Materias, Aulas,Asignaciones, Ciclos
+from models.tables_db import Usuarios, Materias, Disponibilidades,Asignaciones, Ciclos
 import json
 
 
@@ -19,8 +19,11 @@ def horario():
     user = verificate_session()
     if user:
         user_id = user["userid"]
-        usuario = Usuarios.query.filter_by(id=user_id).first()
-        disponibilidad = usuario.disponibilidad
+        ciclo=Ciclos.query.filter_by(actual=True).first()        
+        d = Disponibilidades.query.filter_by(usuario_id=user_id,ciclo_id=ciclo.id).first()
+        if not d.horas:
+            d.horas = {'disponibilidad': [0]*90}
+        disponibilidad = d.horas
         return render_template("horario.html", user=user, disponibilidad=disponibilidad)
     return redirect("/")
 
