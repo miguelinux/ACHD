@@ -44,25 +44,27 @@
     <h2>Para cambiar algún dato, ponte en contacto con el administrador</h2>
 
     <div class="seccion">
-        <p><strong>Nombre:</strong></p>
+        <p style="font-size: small;color:#a7a7a7;"><strong>Nombre:</strong></p>
         <p>{{ usuario.nombre }}</p>
-        <p><strong>Apellido Paterno:</strong></p>
+        <br>
+        <p style="font-size: small;color:#a7a7a7;"><strong>Apellido Paterno:</strong></p>
         <p>{{ usuario.apellido_pat }}</p>
-        <p><strong>Apellido Materno:</strong></p>
+        <br>
+        <p style="font-size: small;color:#a7a7a7;"><strong>Apellido Materno:</strong></p>
         <p>{{ usuario.apellido_mat }}</p>
     </div>
     <div class="seccion">
-        <p><strong>Correo:</strong></p>
+        <p style="font-size: small;color:#a7a7a7;"><strong>Correo:</strong></p>
         <p>{{ usuario.email }}</p>
     </div>
 
     <div class="seccion">
-        <p><strong>Tipo de usuario:</strong></p>
+        <p style="font-size: small;color:#a7a7a7;"><strong>Tipo de usuario:</strong></p>
         <p>{% if usuario.user_type==1 %}Administrador{% elif usuario.user_type==2 %}Jefe de Carrera{% elif usuario.user_type==3 %}Docente{% endif %}</p>
     </div>
 
     <div class="seccion">
-        <p><strong>Horas frente a grupo:</strong></p>
+        <p style="font-size: small;color:#a7a7a7;"><strong>Horas frente a grupo:</strong></p>
         <p id="resultado">Cargando...</p>
     </div>
 
