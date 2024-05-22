@@ -9,7 +9,7 @@ Table usuario {
   email char(50) [not null, unique]
   password char (65) [not null]
   user_type integer(3) [not null]
-  fist_login bool [not null]
+  first_login bool [not null]
   nombre varchar(20) [not null]
   apellido_pat varchar(20) [not null]
   apellido_mat varchar(20) [not null]

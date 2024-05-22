@@ -14,7 +14,7 @@ def login():
     form = request.form
     user = form["email"]
     pssw = get_hex_digest(form["password"])
-    user = Usuarios.query.filter_by(email=user, password=pssw).first()
+    user = Usuarios.query.filter_by(email=user, password=pssw, habilitado=True).first()
     if user is None:
         return render_template("index.html", mensaje="Usuario y/o contraseña incorrectos")
 
@@ -37,7 +37,7 @@ def check_email():
     data = request.get_json()
     email = data.get('email')
     
-    usuario = Usuarios.query.filter_by(email=email).first()
+    usuario = Usuarios.query.filter_by(email=email, habilitado=True).first()
     if usuario is None:
         return render_template("index.html", mensaje="El usuario no se encuentra")
 

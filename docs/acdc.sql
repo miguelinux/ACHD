@@ -244,7 +244,7 @@ CREATE TABLE `usuario` (
   `email` char(50) NOT NULL,
   `password` char(65) NOT NULL,
   `user_type` int NOT NULL,
-  `fist_login` tinyint(1) NOT NULL,
+  `first_login` tinyint(1) NOT NULL,
   `nombre` varchar(20) NOT NULL,
   `apellido_pat` varchar(20) NOT NULL,
   `apellido_mat` varchar(20) NOT NULL,

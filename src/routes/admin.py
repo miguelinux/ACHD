@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect,jsonify
 from extensions import db
 
 from models.tables_db import Usuarios, Materias, Aulas, Ciclos, Carreras
+from models.tables_db import DocenteCarreras,MateriasCarreras
+
 from functions import verificate_session, get_hex_digest, random_number
 
 
@@ -30,10 +32,9 @@ def admin_docentes():
         userid = user["userid"]
         username = user["username"]
         usuarios = Usuarios.query.offset(userid).all()
-        carrera = Carreras.query.all()
         
         return render_template(
-            "admin_usuarios.html", user=username, usuarios=usuarios,carreras=carrera
+            "admin_usuarios.html", user=username, usuarios=usuarios
         )
     return redirect("/")
 
@@ -46,9 +47,8 @@ def admin_modificar(userId):
     if user:
         username = user["username"]
         usuario = Usuarios.query.filter_by(id=userId).first()
-        carrera = Carreras.query.all()
         return render_template(
-            "modificar_usuario.html", user=username, usuario=usuario,carreras =carrera
+            "modificar_usuario.html", user=username, usuario=usuario
         )  
     return redirect("/")
 
@@ -66,7 +66,6 @@ def update():
         apellido_mat = form.get("materno")
         email = form.get("email")
         user_type = form.get("user_type")
-        carrera_id = form.get("carrera")
         habilitado = form.get("habilitado") == 'true'
 
         usuario = db.session.get(Usuarios, user_id)
@@ -76,7 +75,6 @@ def update():
             usuario.apellido_mat = apellido_mat
             usuario.email = email
             usuario.user_type = user_type
-            usuario.carrera = carrera_id
             usuario.habilitado = habilitado
             db.session.commit()
         return redirect("/admin/usuarios")
@@ -114,7 +112,6 @@ def crear_usuario():
         password = get_hex_digest(str(random_number()))
         user_type = request.form.get("user_type")
         first_login = True  
-        carrera = request.form.get("carrera")
         habilitado = True
         
         nuevo_usuario = Usuarios(
@@ -125,7 +122,6 @@ def crear_usuario():
             password=password,
             user_type=user_type,
             first_login=first_login,
-            carrera=carrera,
             habilitado=habilitado
         )
         db.session.add(nuevo_usuario)
@@ -144,10 +140,8 @@ def admin_materias():
     if user:
         username = user["username"]
         materia = Materias.query.all()
-        carrera = Carreras.query.all()
-        
         return render_template(
-            "admin_materias.html", user=username, materias=materia,carreras=carrera
+            "admin_materias.html", user=username, materias=materia
         )
     return redirect("/")
 
@@ -160,9 +154,8 @@ def admin_modificar_materia(materiaId):
     if user:
         username = user["username"]
         materia = Materias.query.filter_by(id=materiaId).first()
-        carrera = Carreras.query.all()
         return render_template(
-            "modificar_materia.html", user=username, materia=materia,carreras =carrera
+            "modificar_materia.html", user=username, materia=materia
         )  
     return redirect("/")
 
@@ -179,10 +172,9 @@ def update_materia():
         nombre = form.get("nombre")
         clave = form.get("clave")
         semestre = form.get("semestre")
-        hpracticas = form.get("Hpracticas")
-        hteoria = form.get("Hteoria")
-        creditos = form.get("Creditos")
-        carrera_id = form.get("carrera")
+        hpracticas = int(form.get("Hpracticas")) if form.get("Hpracticas") else 0
+        hteoria = int(form.get("Hteoria")) if form.get("Hteoria") else 0   
+        creditos = hpracticas + hteoria
 
         materia = db.session.get(Materias, materia_id)
         if materia:
@@ -192,7 +184,6 @@ def update_materia():
             materia.horas_practica = hpracticas
             materia.horas_teoria = hteoria
             materia.creditos = creditos
-            materia.carrera = carrera_id
             db.session.commit()
         return redirect("/admin/materias")
     
@@ -225,10 +216,9 @@ def crear_materia():
         nombre = form.get("nombre")
         clave = form.get("clave")
         semestre = form.get("semestre")
-        hpracticas = form.get("Hpracticas")
-        hteoria = form.get("Hteoria")
-        creditos = form.get("Creditos")
-        carrera_id = form.get("carrera")
+        hpracticas = int(form.get("Hpracticas")) if form.get("Hpracticas") else 0
+        hteoria = int(form.get("Hteoria")) if form.get("Hteoria") else 0   
+        creditos = hpracticas + hteoria
         
         nueva_materia = Materias(
             clave = clave,
@@ -237,13 +227,13 @@ def crear_materia():
             horas_practica = hpracticas,
             horas_teoria = hteoria,
             creditos = creditos,
-            carrera = carrera_id
         )
         db.session.add(nueva_materia)
         db.session.commit()
         return redirect("/admin/materias")
     else:
         return redirect("/")
+
 
 @admin_bp.route("/admin/aulas")
 def admin_aulas():
@@ -350,6 +340,69 @@ def admin_carreras():
         )
     return redirect("/")
 
+@admin_bp.route("/admin/carrera/<int:carreraId>", methods=['GET'])
+def admin_carrera_asociados(carreraId):
+    """
+    Vista de materias y docentes asociados a la carrera
+    """
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        docentes= DocenteCarreras.query.filter_by(carrera_id=carreraId)
+        materias= MateriasCarreras.query.filter_by(carrera_id=carreraId)
+        
+        return render_template(
+            "carrera_asociados.html", user=username, docentes=docentes,materias=materias, carreraID=carreraId
+        )  
+    return redirect("/")
+
+def docente_asociado(carrera_id, docente_id):
+    # Verificar si el docente está asociado a la carrera en la base de datos
+    return bool(DocenteCarreras.query.filter_by(carrera_id=carrera_id, usuario_id=docente_id).first())
+
+@admin_bp.route("/carrera/<int:carreraId>/asociar/docentes", methods=['GET'])
+def asociar_docentes(carreraId):
+    """
+    Vista para asociar docentes a una carrera específica
+    """
+    user = verificate_session()
+    if user:
+        docentes = Usuarios.query.filter(Usuarios.user_type != 1).all()
+        return render_template("asociar_docentes.html", 
+                carreraId=carreraId, docentes=docentes, docente_asociado=docente_asociado)
+    
+    return redirect("/")
+
+
+@admin_bp.route("/guardar_docentecarrera", methods=['POST'])
+def guardar_docentecarrera():
+    user = verificate_session()
+    if user:
+        data = request.json
+        carrera_id = data["carreraId"]
+        docentes_seleccionados = data["docentesSeleccionados"]
+        docentes_deseleccionados = data["docentesDeseleccionados"]
+
+        if docentes_deseleccionados:
+            DocenteCarreras.query.filter(
+                DocenteCarreras.carrera_id == carrera_id,
+                DocenteCarreras.usuario_id.in_(docentes_deseleccionados)
+            ).delete(synchronize_session=False)
+
+        if docentes_seleccionados:
+            for docente_id in docentes_seleccionados:
+                if not DocenteCarreras.query.filter_by(carrera_id=carrera_id, usuario_id=docente_id).first():
+                    nueva_relacion = DocenteCarreras(carrera_id=carrera_id, usuario_id=docente_id)
+                    db.session.add(nueva_relacion)
+        db.session.commit()
+
+        return jsonify({"success": True})
+    return redirect("/")    
+    
+    # Aquí puedes procesar y guardar los datos en la base de datos
+    
+
+
 @admin_bp.route("/admin/modificar/carrera/<int:carreraId>", methods=['GET'])
 def admin_modificar_carrera(carreraId):
     """
@@ -421,7 +474,7 @@ def crear_carrera():
         db.session.commit()
         return redirect("/admin/carreras")
     else:
-        return redirect("/")
+        return redirect("/")    
 
 @admin_bp.route("/admin/ciclos")
 def admin_ciclos():

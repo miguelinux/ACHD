@@ -13,12 +13,13 @@ class Usuarios(db.Model):
     apellido_pat = db.Column(VARCHAR(20), nullable=False)
     apellido_mat = db.Column(VARCHAR(20), nullable=False)
     habilitado = db.Column(BOOLEAN, nullable=False)
-
+    
 class DocenteCarreras(db.Model):
     __tablename__ = 'docente_carrera'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
+
 
 class Disponibilidades(db.Model):
     __tablename__ = 'disponibilidad'

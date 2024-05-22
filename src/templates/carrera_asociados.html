@@ -1,0 +1,150 @@
+{% extends 'layout.html' %}
+{% block title %}carreras{% endblock %}
+
+{% block body_class %}admincarreras{% endblock %}
+
+{% block css %}
+<style>
+    body {
+        font-family: Montserrat, Arial;
+    }
+
+    .container {
+        width: 80%;
+        margin: 0 auto;
+        margin-top: 3vh;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        /* Centrar verticalmente los botones */
+        flex-wrap: wrap;
+        /* Permitir envolver en varias líneas si es necesario */
+    }
+
+    .table-container {
+        width: 48%;
+        /* El 48% para dejar espacio entre las dos tablas */
+    }
+
+    .table-container h2 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .myTable {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .myTable th {
+        background-color: blueviolet;
+        padding: 8px;
+        color: white;
+        font-weight: 100;
+        font-size: 14px;
+    }
+
+    .myTable td,
+    th {
+        border: 1px solid #ddd;
+        padding: 6px;
+    }
+
+    .myTable td {
+        padding: 4px;
+    }
+
+    .myTable tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .action-btn {
+        width: 167px;
+        height: 46px;
+        border-radius: 23px;
+        background-color: blueviolet;
+        color: white;
+        font-size: 17px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .action-btn:last-child {
+        margin-right: 0;
+        /* Eliminar margen derecho del último botón */
+    }
+
+    .action-btn:hover {
+        background-color: #5d478b;
+    }
+
+    /* Estilos para los botones de la parte superior */
+    .top-buttons {
+        text-align: center;
+        width: 100%;
+        /* Ajustar al ancho máximo */
+        margin-bottom: 20px;
+        /* Espacio entre los botones y las tablas */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="table">
+    <div class="top-buttons">
+        <button class="action-btn">Modificar</button>
+        <button class="action-btn">Borrar</button>
+    </div>
+    <div class="container">
+        <div class="table-container">
+            <h2>Docentes asociados a la carrera</h2>
+            <table class="myTable">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                </tr>
+                {% for docente in docentes %}
+                <tr>
+                    <td>{{ docente.id }}</td>
+                    <td>{{ docente.nombre }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <button class="action-btn" onclick="location.href='/carrera/{{ carreraID }}/asociar/docentes'">Asociar Docente</button>
+
+
+        </div>
+        <div class="table-container">
+            <h2>Materias asignadas a la carrera</h2>
+            <table class="myTable">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Semestre</th>
+                    <th>Horas Práctica</th>
+                    <th>Horas Teoría</th>
+                    <th>Créditos</th>
+                </tr>
+                {% for materia in materias %}
+                <tr>
+                    <td>{{ materia.id }}</td>
+                    <td>{{ materia.nombre }}</td>
+                    <td>{{ materia.semestre }}</td>
+                    <td>{{ materia.horas_practica }}</td>
+                    <td>{{ materia.horas_teoria }}</td>
+                    <td>{{ materia.creditos }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <button class="action-btn">Asociar Materia</button>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Aquí puedes agregar tu JavaScript si es necesario
+</script>
+{% endblock %}
