@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, request, jsonify
 from functions import verificate_session
 from models.tables_db import Usuarios, Materias, Aulas, Asignaciones, Ciclos
-from models.tables_db import DocenteCarreras, MateriasCarreras
+from models.tables_db import DocenteCarreras, MateriasCarreras, Disponibilidades
 from extensions import db
 import json
 from sqlalchemy.orm import joinedload
@@ -63,10 +63,16 @@ def asignacion():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
-        a = Materias.query.filter_by(carrera=carrera).all()
+        docentes = (
+        DocenteCarreras.query
+        .filter(DocenteCarreras.carrera_id == carrera)
+        .outerjoin(Disponibilidades, DocenteCarreras.usuario_id == Disponibilidades.usuario_id)
+        .filter(Disponibilidades.usuario_id != None)  # Filtra los docentes que no tienen disponibilidades
+        .all()
+)
+        asignatura= MateriasCarreras.query.filter_by(carrera_id=carrera)
         aula = Aulas.query.all()
-        return render_template("asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula)
+        return render_template("asignacion.html", user=username, asignaturas=asignatura, docentes=docentes, aulas=aula)
     return redirect("/")
 
 
@@ -79,14 +85,14 @@ def set_asignacion():
         semestre = asignacion_propuesta.pop("semestre")
         turno = asignacion_propuesta.pop("turno")
         ciclo = Ciclos.query.filter_by(actual=True).first()
-        asignacion = Asignaciones.query.filter_by(carrera=user_carrera, semestre=semestre, turno=turno, ciclo=ciclo.id).first()
+        asignacion = Asignaciones.query.filter_by(carrera_id=user_carrera, semestre=semestre, grupo=turno, ciclo_id=ciclo.id).first()
 
         if not asignacion:
             asignacion = Asignaciones(
-                carrera=user_carrera,
+                carrera_id=user_carrera,
                 semestre=semestre,
-                turno=turno,
-                ciclo=ciclo.id,
+                grupo=turno,
+                ciclo_id=ciclo.id,
                 horario=json.dumps(asignacion_propuesta.get("asignacion", {}))
             )
             horariov = None
@@ -135,16 +141,18 @@ def detectar_cambios(jsnew, jsold):
     return cambios
 
 def update_disp(user_id, indices_to_update, value):
-    usuario = Usuarios.query.filter_by(id=user_id).first()
-    if usuario:
-        current_availability = json.loads(usuario.disponibilidad)["disponibilidad"]
+    ciclo = Ciclos.query.filter_by(actual=True).first()
+    dispo= Disponibilidades.query.filter_by(usuario_id=user_id,ciclo_id=ciclo.id).first()
+    
+    if dispo:
+        current_availability = json.loads(dispo.horas)["disponibilidad"]
         for idx in indices_to_update:
             current_availability[idx] = value
 
         result_dict = {"disponibilidad": current_availability}
         result_json = json.dumps(result_dict)
 
-        usuario.disponibilidad = result_json
+        dispo.horas = result_json
         db.session.commit()
         return True
     return False

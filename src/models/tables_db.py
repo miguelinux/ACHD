@@ -54,6 +54,8 @@ class MateriasCarreras(db.Model):
     materia_id = db.Column(db.Integer, db.ForeignKey('materia.id'))
     
     materia = relationship("Materias", backref="materias_carrera")
+    carrera = relationship("Carreras", backref="materias_carrera")
+    
     
 
 class Aulas(db.Model):

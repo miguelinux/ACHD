@@ -266,9 +266,9 @@
         <p>Docentes</p>
 
     {% for docente in docentes %}
-    <div class="docente" data-id-docente='{{docente.id}}' data-nombre="{{ docente.nombre }}"
-      data-apellido="{{ docente.apellido_pat }}">
-      <p><strong>{{docente.nombre}} {{docente.apellido_pat}} </strong></p>
+    <div class="docente" data-id-docente='{{docente.usuario.id}}' data-nombre="{{ docente.usuario.nombre }}"
+      data-apellido="{{ docente.usuario.apellido_pat }}">
+      <p><strong>{{docente.usuario.nombre}} {{docente.usuario.apellido_pat}} </strong></p>
     </div>
     {% endfor %}
   </div>
@@ -361,10 +361,10 @@
   <div class="materias">
     <p>Materias</p>
     {% for asignatura in asignaturas %}
-    <div class="materia" data-semestre="{{ asignatura.semestre }}" data-id-materia='{{asignatura.id}}'
-      data-credito="{{asignatura.creditos}}" data-nombre="{{ asignatura.nombre }}">
-      <p>{{ asignatura.nombre }}</p>
-      <p>Créditos: {{ asignatura.creditos }}</p>
+    <div class="materia" data-semestre="{{ asignatura.materia.semestre }}" data-id-materia='{{asignatura.materia.id}}'
+      data-credito="{{asignatura.materia.creditos}}" data-nombre="{{ asignatura.materia.nombre }}">
+      <p>{{ asignatura.materia.nombre }}</p>
+      <p>Créditos: {{ asignatura.materia.creditos }}</p>
     </div>
     {% endfor %}
   </div>

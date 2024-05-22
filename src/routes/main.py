@@ -98,21 +98,16 @@ def change_first():
     return jsonify({"success": True, "message": mensaje})
     
 
-@main_bp.route("/getDisponibilidad")
-def getDisponibilidad():
-    user_id = request.args["id"]
-    usuario = Usuarios.query.filter_by(id=user_id).first()
-    disponibilidad = usuario.disponibilidad
-    return jsonify(disponibilidad)
-
 
 @main_bp.route("/getDisponibilidad/<int:idDocente>", methods=["GET"])
 def get_dispo(idDocente):
     user = verificate_session()
     if user:
-        usuario = Usuarios.query.filter_by(id=idDocente).first()
-        if usuario:
-            disponibilidad = json.loads(usuario.disponibilidad)
+        user_id = user["userid"]
+        ciclo = Ciclos.query.filter_by(actual=True).first()
+        dispo = Disponibilidades.query.filter_by(usuario_id=idDocente, ciclo_id=ciclo.id).first()
+        if dispo:
+            disponibilidad = json.loads(dispo.horas)
             return jsonify({"success": True, "disponibilidad": disponibilidad})
         else:
             return jsonify({"success": False, "message": "Docente no encontrado"})
@@ -128,7 +123,7 @@ def get_horario():
         turno = request.args.get('turno')
         semestre = request.args.get('semestre')
         ciclo = Ciclos.query.filter_by(actual=True).first()
-        asignacion = Asignaciones.query.filter_by(semestre=semestre, carrera=carrera, turno=turno, ciclo=ciclo.id).first()
+        asignacion = Asignaciones.query.filter_by(semestre=semestre, carrera_id=carrera, grupo=turno, ciclo_id=ciclo.id).first()
         if asignacion:
             horarios = json.loads(asignacion.horario)
             return jsonify({"success": True, "horario": horarios})
