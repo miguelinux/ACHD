@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, redirect, request, jsonify
 from functions import verificate_session
 from models.tables_db import Usuarios, Materias, Aulas, Asignaciones, Ciclos
-from models.tables_db import DocenteCarreras
+from models.tables_db import DocenteCarreras, MateriasCarreras
 from extensions import db
 import json
+from sqlalchemy.orm import joinedload
 from functions import  docente
 
 jefe_bp = Blueprint('jefe', __name__)
@@ -27,8 +28,15 @@ def docentes():
         username = user["username"]
         carrera = user["carrera"]
         
-        d = DocenteCarreras.query.filter_by(carrera_id=carrera).all()
-        return render_template("docentes.html", user=username, docentes=d, userid=userid)
+        docentes = (
+            DocenteCarreras.query
+            .join(Usuarios, DocenteCarreras.usuario_id == Usuarios.id)
+            .filter(DocenteCarreras.carrera_id == carrera)
+            .options(joinedload(DocenteCarreras.usuario))
+            .order_by(Usuarios.nombre)
+            .all()
+        )
+        return render_template("docentes.html", user=username, docentes=docentes, userid=userid)
     return redirect("/")
 
 @jefe_bp.route("/jefeCarrera/materias")
@@ -37,8 +45,16 @@ def materias():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        d = Materias.query.filter_by(carrera=carrera).order_by(Materias.semestre).all()
-        return render_template("materias.html", user=username, materias=d)
+        
+        materias = (
+            MateriasCarreras.query
+            .join(Materias, MateriasCarreras.materia_id == Materias.id)
+            .filter(MateriasCarreras.carrera_id == carrera)
+            .options(joinedload(MateriasCarreras.materia))
+            .order_by(Materias.semestre)
+            .all()
+        )
+        return render_template("materias.html", user=username, materias=materias)
     return redirect("/")
 
 @jefe_bp.route("/jefeCarrera/asignacion")
