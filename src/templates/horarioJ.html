@@ -687,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para obtener los datos del servidor
     async function fetchData() {
       try {
-        const response = await fetch('/get_materia?userid={{ usuario.id }}');
+        const response = await fetch('/get_materia?userid={{ usuario.usuario_id }}');
         if (!response.ok) {
           throw new Error('Error en la solicitud: ' + response.statusText);
         }

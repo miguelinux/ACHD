@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, request
 from functions import verificate_session
 from models.tables_db import Usuarios, Materias, Disponibilidades,Asignaciones, Ciclos
+from extensions import db
 import json
 
 
@@ -21,8 +22,10 @@ def horario():
         user_id = user["userid"]
         ciclo=Ciclos.query.filter_by(actual=True).first()        
         d = Disponibilidades.query.filter_by(usuario_id=user_id,ciclo_id=ciclo.id).first()
-        if not d.horas:
-            d.horas = {'disponibilidad': [0]*90}
+        if not d:
+            d = Disponibilidades(usuario_id=user_id, ciclo_id=ciclo.id, horas={'disponibilidad': [0]*90})
+            db.session.add(d)
+            db.session.commit()
         disponibilidad = d.horas
         return render_template("horario.html", user=user, disponibilidad=disponibilidad)
     return redirect("/")
@@ -37,16 +40,17 @@ def horarioJefe():
                 return "NO HA SELECCIONADO NINGÚN DOCENTE"
         except KeyError:
             return "NO HA SELECCIONADO NINGÚN DOCENTE"
-
-        usuario = Usuarios.query.filter_by(id=user_id).first()
+        ciclo=Ciclos.query.filter_by(actual=True).first()        
+        dispo = Disponibilidades.query.filter_by(usuario_id=user_id,ciclo_id=ciclo.id).first()
+        
         try:
-            disponibilidad = usuario.disponibilidad
+            disponibilidad = dispo.horas
         except AttributeError:
             return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
         if not disponibilidad:
             return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
 
-        return render_template("horarioJ.html", user=user, disponibilidad=disponibilidad,usuario=usuario)
+        return render_template("horarioJ.html", user=user, disponibilidad=disponibilidad,usuario=dispo)
     return redirect("/")
 
 
