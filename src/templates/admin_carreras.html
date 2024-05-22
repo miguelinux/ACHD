@@ -127,13 +127,11 @@
     
     <table id="myTable">
         <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Plan de estudio</th>
         </tr>
         {% for carrera in carreras %}
         <tr onclick="redirectToUserPage('{{ carrera.id }}')">
-            <td>{{ carrera.id }}</td>
             <td>{{ carrera.nombre }} </td>
             <td>{{ carrera.plan_de_estudio }}</td>
             
@@ -147,7 +145,7 @@
 
     function redirectToUserPage(carrerasId) {
         // Redirecciona a la página del usuario pasando su ID como parámetro
-        window.location.href = "/admin/modificar/carrera/" + carrerasId;
+        window.location.href = "/admin/carrera/" + carrerasId;
     }
 </script>
 {% endblock %}

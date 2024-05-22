@@ -141,16 +141,6 @@
             </select>
         </div>
         <div class="input">
-            <label for="carrera" class="label">Carrera:</label>
-            <select id="carrear" name="carrera" class="input-field-carrera">
-                {% for carrera in carreras %}
-                <option value="{{ carrera.id }}" {% if usuario.carrera==carrera.id %} selected {% endif %}>
-                    {{ carrera.nombre }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="input">
             <label for="habilitado" class="label">Estado:</label>
             <select id="habilitado" name="habilitado" class="input-field">
                 <option value="true" {% if usuario.habilitado %} selected {% endif %}>Habilitado</option>

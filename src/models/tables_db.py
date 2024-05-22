@@ -1,108 +1,81 @@
-from sqlalchemy.dialects.mysql import JSON
-from sqlalchemy.dialects.mysql import TINYINT
-
 from extensions import db
-
-
-class Carreras(db.Model):
-    __tablename__ = "carrera"
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nombre = db.Column(db.Text, nullable=False)
-    plan_de_estudio = db.Column(db.Text, nullable=False)
-
-    def __repr__(self):
-        return {
-            column.name: getattr(self, column.name) for column in self.__table__.columns
-        }
-
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.mysql import INTEGER, CHAR, VARCHAR, BOOLEAN, JSON
+from sqlalchemy.orm import relationship
 
 class Usuarios(db.Model):
-    __tablename__ = "usuario"
-
+    __tablename__ = 'usuario'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nombre = db.Column(db.Text, nullable=False)
-    apellido_pat = db.Column(db.Text, nullable=False)
-    apellido_mat = db.Column(db.Text, nullable=False)
-    email = db.Column(db.Text, nullable=False)
-    password = db.Column(db.Text, nullable=False)
-    disponibilidad = db.Column(JSON, nullable=True, default=None)
-    user_type = db.Column(db.Integer, nullable=False)
-    first_login = db.Column(TINYINT(1), nullable=False)
-    horas_semana = db.Column(db.Integer, nullable=True, default=None)
-    carrera = db.Column(db.Integer, nullable=True, default=None)
-    habilitado = db.Column(TINYINT(1), nullable=False)
+    email = db.Column(CHAR(50), unique=True, nullable=False)
+    password = db.Column(CHAR(65), nullable=False)
+    user_type = db.Column(INTEGER(3), nullable=False)
+    first_login = db.Column(BOOLEAN, nullable=False)
+    nombre = db.Column(VARCHAR(20), nullable=False)
+    apellido_pat = db.Column(VARCHAR(20), nullable=False)
+    apellido_mat = db.Column(VARCHAR(20), nullable=False)
+    habilitado = db.Column(BOOLEAN, nullable=False)
     
+class DocenteCarreras(db.Model):
+    __tablename__ = 'docente_carrera'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
+    
+    usuario = relationship("Usuarios", backref="docente_carrera")
+    carrera = relationship("Carreras", backref="docente_carrera")
 
-    def __repr__(self):
-        return {
-            column.name: getattr(self, column.name) for column in self.__table__.columns
-        }
+class Disponibilidades(db.Model):
+    __tablename__ = 'disponibilidad'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    horas = db.Column(JSON)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
+    ciclo_id = db.Column(db.Integer, db.ForeignKey('ciclo.id'))
 
+class Carreras(db.Model):
+    __tablename__ = 'carrera'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nombre = db.Column(VARCHAR(30), nullable=False)
+    plan_de_estudio = db.Column(VARCHAR(15), nullable=False)
 
 class Materias(db.Model):
-    __tablename__ = "materia"
-
+    __tablename__ = 'materia'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    clave = db.Column(db.Text, nullable=False)
-    nombre = db.Column(db.Text, nullable=False)
-    semestre = db.Column(db.Integer, nullable=False)
-    horas_practica = db.Column(db.Integer, nullable=False)
-    horas_teoria = db.Column(db.Integer, nullable=False)
-    creditos = db.Column(db.Integer, nullable=False)
-    carrera = db.Column(db.Integer, nullable=True, default=None)
+    clave = db.Column(CHAR(15), nullable=False)
+    nombre = db.Column(VARCHAR(30), nullable=False)
+    semestre = db.Column(INTEGER(3), nullable=False)
+    horas_practica = db.Column(INTEGER(2), nullable=False)
+    horas_teoria = db.Column(INTEGER(2), nullable=False)
+    creditos = db.Column(INTEGER(2), nullable=False)
 
-    def __repr__(self):
-        return {
-            column.name: getattr(self, column.name) for column in self.__table__.columns
-        }
-
+class MateriasCarreras(db.Model):
+    __tablename__ = 'materias_carrera'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
+    materia_id = db.Column(db.Integer, db.ForeignKey('materia.id'))
+    
+    materia = relationship("Materias", backref="materias_carrera")
+    carrera = relationship("Carreras", backref="materias_carrera")
+    
+    
 
 class Aulas(db.Model):
-    __tablename__ = "aula"
-
+    __tablename__ = 'aula'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nombre = db.Column(db.Text, nullable=False)
-    edificio = db.Column(db.Text, nullable=False)
-
-    def __repr__(self):
-        return {
-            column.name: getattr(self, column.name) for column in self.__table__.columns
-        }
-
+    nombre = db.Column(CHAR(10), nullable=False)
+    edificio = db.Column(VARCHAR(20), nullable=False)
 
 class Asignaciones(db.Model):
-    __tablename__ = "asignacion"
-
+    __tablename__ = 'asignacion'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    horario = db.Column(JSON, nullable=True, default=None)
-    semestre = db.Column(db.Integer, nullable=False)
-    carrera = db.Column(db.Integer, nullable=False)
-    turno = db.Column(db.Text, nullable = False)
-    ciclo = db.Column(db.Integer, nullable = False)
+    horario = db.Column(JSON)
+    semestre = db.Column(INTEGER(3), nullable=False)
+    grupo = db.Column(CHAR(5), nullable=False)
+    carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
+    ciclo_id = db.Column(db.Integer, db.ForeignKey('ciclo.id'))
 
-    def __repr__(self):
-        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
-    
 class Ciclos(db.Model):
-    __tablename__='ciclo'
-    
+    __tablename__ = 'ciclo'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    anio = db.Column(db.Text, nullable = False)
-    estacion = db.Column(db.Text, nullable = False)
-    actual = db.Column(TINYINT(1), nullable = False)
-    
-    def __repr__(self):
-        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
-
-class Logg (db.Model):
-    __tablename__='loggs'
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    usuario = db.Column(db.Integer, nullable=False)
-    fecha = db.Column(db.DATE, nullable=False)
-
-    def __repr__(self):
-
-        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
-
+    anio = db.Column(db.Integer, nullable=False)
+    estacion = db.Column(CHAR(2), nullable=False)
+    actual = db.Column(BOOLEAN, nullable=False)

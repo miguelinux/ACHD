@@ -1,8 +1,10 @@
 from flask import Blueprint, render_template, redirect, request, jsonify
 from functions import verificate_session
 from models.tables_db import Usuarios, Materias, Aulas, Asignaciones, Ciclos
+from models.tables_db import DocenteCarreras, MateriasCarreras, Disponibilidades
 from extensions import db
 import json
+from sqlalchemy.orm import joinedload
 from functions import  docente
 
 jefe_bp = Blueprint('jefe', __name__)
@@ -12,10 +14,7 @@ def jefe_carrera():
     user = verificate_session()
     if user:
         username = user["username"]
-        carrera = user["carrera"]
-        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
-        a = Materias.query.filter_by(carrera=carrera).all()
-        return render_template("jefeCarrera.html", user=username, asignaturas=a, docentes=d)
+        return render_template("jefeCarrera.html", user=username)
     return redirect("/")
 
 @jefe_bp.route("/jefeCarrera/docentes")
@@ -28,8 +27,16 @@ def docentes():
             userid = None
         username = user["username"]
         carrera = user["carrera"]
-        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).order_by(Usuarios.apellido_pat).all()
-        return render_template("docentes.html", user=username, docentes=d, userid=userid)
+        
+        docentes = (
+            DocenteCarreras.query
+            .join(Usuarios, DocenteCarreras.usuario_id == Usuarios.id)
+            .filter(DocenteCarreras.carrera_id == carrera)
+            .options(joinedload(DocenteCarreras.usuario))
+            .order_by(Usuarios.nombre)
+            .all()
+        )
+        return render_template("docentes.html", user=username, docentes=docentes, userid=userid)
     return redirect("/")
 
 @jefe_bp.route("/jefeCarrera/materias")
@@ -38,8 +45,16 @@ def materias():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        d = Materias.query.filter_by(carrera=carrera).order_by(Materias.semestre).all()
-        return render_template("materias.html", user=username, materias=d)
+        
+        materias = (
+            MateriasCarreras.query
+            .join(Materias, MateriasCarreras.materia_id == Materias.id)
+            .filter(MateriasCarreras.carrera_id == carrera)
+            .options(joinedload(MateriasCarreras.materia))
+            .order_by(Materias.semestre)
+            .all()
+        )
+        return render_template("materias.html", user=username, materias=materias)
     return redirect("/")
 
 @jefe_bp.route("/jefeCarrera/asignacion")
@@ -48,10 +63,16 @@ def asignacion():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
-        a = Materias.query.filter_by(carrera=carrera).all()
+        docentes = (
+        DocenteCarreras.query
+        .filter(DocenteCarreras.carrera_id == carrera)
+        .outerjoin(Disponibilidades, DocenteCarreras.usuario_id == Disponibilidades.usuario_id)
+        .filter(Disponibilidades.usuario_id != None)  # Filtra los docentes que no tienen disponibilidades
+        .all()
+        )
+        asignatura= MateriasCarreras.query.filter_by(carrera_id=carrera)
         aula = Aulas.query.all()
-        return render_template("asignacion.html", user=username, asignaturas=a, docentes=d, aulas=aula)
+        return render_template("asignacion.html", user=username, asignaturas=asignatura, docentes=docentes, aulas=aula)
     return redirect("/")
 
 
@@ -64,14 +85,14 @@ def set_asignacion():
         semestre = asignacion_propuesta.pop("semestre")
         turno = asignacion_propuesta.pop("turno")
         ciclo = Ciclos.query.filter_by(actual=True).first()
-        asignacion = Asignaciones.query.filter_by(carrera=user_carrera, semestre=semestre, turno=turno, ciclo=ciclo.id).first()
+        asignacion = Asignaciones.query.filter_by(carrera_id=user_carrera, semestre=semestre, grupo=turno, ciclo_id=ciclo.id).first()
 
         if not asignacion:
             asignacion = Asignaciones(
-                carrera=user_carrera,
+                carrera_id=user_carrera,
                 semestre=semestre,
-                turno=turno,
-                ciclo=ciclo.id,
+                grupo=turno,
+                ciclo_id=ciclo.id,
                 horario=json.dumps(asignacion_propuesta.get("asignacion", {}))
             )
             horariov = None
@@ -120,16 +141,18 @@ def detectar_cambios(jsnew, jsold):
     return cambios
 
 def update_disp(user_id, indices_to_update, value):
-    usuario = Usuarios.query.filter_by(id=user_id).first()
-    if usuario:
-        current_availability = json.loads(usuario.disponibilidad)["disponibilidad"]
+    ciclo = Ciclos.query.filter_by(actual=True).first()
+    dispo= Disponibilidades.query.filter_by(usuario_id=user_id,ciclo_id=ciclo.id).first()
+    
+    if dispo:
+        current_availability = json.loads(dispo.horas)["disponibilidad"]
         for idx in indices_to_update:
             current_availability[idx] = value
 
         result_dict = {"disponibilidad": current_availability}
         result_json = json.dumps(result_dict)
 
-        usuario.disponibilidad = result_json
+        dispo.horas = result_json
         db.session.commit()
         return True
     return False
@@ -140,8 +163,8 @@ def grupos():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        d = Usuarios.query.filter_by(user_type=docente, carrera=carrera).all()
-        a = Materias.query.filter_by(carrera=carrera).all()
+        docentes = DocenteCarreras.query.filter_by(carrera_id=carrera).all()
+        asignaturas = MateriasCarreras.query.filter_by(carrera_id=carrera).all()
         aula = Aulas.query.all()
-        return render_template("grupos.html", user=username, asignaturas=a, docentes=d, aulas=aula)
+        return render_template("grupos.html", user=username, asignaturas=asignaturas, docentes=docentes, aulas=aula)
     return redirect("/")

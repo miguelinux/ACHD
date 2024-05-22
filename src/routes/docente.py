@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, request
 from functions import verificate_session
-from models.tables_db import Usuarios, Materias, Aulas,Asignaciones, Ciclos
+from models.tables_db import Usuarios, Materias, Disponibilidades,Asignaciones, Ciclos
+from extensions import db
 import json
 
 
@@ -19,8 +20,13 @@ def horario():
     user = verificate_session()
     if user:
         user_id = user["userid"]
-        usuario = Usuarios.query.filter_by(id=user_id).first()
-        disponibilidad = usuario.disponibilidad
+        ciclo=Ciclos.query.filter_by(actual=True).first()        
+        d = Disponibilidades.query.filter_by(usuario_id=user_id,ciclo_id=ciclo.id).first()
+        if not d:
+            d = Disponibilidades(usuario_id=user_id, ciclo_id=ciclo.id, horas={'disponibilidad': [0]*90})
+            db.session.add(d)
+            db.session.commit()
+        disponibilidad = d.horas
         return render_template("horario.html", user=user, disponibilidad=disponibilidad)
     return redirect("/")
 
@@ -34,16 +40,17 @@ def horarioJefe():
                 return "NO HA SELECCIONADO NINGÚN DOCENTE"
         except KeyError:
             return "NO HA SELECCIONADO NINGÚN DOCENTE"
-
-        usuario = Usuarios.query.filter_by(id=user_id).first()
+        ciclo=Ciclos.query.filter_by(actual=True).first()        
+        dispo = Disponibilidades.query.filter_by(usuario_id=user_id,ciclo_id=ciclo.id).first()
+        
         try:
-            disponibilidad = usuario.disponibilidad
+            disponibilidad = dispo.horas
         except AttributeError:
             return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
         if not disponibilidad:
             return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
 
-        return render_template("horarioJ.html", user=user, disponibilidad=disponibilidad,usuario=usuario)
+        return render_template("horarioJ.html", user=user, disponibilidad=disponibilidad,usuario=dispo)
     return redirect("/")
 
 
@@ -56,7 +63,7 @@ def clases():
         user_carrera = user["carrera"]
         ciclo = Ciclos.query.filter_by(actual=True).first()
         
-        asignaciones = Asignaciones.query.filter_by(carrera=user_carrera, ciclo=ciclo.id).all()
+        asignaciones = Asignaciones.query.filter_by(carrera_id=user_carrera, ciclo_id=ciclo.id).all()
         
         if asignaciones:
             materias_asignadas = set()  # Conjunto para almacenar las materias asignadas al docente

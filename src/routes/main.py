@@ -2,7 +2,8 @@
 
 from flask import Blueprint, render_template, redirect, request, session, jsonify
 from functions import verificate_session, get_hex_digest
-from models.tables_db import Usuarios, Ciclos, Asignaciones, Materias, Aulas
+from models.tables_db import Usuarios, Ciclos, Asignaciones, Materias, Aulas,Disponibilidades
+from models.tables_db import Disponibilidades
 from extensions import db
 import json
 
@@ -97,21 +98,16 @@ def change_first():
     return jsonify({"success": True, "message": mensaje})
     
 
-@main_bp.route("/getDisponibilidad")
-def getDisponibilidad():
-    user_id = request.args["id"]
-    usuario = Usuarios.query.filter_by(id=user_id).first()
-    disponibilidad = usuario.disponibilidad
-    return jsonify(disponibilidad)
-
 
 @main_bp.route("/getDisponibilidad/<int:idDocente>", methods=["GET"])
 def get_dispo(idDocente):
     user = verificate_session()
     if user:
-        usuario = Usuarios.query.filter_by(id=idDocente).first()
-        if usuario:
-            disponibilidad = json.loads(usuario.disponibilidad)
+        user_id = user["userid"]
+        ciclo = Ciclos.query.filter_by(actual=True).first()
+        dispo = Disponibilidades.query.filter_by(usuario_id=idDocente, ciclo_id=ciclo.id).first()
+        if dispo:
+            disponibilidad = json.loads(dispo.horas)
             return jsonify({"success": True, "disponibilidad": disponibilidad})
         else:
             return jsonify({"success": False, "message": "Docente no encontrado"})
@@ -127,7 +123,7 @@ def get_horario():
         turno = request.args.get('turno')
         semestre = request.args.get('semestre')
         ciclo = Ciclos.query.filter_by(actual=True).first()
-        asignacion = Asignaciones.query.filter_by(semestre=semestre, carrera=carrera, turno=turno, ciclo=ciclo.id).first()
+        asignacion = Asignaciones.query.filter_by(semestre=semestre, carrera_id=carrera, grupo=turno, ciclo_id=ciclo.id).first()
         if asignacion:
             horarios = json.loads(asignacion.horario)
             return jsonify({"success": True, "horario": horarios})
@@ -145,17 +141,23 @@ def set_disp():
         availability_matrix = [0] * 90
         for idx in selected_indices:
             availability_matrix[idx] = 1
-
+            
         result_dict = {"disponibilidad": availability_matrix}
         result_json = json.dumps(result_dict)
+        
+        ciclo = Ciclos.query.filter_by(actual=True).first()
 
-        usuario = Usuarios.query.filter_by(id=user_id).first()
+        d = Disponibilidades.query.filter_by(usuario_id=user_id, ciclo_id=ciclo.id).first()
+        if not d:
+            d = Disponibilidades(usuario_id=user_id, ciclo_id=ciclo.id, horas={'disponibilidad': [0]*90})
+            db.session.add(d)
+        d.horas = result_json
+        db.session.commit()
 
-        if usuario:
-            usuario.disponibilidad = result_json
-            db.session.commit()
-            return jsonify({"success": True, "message": "Disponibilidad actualizada correctamente"})
+        return jsonify({"status": "success", "message": "Disponibilidad guardada correctamente"})
     return redirect("/")
+
+
 
 
 @main_bp.route("/get_materia", methods=['GET'])
@@ -169,7 +171,7 @@ def get_materias():
         except:
             pass
         ciclo = Ciclos.query.filter_by(actual=True).first()
-        asignaciones = Asignaciones.query.filter_by(carrera=carrera, ciclo=ciclo.id).all()
+        asignaciones = Asignaciones.query.filter_by(carrera_id=carrera, ciclo_id=ciclo.id).all()
         
         if asignaciones:
             filtered_horarios = {

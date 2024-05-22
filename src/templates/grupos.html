@@ -240,13 +240,13 @@ body{
 
     <div hidden style="overflow: hidden;">
         {% for docente in docentes %}
-        <div class="docente" data-id-docente='{{docente.id}}' data-nombre="{{ docente.nombre }}"
-            data-apellido="{{ docente.apellido_pat }}" hidden>
+        <div class="docente" data-id-docente='{{docente.usuario.id}}' data-nombre="{{ docente.usuario.nombre }}"
+            data-apellido="{{ docente.usuario.apellido_pat }}" hidden>
         </div>
         {% endfor %}
         {% for asignatura in asignaturas %}
-        <div class="materia" data-semestre="{{ asignatura.semestre }}" data-id-materia='{{asignatura.id}}'
-            data-credito="{{asignatura.creditos}}" data-nombre="{{ asignatura.nombre }}" hidden>
+        <div class="materia" data-semestre="{{ asignatura.materia.semestre }}" data-id-materia='{{asignatura.materia.id}}'
+            data-credito="{{asignatura.materia.creditos}}" data-nombre="{{ asignatura.materia.nombre }}" hidden>
         </div>
         {% endfor %}
         {% for aula in aulas %}

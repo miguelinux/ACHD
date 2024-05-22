@@ -136,20 +136,7 @@
             <label for="Horas teoria">Horas Teoría: </label>
             <input type="text" placeholder="Hteoria" name="Hteoria" value="{{materia.horas_teoria}}">
         </div>
-        <div class="input">
-            <label for="Creditos">Créditos: </label>
-            <input type="text" placeholder="Creditos" name="Creditos" value="{{materia.creditos}}">
-        </div>
-        <div class="input">
-            <label for="carrera" class="label">Carrera:</label>
-            <select id="carrear" name="carrera" class="input-field-carrera">
-                {% for carrera in carreras %}
-                <option value="{{ carrera.id }}" {% if materia.carrera==carrera.id %} selected {% endif %}>
-                    {{ carrera.nombre }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
+        
         <button class="btn" type="submit">Confirmar</button>
     </form>
     <form action="/delete/materia" method="post" style="margin-top: 10px;">

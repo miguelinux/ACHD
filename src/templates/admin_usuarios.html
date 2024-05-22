@@ -128,27 +128,19 @@
                 <option value="2">Jefe de carrera</option>
                 <option value="3">Docente</option>
             </select>
-            <select name="carrera" class="input-text" required>
-                {% for carrera in carreras %}
-                <option value="{{ carrera.id }}">{{ carrera.nombre }}</option>
-                {% endfor %}
-            </select>
             <input class="input-btn" type="submit" value="Agregar" />
         </div>
     </form>
     
     <table id="myTable">
         <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Email</th>
             <th>Tipo de usuario</th>
-            <th>Carrera</th>
             <th>Activo</th>
         </tr>
         {% for usuario in usuarios %}
         <tr onclick="redirectToUserPage('{{ usuario.id }}')">
-            <td>{{ usuario.id }}</td>
             <td>{{ usuario.nombre }} {{ usuario.apellido_pat }} {{ usuario.apellido_mat }}</td>
             <td>{{ usuario.email }}</td>
             <td>{% if usuario.user_type == 1 %}
@@ -158,12 +150,6 @@
                 {% elif usuario.user_type == 3 %}
                 Docente
                 {% endif %}
-            </td>
-            <td>{% for carrera in carreras %}
-                {% if usuario.carrera == carrera.id %}
-                {{ carrera.nombre }}
-                {% endif %}
-                {% endfor %}
             </td>
             <td>{% if usuario.habilitado == True %}
                 si

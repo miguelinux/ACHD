@@ -134,13 +134,11 @@
     
     <table id="myTable">
         <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Edificio</th>
         </tr>
         {% for aula in aulas %}
         <tr onclick="redirectToUserPage('{{ aula.id }}')">
-            <td>{{ aula.id }}</td>
             <td>{{ aula.nombre }} </td>
             <td>{{ aula.edificio }}</td>
             

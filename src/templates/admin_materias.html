@@ -124,42 +124,27 @@
             <input name="semestre" class="input-text" placeholder="Semestre" type="number" required />
             <input name="Hpracticas" class="input-text" placeholder="Horas Prácticas" type="number" required />
             <input name="Hteoria" class="input-text" placeholder="Horas Teóricas" type="number" required />
-            <input name="Creditos" class="input-text" placeholder="Créditos" type="number" required />
-            <select name="carrera" class="input-text" required>
-                {% for carrera in carreras %}
-                <option value="{{ carrera.id }}">{{ carrera.nombre }}</option>
-                {% endfor %}
-            </select>
             <input class="input-btn" type="submit" value="Agregar" />
         </div>
     </form>
     
     <table id="myTable">
         <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Clave</th>
             <th>Semestre</th>
             <th>Horas Prácticas</th>
             <th>Horas Teóricas</th>
             <th>Créditos</th>
-            <th>Carrera</th>
         </tr>
         {% for materia in materias %}
         <tr onclick="redirectToUserPage('{{ materia.id }}')">
-            <td>{{ materia.id }}</td>
             <td>{{ materia.nombre }} </td>
             <td>{{ materia.clave }}</td>
             <td>{{ materia.semestre }}</td>
             <td>{{ materia.horas_practica }}</td>
             <td>{{ materia.horas_teoria }}</td>
             <td>{{ materia.creditos }}</td>
-            <td>{% for carrera in carreras %}
-                {% if materia.carrera == carrera.id %}
-                {{ carrera.nombre }}
-                {% endif %}
-                {% endfor %}
-            </td>
         </tr>
         {% endfor %}
     </table>
