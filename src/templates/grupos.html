@@ -9,6 +9,10 @@
 html{
     font-family: Montserrat,Arial;
 }
+
+#TablaHorario{
+    font-size: small;
+}
 body{
     font-family: Montserrat,Arial;
 }
@@ -85,7 +89,7 @@ body{
         user-select: none;
         width: 156%;
         height: 98%;
-        margin: auto;
+        margin: 0;
         margin-top: 20px;
         border-collapse: collapse;
     }
@@ -111,7 +115,7 @@ body{
 
     table td {
         white-space: normal;
-        font-size: 15px;
+        font-size: 12px;
     }
 </style>
 
@@ -246,224 +250,152 @@ body{
 </div>
 
 <script>
-
-    let diasOriginales = obtenerDiasOriginales();
-
-    const horasOriginales = obtenerHorasOriginales();
-    const turnA = document.getElementById("turnA");
-    const turnB = document.getElementById("turnB");
-    const turnN = document.getElementById("turnN");
-
-    turnA.classList.add('selected');
-
-    turnA.addEventListener("click", function () {
-        restaurarHorasOriginales();
-        cambiarTurno("A");
-    });
-
-    turnB.addEventListener("click", function () {
-        restaurarHorasOriginales();
-        cambiarTurno("B");
-    });
-
-    turnN.addEventListener("click", function () {
-        cambiarTurno("N");
-    });
-
-    function cambiarTurno(turno) {
-        document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
-        document.getElementById(`turn${turno}`).classList.add('selected');
-        const dias = document.querySelectorAll(".dia");
-        if (turno === "N") {
-            dias.forEach(function (dia, index) {
-                const id = parseInt(diasOriginales[index]) + 7;
-                dia.id = id.toString(); // Actualizar el ID del día
-            });
-            const horas = document.querySelectorAll(".hora");
-            horas.forEach(function (hora, index) {
-                let inicio = 14 + index;
-                let fin = 15 + index;
-                if (fin > 22) {
-                    fin = 22;
-                }
-                hora.textContent = inicio.toString().padStart(2, '0') + '-' + fin.toString().padStart(2, '0');
-            });
-        } else {
-            // Restaurar los IDs originales
-            dias.forEach(function (dia, index) {
-                dia.id = diasOriginales[index]; // Restaurar el ID del día
-            });
-        }
-    }
-
-    function obtenerDiasOriginales() {
-        const diasOriginales = [];
-        const dias = document.querySelectorAll(".dia");
-        dias.forEach(function (dia) {
-            diasOriginales.push(dia.id);
-        });
-        return diasOriginales;
-    }
-
-    function obtenerHorasOriginales() {
-        const horasOriginales = [];
-        const horas = document.querySelectorAll(".hora");
-        horas.forEach(function (hora) {
-            horasOriginales.push(hora.textContent);
-        });
-        return horasOriginales;
-    }
-
-    function restaurarHorasOriginales() {
-        const horas = document.querySelectorAll(".hora");
-        horas.forEach(function (hora, index) {
-            hora.textContent = horasOriginales[index];
-        });
-    }
-    function stringToColor(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = str.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        let h = hash % 360; // Asegúrate de que el matiz esté en el rango [0, 360)
-        let s = 60 + ((hash * 2) % 40); // Saturación variable entre 60% y 100%
-        let l = 40 + ((hash * 4) % 30); // Luminosidad variable entre 40% y 70%
-
-        return `hsl(${h}, ${s}%, ${l}%)`;
-    }
-
     document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.semestre').forEach(function (button) {
+        const diasOriginales = obtenerDiasOriginales();
+        const horasOriginales = obtenerHorasOriginales();
+        const turnA = document.getElementById("turnA");
+        const turnB = document.getElementById("turnB");
+        const turnN = document.getElementById("turnN");
+
+        turnA.classList.add('selected');
+
+        const turnos = [turnA, turnB, turnN];
+        turnos.forEach(turno => {
+            turno.addEventListener("click", () => {
+                restaurarHorasOriginales();
+                cambiarTurno(turno.id.replace("turn", ""));
+                limpiarCeldas();
+                getselecteditems();
+            });
+        });
+
+        document.querySelectorAll('.semestre').forEach(button => {
             button.addEventListener('click', function () {
-                // Elimina la clase 'selected' de todos los botones de semestre
-                document.querySelectorAll('.semestre').forEach(function (btn) {
-                    btn.classList.remove('selected');
-                });
-
-                // Agrega la clase 'selected' al botón de semestre seleccionado
+                document.querySelectorAll('.semestre').forEach(btn => btn.classList.remove('selected'));
                 this.classList.add('selected');
-
-                var semestre = this.getAttribute('data-semestre');
-
-                // Restaurar los colores originales de fondo de las celdas .dia
-                document.querySelectorAll(".dia").forEach(cell => {
-                    cell.textContent = "";
-                    cell.style.backgroundColor = "";
-                });
-
-                getselecteditems(); // Llama a esta función para obtener los elementos seleccionados
+                limpiarCeldas();
+                getselecteditems();
             });
         });
-    });
 
-    // Simula un clic en el botón del semestre 1 al cargar la página
-    document.addEventListener('DOMContentLoaded', function () {
-        // Obtiene el botón del semestre 1
         const semestre1Btn = document.querySelector('.semestre[data-semestre="1"]');
-        // Si el botón del semestre 1 existe, simula un clic en él
-        if (semestre1Btn) {
-            semestre1Btn.click();
+        if (semestre1Btn) semestre1Btn.click();
+
+        function cambiarTurno(turno) {
+            document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
+            document.getElementById(`turn${turno}`).classList.add('selected');
+            const dias = document.querySelectorAll(".dia");
+            if (turno === "N") {
+                dias.forEach((dia, index) => {
+                    const id = parseInt(diasOriginales[index]) + 7;
+                    dia.id = id.toString();
+                });
+                const horas = document.querySelectorAll(".hora");
+                horas.forEach((hora, index) => {
+                    let inicio = 14 + index;
+                    let fin = Math.min(22, 15 + index);
+                    hora.textContent = `${inicio.toString().padStart(2, '0')}-${fin.toString().padStart(2, '0')}`;
+                });
+            } else {
+                dias.forEach((dia, index) => {
+                    dia.id = diasOriginales[index];
+                });
+            }
         }
-    });
-    document.querySelectorAll('.turno').forEach(function (button) {
-        button.addEventListener('click', function () {
-            // Restaurar los colores originales de fondo de las celdas .dia
+
+        function obtenerDiasOriginales() {
+            return Array.from(document.querySelectorAll(".dia")).map(dia => dia.id);
+        }
+
+        function obtenerHorasOriginales() {
+            return Array.from(document.querySelectorAll(".hora")).map(hora => hora.textContent);
+        }
+
+        function restaurarHorasOriginales() {
+            const horas = document.querySelectorAll(".hora");
+            horas.forEach((hora, index) => {
+                hora.textContent = horasOriginales[index];
+            });
+        }
+
+        function limpiarCeldas() {
             document.querySelectorAll(".dia").forEach(cell => {
                 cell.textContent = "";
-                cell.style.backgroundColor = ""; // Restaurar el color de fondo
+                cell.style.backgroundColor = "";
             });
-            getselecteditems();
-        });
-    });
-
-    function getselecteditems() {
-        const semestreSeleccionadoElemento = document.querySelector('.semestre.selected');
-        const semestreSeleccionado = semestreSeleccionadoElemento ? semestreSeleccionadoElemento.getAttribute('data-semestre') : '';
-        const turnoSeleccionadoElemento = document.querySelector('.turno.selected');
-        const turnoSeleccionado = turnoSeleccionadoElemento ? turnoSeleccionadoElemento.textContent.trim() : '';
-        if (turnoSeleccionado && semestreSeleccionado) {
-            gethorario(turnoSeleccionado, semestreSeleccionado);
         }
-    }
 
-    function gethorario(turno, semestre) {
-        fetch(`/get_horario?turno=${turno}&semestre=${semestre}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
+        function stringToColor(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
             }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error al obtener los datos de la base de datos');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (!data.horario.docente || !data.horario.materia ||
-                    !data.horario.aula || !data.horario.cell_ids) {
+            const h = hash % 360;
+            const s = 60 + ((hash * 2) % 40);
+            const l = 40 + ((hash * 4) % 30);
+            return `hsl(${h}, ${s}%, ${l}%)`;
+        }
+
+        function getselecteditems() {
+            const semestreSeleccionado = document.querySelector('.semestre.selected')?.getAttribute('data-semestre');
+            const turnoSeleccionado = document.querySelector('.turno.selected')?.textContent.trim();
+            if (turnoSeleccionado && semestreSeleccionado) {
+                gethorario(turnoSeleccionado, semestreSeleccionado);
+            }
+        }
+
+        async function gethorario(turno, semestre) {
+            try {
+                const response = await fetch(`/get_horario?turno=${turno}&semestre=${semestre}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) throw new Error('Error al obtener los datos de la base de datos');
+
+                const data = await response.json();
+                if (!data.horario.docente || !data.horario.materia || !data.horario.aula || !data.horario.cell_ids) {
                     console.log("No se recibieron datos de docente, materia, aula o cellIds.");
                     return;
                 }
 
-                const docentes = data.horario.docente;
-                const materias = data.horario.materia;
-                const aulas = data.horario.aula;
-                const cellIds = data.horario.cell_ids;
+                const { docente, materia, aula, cell_ids: cellIds } = data.horario;
 
-                // Limpiar las celdas antes de actualizar con nuevos datos
-                document.querySelectorAll(".dia").forEach(cell => {
-                    cell.textContent = "";
-                    cell.style.backgroundColor = "";
-                });
+                limpiarCeldas();
 
                 cellIds.forEach((cellId, index) => {
-                    const docenteId = docentes[index];
-                    const materiaId = materias[index];
-                    const aulaId = aulas[index];
-
                     const cell = document.getElementById(cellId);
                     if (cell) {
-                        // Verificar si se recibieron valores para docente, materia y aula
+                        const docenteId = docente[index];
+                        const materiaId = materia[index];
+                        const aulaId = aula[index];
+
                         if (docenteId && materiaId && aulaId) {
-                            // Obtener los nombres directamente desde los atributos data-nombre
-                            const docenteNombre = document.querySelector(`.docente[data-id-docente="${docenteId}"]`).dataset.nombre;
-                            const docenteApellido = document.querySelector(`.docente[data-id-docente="${docenteId}"]`).dataset.apellido;
+                            const docenteElem = document.querySelector(`.docente[data-id-docente="${docenteId}"]`);
+                            const docenteNombre = docenteElem.dataset.nombre;
+                            const docenteApellido = docenteElem.dataset.apellido;
                             const nombreCompletoDocente = `${docenteNombre} ${docenteApellido}`;
                             const materiaNombre = document.querySelector(`.materia[data-id-materia="${materiaId}"]`).dataset.nombre;
                             const aulaNombre = document.querySelector(`.aula[data-id-aula="${aulaId}"]`).dataset.nombre;
 
-                            // Crear elementos div para cada dato y agregarlos a la celda
-                            const docenteDiv = document.createElement("div");
-                            docenteDiv.textContent = `${nombreCompletoDocente}`;
-                            docenteDiv.setAttribute('data-id', docenteId); // Agregar el atributo data-id
-
-
-                            const materiaDiv = document.createElement("div");
-                            materiaDiv.textContent = `${materiaNombre}`;
-                            materiaDiv.setAttribute('data-id', materiaId); // Agregar el atributo data-id
-                            materiaDiv.setAttribute('title', materiaDiv.textContent)
-
-
-                            const aulaDiv = document.createElement("div");
-                            aulaDiv.textContent = `${aulaNombre}`;
-                            aulaDiv.setAttribute('data-id', aulaId); // Agregar el atributo data-id
-
-
-                            cell.appendChild(docenteDiv);
-                            cell.appendChild(materiaDiv);
-                            cell.appendChild(aulaDiv);
-
-                            // Opcional: asignar un color único basado en los IDs
+                            cell.append(createDiv(nombreCompletoDocente, docenteId), createDiv(materiaNombre, materiaId, materiaNombre), createDiv(aulaNombre, aulaId));
                             cell.style.backgroundColor = stringToColor(`${docenteId}-${materiaId}-${aulaId}`);
-
                         }
                     }
                 });
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error al obtener los datos de la base de datos:', error);
-            });
-    }
+            }
+        }
+
+        function createDiv(text, id, title = '') {
+            const div = document.createElement('div');
+            div.textContent = text;
+            div.setAttribute('data-id', id);
+            if (title) div.setAttribute('title', title);
+            return div;
+        }
+    });
 </script>
+
 {% endblock %}
