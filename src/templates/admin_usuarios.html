@@ -4,106 +4,103 @@
 {% block body_class %}adminusuarios{% endblock %}
 
 {% block css %}
-
 <style>
-    body{
-        font-family: Montserrat,Arial;
+    body {
+        font-family: Montserrat, Arial;
     }
-    
+
     #input-data {
-        width: 80vw; /* Reduciendo el ancho del contenedor */
-        font-family: Montserrat,Arial;
+        width: 80vw;
+        font-family: Montserrat, Arial;
         margin: 0 auto;
-        margin-top: 3vh; /* Reduciendo el espacio superior */
+        margin-top: 3vh;
         display: flex;
-        flex-wrap: wrap; /* Permitiendo que los elementos se envuelvan en varias filas si es necesario */
+        flex-wrap: wrap;
     }
-    
+
     .input-text {
         flex: 1;
-        min-width: 180px; /* Reduciendo el ancho mínimo de los campos de entrada */
-        margin: 3px; /* Reduciendo el espacio entre los campos de entrada */
-        box-shadow:  #797979 0 0 3px 0px; /* Reduciendo la sombra */
+        min-width: 180px;
+        margin: 3px;
+        box-shadow: #797979 0 0 3px 0px;
         border: none;
-        height: 30px; /* Reduciendo la altura de los campos de entrada */
-        font-family: Montserrat,Arial;
+        height: 30px;
+        font-family: Montserrat, Arial;
         padding-left: 5px;
-        border-radius: 8px; /* Reduciendo el radio del borde */
+        border-radius: 8px;
         border-width: 1px;
         border-color: #262626;
-        transition: 0.2s; /* Reduciendo la duración de la transición */
+        transition: 0.2s;
         outline: none;
-        font-size: 14px; /* Reduciendo el tamaño de la fuente */
+        font-size: 14px;
     }
-    
+
     .input-text:focus {
         border-color: blueviolet;
     }
-    
+
     .input-btn {
         flex: 1;
-        margin: 3px; /* Reduciendo el espacio entre el botón y los campos de entrada */
-        height: 34px; /* Reduciendo la altura del botón */
-        border-radius: 8px; /* Reduciendo el radio del borde */
+        margin: 3px;
+        height: 34px;
+        border-radius: 8px;
         border-style: solid;
         border-width: 1px;
         border-color: #262626;
         cursor: pointer;
-        transition: 0.2s all ease; /* Reduciendo la duración de la transición */
-        font-size: 14px; /* Reduciendo el tamaño de la fuente */
+        transition: 0.2s all ease;
+        font-size: 14px;
     }
-    
+
     .input-btn:hover {
         background-color: #383838;
         border-color: #383838;
         color: white;
     }
-    
+
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
         -webkit-appearance: none;
         appearance: none;
         margin: 0;
     }
-    
-    /* --------------------------- Table --------------------------- */
-    
+
     #myTable {
-        width: 80%; /* Reduciendo el ancho de la tabla */
+        width: 80%;
         margin: 0 auto;
-        margin-top: 3vh; /* Reduciendo el espacio superior */
+        margin-top: 3vh;
         border-collapse: collapse;
     }
-    
+
     #myTable th {
         background-color: blueviolet;
-        padding: 8px; /* Reduciendo el relleno de las celdas de encabezado */
+        padding: 8px;
         color: white;
         font-weight: 100;
-        font-size: 14px; /* Reduciendo el tamaño de la fuente */
+        font-size: 14px;
     }
-    
+
     #myTable td,
     th {
         border: 1px solid #ddd;
-        padding: 6px; /* Reduciendo el relleno de las celdas de datos */
+        padding: 6px;
     }
-    
+
     #myTable td {
-        padding: 4px; /* Reduciendo el relleno de las celdas de datos */
+        padding: 4px;
     }
-    
+
     #myTable tr:nth-child(even) {
         background-color: #f2f2f2;
     }
-    
+
     #myTable tr:hover {
         background-color: #352875;
-        color:white;
+        color: white;
         transition: 0.2s ease-in-out;
         cursor: pointer;
     }
-    
+
     .remove-btn {
         width: 100%;
         height: 100%;
@@ -112,12 +109,107 @@
         background-color: transparent;
         cursor: pointer;
     }
-    </style>
+
+    /* Styles for the new buttons */
+    #button-container {
+        display: flex;
+        justify-content: space-between;
+        width: 80%;
+        margin: 20px auto;
+    }
+
+    .btn {
+        height: 34px;
+        border-radius: 8px;
+        border-style: solid;
+        border-width: 1px;
+        border-color: #262626;
+        cursor: pointer;
+        transition: 0.2s all ease;
+        font-size: 14px;
+        padding: 0 10px;
+    }
+
+    .btn:hover {
+        background-color: #383838;
+        border-color: #383838;
+        color: white;
+    }
+
+    .btn-left {
+        margin-right: auto;
+    }
+
+    .btn-right {
+        margin-left: 10px;
+        background: white;
+    }
+
+    #file-upload {
+        display: none;
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        margin: 5% auto;
+        display: block;
+        width: 80%;
+        max-width: 5000px;
+    }
+
+    .close {
+        position: absolute;
+        right: 25px;
+        top: 0;
+        color: #fff;
+        font-size: 35px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #999;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    @media only screen and (max-width: 700px) {
+        .modal-content {
+            width: 100%;
+        }
+    }
+    
+</style>
 {% endblock %}
 
 {% block content %}
 <section id="table">
-    <form action="/crear_usuario" method="POST" id="user-form">
+    <form action="/upload_csv_usuario" method="POST" id="user-form">
         <div id="input-data">
             <input name="nombre" class="input-text" placeholder="Nombre" type="text" required />
             <input name="apellido_pat" class="input-text" placeholder="Apellido Paterno" type="text" required />
@@ -131,7 +223,7 @@
             <input class="input-btn" type="submit" value="Agregar" />
         </div>
     </form>
-    
+
     <table id="myTable">
         <tr>
             <th>Nombre</th>
@@ -162,12 +254,65 @@
     </table>
 </section>
 
+<!-- New button container -->
+<div id="button-container">
+    <button class="btn btn-left" onclick="showGuide()">Guía csv</button>
+    <form action="/upload_csv" method="POST" enctype="multipart/form-data">
+        <label for="file-upload" class="btn btn-right">Selecciona un archivo</label>
+        <input id="file-upload" type="file" name="file" accept=".csv" onchange="displayFileName()">
+        <span id="file-name"></span>
+        <button class="btn btn-right" type="submit">Subir</button>
+    </form>
+</div>
+
+<!-- Modal for displaying the guide image -->
+<div id="guideModal" class="modal">
+    <span class="close" onclick="closeGuide()">&times;</span>
+    <img class="modal-content" id="guideImage">
+    <div id="caption"></div>
+</div>
+
 <script>
-    
+    function showGuide() {
+        const modal = document.getElementById("guideModal");
+        const img = document.getElementById("guideImage");
+        img.src = "/img/guia_usuario.png";
+        modal.style.display = "block";
+    }
+
+    function closeGuide() {
+        const modal = document.getElementById("guideModal");
+        modal.style.display = "none";
+    }
+
+    function displayFileName() {
+        const fileInput = document.getElementById('file-upload');
+        const fileNameSpan = document.getElementById('file-name');
+        if (fileInput.files.length > 0) {
+            fileNameSpan.textContent = `Archivo seleccionado: ${fileInput.files[0].name}`;
+        } else {
+            fileNameSpan.textContent = '';
+        }
+    }
 
     function redirectToUserPage(userId) {
-        // Redirecciona a la página del usuario pasando su ID como parámetro
         window.location.href = "/admin/modificar/usuario/" + userId;
+    }
+
+    function uploadFile() {
+        const fileInput = document.getElementById('file-upload');
+        if (fileInput.files.length === 0) {
+            alert('Por favor, selecciona un archivo.');
+            return;
+        }
+
+        const file = fileInput.files[0];
+        if (file.type !== 'text/csv') {
+            alert('Por favor, selecciona un archivo .csv.');
+            return;
+        }
+
+        alert('Archivo listo para subir: ' + file.name);
     }
 </script>
 {% endblock %}
