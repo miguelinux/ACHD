@@ -29,8 +29,8 @@ class Disponibilidades(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     horas = db.Column(JSON)
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
-    ciclo_id = db.Column(db.Integer, db.ForeignKey('ciclo.id'))
-
+    ciclo_id = db.Column(db.Integer, db.ForeignKey('ciclo.id'))    
+    
 class Carreras(db.Model):
     __tablename__ = 'carrera'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -70,6 +70,7 @@ class Asignaciones(db.Model):
     grupo = db.Column(CHAR(5), nullable=False)
     carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
     ciclo_id = db.Column(db.Integer, db.ForeignKey('ciclo.id'))
+    
 
 class Ciclos(db.Model):
     __tablename__ = 'ciclo'
@@ -77,3 +78,6 @@ class Ciclos(db.Model):
     anio = db.Column(db.Integer, nullable=False)
     estacion = db.Column(CHAR(2), nullable=False)
     actual = db.Column(BOOLEAN, nullable=False)
+    
+    disponibilidades = relationship("Disponibilidades", backref="ciclo", cascade="all, delete-orphan", single_parent=True)
+    asignaciones = relationship("Asignaciones", backref="ciclo", cascade="all, delete-orphan", single_parent=True)

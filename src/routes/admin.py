@@ -3,6 +3,7 @@ from extensions import db
 
 import csv , io
 
+from sqlalchemy.orm import selectinload
 from models.tables_db import Usuarios, Materias, Aulas, Ciclos, Carreras
 from models.tables_db import DocenteCarreras,MateriasCarreras
 
@@ -584,7 +585,7 @@ def delete_ciclo():
     user = verificate_session()
     if user:
         cicloid = request.form.get("id")
-        ciclo = Ciclos.query.get(cicloid)
+        ciclo = Ciclos.query.options(selectinload(Ciclos.disponibilidades), selectinload(Ciclos.asignaciones)).get(cicloid)
         if ciclo:
             db.session.delete(ciclo)
             db.session.commit()

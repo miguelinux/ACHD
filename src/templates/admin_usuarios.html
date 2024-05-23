@@ -298,20 +298,17 @@
     function redirectToUserPage(userId) {
         window.location.href = "/admin/modificar/usuario/" + userId;
     }
-
     function uploadFile() {
         const fileInput = document.getElementById('file-upload');
         if (fileInput.files.length === 0) {
             alert('Por favor, selecciona un archivo.');
             return;
         }
-
         const file = fileInput.files[0];
         if (file.type !== 'text/csv') {
             alert('Por favor, selecciona un archivo .csv.');
             return;
         }
-
         alert('Archivo listo para subir: ' + file.name);
     }
 </script>
