@@ -63,11 +63,13 @@ def asignacion():
     if user:
         username = user["username"]
         carrera = user["carrera"]
+        ciclo = Ciclos.query.filter_by(actual=True).first()
         docentes = (
         DocenteCarreras.query
         .filter(DocenteCarreras.carrera_id == carrera)
         .outerjoin(Disponibilidades, DocenteCarreras.usuario_id == Disponibilidades.usuario_id)
-        .filter(Disponibilidades.usuario_id != None)  # Filtra los docentes que no tienen disponibilidades
+        .filter(Disponibilidades.usuario_id != None,
+                Disponibilidades.ciclo_id == ciclo.id)  # Filtra los docentes que no tienen disponibilidades
         .all()
         )
         asignatura= MateriasCarreras.query.filter_by(carrera_id=carrera)
