@@ -56,8 +56,6 @@ class MateriasCarreras(db.Model):
     materia = relationship("Materias", backref="materias_carrera")
     carrera = relationship("Carreras", backref="materias_carrera")
     
-    
-
 class Aulas(db.Model):
     __tablename__ = 'aula'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
