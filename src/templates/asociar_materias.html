@@ -15,6 +15,13 @@
         margin-top: 3vh;
     }
 
+    #table-container {
+        width: 99%;
+        margin: 0 auto;
+        margin-top: 3vh;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
     .myTable {
         width: 100%;
         border-collapse: collapse;
@@ -94,6 +101,7 @@
 {% block content %}
 <div class="container">
     <h2>Lista de Materias</h2>
+    <div id="table-container">
     <table class="myTable">
         <tr>
             <th>Nombre</th>
@@ -117,6 +125,7 @@
         </tr>
         {% endfor %}
     </table>
+    </div>
     <button id="saveButton" class="save-btn">Guardar</button>
 </div>
 
