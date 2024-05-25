@@ -65,10 +65,20 @@
         margin: 0;
     }
 
-    #myTable {
+    /* Contenedor de la tabla con desplazamiento */
+    #table-container {
         width: 80%;
         margin: 0 auto;
         margin-top: 3vh;
+        max-height: 60vh;
+        /* Ajusta la altura máxima según tus necesidades */
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        /* Opcional: para ver claramente los límites del contenedor */
+    }
+
+    #myTable {
+        width: 100%;
         border-collapse: collapse;
     }
 
@@ -203,13 +213,12 @@
             width: 100%;
         }
     }
-    
 </style>
 {% endblock %}
 
 {% block content %}
 <section id="table">
-    <form action="/upload_csv_usuario" method="POST" id="user-form">
+    <form action="/crear_usuario" method="POST" id="user-form">
         <div id="input-data">
             <input name="nombre" class="input-text" placeholder="Nombre" type="text" required />
             <input name="apellido_pat" class="input-text" placeholder="Apellido Paterno" type="text" required />
@@ -223,35 +232,37 @@
             <input class="input-btn" type="submit" value="Agregar" />
         </div>
     </form>
+    <div id="table-container">
+        <table id="myTable">
+            <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Tipo de usuario</th>
+                <th>Activo</th>
+            </tr>
+            {% for usuario in usuarios %}
+            <tr onclick="redirectToUserPage('{{ usuario.id }}')">
+                <td>{{ usuario.nombre }} {{ usuario.apellido_pat }} {{ usuario.apellido_mat }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>{% if usuario.user_type == 1 %}
+                    Admin
+                    {% elif usuario.user_type == 2 %}
+                    Jefe de carrera
+                    {% elif usuario.user_type == 3 %}
+                    Docente
+                    {% endif %}
+                </td>
+                <td>{% if usuario.habilitado == True %}
+                    si
+                    {% else %}
+                    no
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-    <table id="myTable">
-        <tr>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Tipo de usuario</th>
-            <th>Activo</th>
-        </tr>
-        {% for usuario in usuarios %}
-        <tr onclick="redirectToUserPage('{{ usuario.id }}')">
-            <td>{{ usuario.nombre }} {{ usuario.apellido_pat }} {{ usuario.apellido_mat }}</td>
-            <td>{{ usuario.email }}</td>
-            <td>{% if usuario.user_type == 1 %}
-                Admin
-                {% elif usuario.user_type == 2 %}
-                Jefe de carrera
-                {% elif usuario.user_type == 3 %}
-                Docente
-                {% endif %}
-            </td>
-            <td>{% if usuario.habilitado == True %}
-                si
-                {% else %}
-                no
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
 </section>
 
 <!-- New button container -->

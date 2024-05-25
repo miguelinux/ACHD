@@ -10,9 +10,9 @@ class Usuarios(db.Model):
     password = db.Column(CHAR(65), nullable=False)
     user_type = db.Column(INTEGER(3), nullable=False)
     first_login = db.Column(BOOLEAN, nullable=False)
-    nombre = db.Column(VARCHAR(20), nullable=False)
-    apellido_pat = db.Column(VARCHAR(20), nullable=False)
-    apellido_mat = db.Column(VARCHAR(20), nullable=False)
+    nombre = db.Column(VARCHAR(50), nullable=False)
+    apellido_pat = db.Column(VARCHAR(50), nullable=False)
+    apellido_mat = db.Column(VARCHAR(50), nullable=False)
     habilitado = db.Column(BOOLEAN, nullable=False)
     
 class DocenteCarreras(db.Model):
@@ -40,8 +40,8 @@ class Carreras(db.Model):
 class Materias(db.Model):
     __tablename__ = 'materia'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    clave = db.Column(CHAR(15), nullable=False)
-    nombre = db.Column(VARCHAR(30), nullable=False)
+    clave = db.Column(CHAR(20), nullable=False)
+    nombre = db.Column(VARCHAR(60), nullable=False)
     semestre = db.Column(INTEGER(3), nullable=False)
     horas_practica = db.Column(INTEGER(2), nullable=False)
     horas_teoria = db.Column(INTEGER(2), nullable=False)

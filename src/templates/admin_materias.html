@@ -66,10 +66,20 @@
         margin: 0;
     }
 
-    #myTable {
+    /* Contenedor de la tabla con desplazamiento */
+    #table-container {
         width: 80%;
         margin: 0 auto;
         margin-top: 3vh;
+        max-height: 60vh;
+        /* Ajusta la altura máxima según tus necesidades */
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        /* Opcional: para ver claramente los límites del contenedor */
+    }
+
+    #myTable {
+        width: 100%;
         border-collapse: collapse;
     }
 
@@ -204,7 +214,6 @@
             width: 100%;
         }
     }
-    
 </style>
 {% endblock %}
 
@@ -220,27 +229,28 @@
             <input class="input-btn" type="submit" value="Agregar" />
         </div>
     </form>
-    
-    <table id="myTable">
-        <tr>
-            <th>Nombre</th>
-            <th>Clave</th>
-            <th>Semestre</th>
-            <th>Horas Prácticas</th>
-            <th>Horas Teóricas</th>
-            <th>Créditos</th>
-        </tr>
-        {% for materia in materias %}
-        <tr onclick="redirectToUserPage('{{ materia.id }}')">
-            <td>{{ materia.nombre }} </td>
-            <td>{{ materia.clave }}</td>
-            <td>{{ materia.semestre }}</td>
-            <td>{{ materia.horas_practica }}</td>
-            <td>{{ materia.horas_teoria }}</td>
-            <td>{{ materia.creditos }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div id="table-container">
+        <table id="myTable">
+            <tr>
+                <th>Nombre</th>
+                <th>Clave</th>
+                <th>Semestre</th>
+                <th>Horas Prácticas</th>
+                <th>Horas Teóricas</th>
+                <th>Créditos</th>
+            </tr>
+            {% for materia in materias %}
+            <tr onclick="redirectToUserPage('{{ materia.id }}')">
+                <td>{{ materia.nombre }} </td>
+                <td>{{ materia.clave }}</td>
+                <td>{{ materia.semestre }}</td>
+                <td>{{ materia.horas_practica }}</td>
+                <td>{{ materia.horas_teoria }}</td>
+                <td>{{ materia.creditos }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </section>
 
 <!-- New button container -->
@@ -262,7 +272,7 @@
 </div>
 
 <script>
-    
+
 
     function redirectToUserPage(materiaId) {
         // Redirecciona a la página del usuario pasando su ID como parámetro
