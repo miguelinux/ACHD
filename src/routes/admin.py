@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect,jsonify, url_for
+from flask import Blueprint, render_template, request, redirect,jsonify, flash
 from extensions import db
 
 import csv , io
@@ -624,15 +624,11 @@ def crear_ciclo():
 def upload_csv_usuario():
     user = verificate_session()  # Verifica la sesión del usuario
     if user:
-        if 'file' not in request.files:
-            print('No file part')
-            return redirect("/admin/usuarios")  # Cambiar a una ruta que acepte GET
-
         file = request.files['file']
         
         if file.filename == '':
-            print('No selected file')
-            return redirect("/admin/usuarios")  # Cambiar a una ruta que acepte GET
+            flash('No se selecciono un archivo')
+            return redirect("/admin/usuarios")  
         
         if file and file.filename.endswith('.csv'):
             try:
@@ -642,13 +638,13 @@ def upload_csv_usuario():
                 headers = next(csv_input)
                 expected_headers = ['nombre', 'apellido paterno', 'apellido materno', 'email', 'tipo de usuario']
                 if headers != expected_headers:
-                    print('CSV headers do not match expected headers')
-                    return redirect("/admin/usuarios")  # Cambiar a una ruta que acepte GET
+                    flash('El encabezado del csv no coincide, vea la guia')
+                    return redirect("/admin/usuarios")  
 
                 for row in csv_input:
                     if len(row) != 5:
-                        print('CSV row does not match expected format')
-                        return redirect("/admin/usuarios")  # Cambiar a una ruta que acepte GET
+                        flash('el CSV cuenta con mas columnas de las que deberia')
+                        return redirect("/admin/usuarios")  
                     
                     nombre, apellido_pat, apellido_mat, email, user_type = row
                     password = get_hex_digest(str(random_number()))
@@ -668,16 +664,16 @@ def upload_csv_usuario():
                     db.session.add(nuevo_usuario)
                 
                 db.session.commit()
-                print('CSV file successfully processed')
-                return redirect("/admin/usuarios")  # Redirigir a una ruta que acepte GET
+                flash('Guardado correcto')
+                return redirect("/admin/usuarios")  
             except Exception as e:
-                print(f'Error processing CSV file: {e}')
-                return redirect('/admin/usuarios')  # Cambiar a una ruta que acepte GET
+                flash(f'Error al procesar el CSV: {e}')
+                return redirect('/admin/usuarios')  
         else:
-            print('Invalid file format. Please upload a CSV file.')
-            return redirect("/admin/usuarios")  # Cambiar a una ruta que acepte GET
+            flash('Formato invalido, seleccione un archivo CSV porfavor.')
+            return redirect("/admin/usuarios")  
     else:
-        return redirect("/admin/usuarios")  # Cambiar a una ruta que acepte GET
+        return redirect("/admin/usuarios")  
     
     
 
@@ -685,15 +681,11 @@ def upload_csv_usuario():
 def upload_csv_materia():
     user = verificate_session()  # Verifica la sesión del usuario
     if user:
-        if 'file' not in request.files:
-            print('No file part')
-            return redirect("/admin/materias")  # Cambiar a una ruta que acepte GET
-
         file = request.files['file']
         
         if file.filename == '':
-            print('No selected file')
-            return redirect("/admin/materias")  # Cambiar a una ruta que acepte GET
+            flash('No se selecciono un archivo')
+            return redirect("/admin/materias")  
         
         if file and file.filename.endswith('.csv'):
             try:
@@ -703,13 +695,13 @@ def upload_csv_materia():
                 headers = next(csv_input)
                 expected_headers = ['nombre', 'clave', 'semestre', 'horas practica', 'horas teoria']
                 if headers != expected_headers:
-                    print('CSV headers do not match expected headers')
-                    return redirect("/admin/materias")  # Cambiar a una ruta que acepte GET
+                    flash('El encabezado del csv no coincide, vea la guia')
+                    return redirect("/admin/materias")  
 
                 for row in csv_input:
                     if len(row) != 5:
-                        print('CSV row does not match expected format')
-                        return redirect("/admin/materias")  # Cambiar a una ruta que acepte GET
+                        flash('el CSV cuenta con mas columnas de las que deberia')
+                        return redirect("/admin/materias")  
                     
                     nombre, clave, semestre, horas_practica, horas_teoria = row
                     horas_practica = int(horas_practica)
@@ -726,14 +718,14 @@ def upload_csv_materia():
                     db.session.add(nueva_materia)
                 
                 db.session.commit()
-                print('CSV file successfully processed')
-                return redirect("/admin/materias")  # Redirigir a una ruta que acepte GET
+                flash('Guardado correcto')
+                return redirect("/admin/materias")  
             except Exception as e:
-                print(f'Error processing CSV file: {e}')
-                return redirect("/admin/materias")  # Cambiar a una ruta que acepte GET
+                flash(f'Error al procesar el CSV: {e}')
+                return redirect("/admin/materias")  
         else:
-            print('Invalid file format. Please upload a CSV file.')
-            return redirect("/admin/materias")  # Cambiar a una ruta que acepte GET
+            flash('Formato invalido, seleccione un archivo CSV porfavor.')
+            return redirect("/admin/materias")  
     else:
-        return redirect("/admin/materias")  # Cambiar a una ruta que acepte GET
+        return redirect("/admin/materias")  
 

@@ -185,8 +185,8 @@ DROP TABLE IF EXISTS `materia`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `materia` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `clave` char(15) NOT NULL,
-  `nombre` varchar(30) NOT NULL,
+  `clave` char(20) NOT NULL,
+  `nombre` varchar(60) NOT NULL,
   `semestre` int NOT NULL,
   `horas_practica` int NOT NULL,
   `horas_teoria` int NOT NULL,
@@ -245,9 +245,9 @@ CREATE TABLE `usuario` (
   `password` char(65) NOT NULL,
   `user_type` int NOT NULL,
   `first_login` tinyint(1) NOT NULL,
-  `nombre` varchar(20) NOT NULL,
-  `apellido_pat` varchar(20) NOT NULL,
-  `apellido_mat` varchar(20) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `apellido_pat` varchar(50) NOT NULL,
+  `apellido_mat` varchar(50) NOT NULL,
   `habilitado` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)

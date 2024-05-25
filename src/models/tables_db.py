@@ -15,14 +15,16 @@ class Usuarios(db.Model):
     apellido_mat = db.Column(VARCHAR(50), nullable=False)
     habilitado = db.Column(BOOLEAN, nullable=False)
     
+    disponibilidades = relationship("Disponibilidades", backref="usuario", cascade="all, delete-orphan", single_parent=True)
+    docente_carreras = relationship("DocenteCarreras", backref="usuario", cascade="all, delete-orphan", single_parent=True)
+
+    
 class DocenteCarreras(db.Model):
     __tablename__ = 'docente_carrera'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
     
-    usuario = relationship("Usuarios", backref="docente_carrera")
-    carrera = relationship("Carreras", backref="docente_carrera")
 
 class Disponibilidades(db.Model):
     __tablename__ = 'disponibilidad'
@@ -36,6 +38,9 @@ class Carreras(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nombre = db.Column(VARCHAR(30), nullable=False)
     plan_de_estudio = db.Column(VARCHAR(15), nullable=False)
+    
+    materias_carrera = relationship("MateriasCarreras", backref="carrera", cascade="all, delete-orphan", single_parent=True)
+    docente_carreras = relationship("DocenteCarreras", backref="carrera", cascade="all, delete-orphan", single_parent=True)
 
 class Materias(db.Model):
     __tablename__ = 'materia'
@@ -46,15 +51,15 @@ class Materias(db.Model):
     horas_practica = db.Column(INTEGER(2), nullable=False)
     horas_teoria = db.Column(INTEGER(2), nullable=False)
     creditos = db.Column(INTEGER(2), nullable=False)
+    
+    materias_carrera = relationship("MateriasCarreras", backref="materia", cascade="all, delete-orphan", single_parent=True)
+
 
 class MateriasCarreras(db.Model):
     __tablename__ = 'materias_carrera'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
     materia_id = db.Column(db.Integer, db.ForeignKey('materia.id'))
-    
-    materia = relationship("Materias", backref="materias_carrera")
-    carrera = relationship("Carreras", backref="materias_carrera")
     
 class Aulas(db.Model):
     __tablename__ = 'aula'
