@@ -1,408 +1,162 @@
 {% extends 'layout.html' %}
+{% block title %}grupos{% endblock %}
 
-{% block title %}Grupos{% endblock %}
+{% block body_class %}admingrupos{% endblock %}
 
 {% block css %}
 
-
 <style>
-html{
-    font-family: Montserrat,Arial;
-}
-
-#TablaHorario{
-    font-size: small;
-}
-
-body{
-    font-family: Montserrat,Arial;
-}
-    .btns {
+    body{
+        font-family: Montserrat,Arial;
+    }
+    
+    #input-data {
+        width: 80vw; /* Reduciendo el ancho del contenedor */
+        font-family: Montserrat,Arial;
+        margin: 0 auto;
+        margin-top: 3vh; /* Reduciendo el espacio superior */
         display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0.5rem;
+        flex-wrap: wrap; /* Permitiendo que los elementos se envuelvan en varias filas si es necesario */
     }
-
-    .btns .semestre {
-        width: 100px;
-        height: 30px;
-        margin-left: 10px;
+    
+    .input-text {
+        flex: 1;
+        min-width: 180px; /* Reduciendo el ancho mínimo de los campos de entrada */
+        margin: 3px; /* Reduciendo el espacio entre los campos de entrada */
+        box-shadow:  #797979 0 0 3px 0px; /* Reduciendo la sombra */
         border: none;
-        margin-right: 10px;
-        border-radius: 15px;
-        transition: .5s;
+        height: 30px; /* Reduciendo la altura de los campos de entrada */
+        font-family: Montserrat,Arial;
+        padding-left: 5px;
+        border-radius: 8px; /* Reduciendo el radio del borde */
+        border-width: 1px;
+        border-color: #262626;
+        transition: 0.2s; /* Reduciendo la duración de la transición */
+        outline: none;
+        font-size: 14px; /* Reduciendo el tamaño de la fuente */
     }
-
-    .btns .semestre:hover {
-        background-color: #37109b;
+    
+    .input-text:focus {
+        border-color: blueviolet;
+    }
+    
+    .input-btn {
+        flex: 1;
+        margin: 3px; /* Reduciendo el espacio entre el botón y los campos de entrada */
+        height: 34px; /* Reduciendo la altura del botón */
+        border-radius: 8px; /* Reduciendo el radio del borde */
+        border-style: solid;
+        border-width: 1px;
+        border-color: #262626;
+        cursor: pointer;
+        transition: 0.2s all ease; /* Reduciendo la duración de la transición */
+        font-size: 14px; /* Reduciendo el tamaño de la fuente */
+    }
+    
+    .input-btn:hover {
+        background-color: #383838;
+        border-color: #383838;
         color: white;
     }
-
-    .semestre.selected {
-        background-color: blue;
-        border: #32aa32 2px solid;
-        color: white;
-    }
-
-    .btnsturn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: Montserrat;
-    }
-
-    .btnsturn .turno:hover {
-        background-color: #37109b;
-        border: none;
-        color: white;
-    }
-
-    .btnsturn .turno {
-        width: 100px;
-        border: none;
-        height: 30px;
-        margin-left: 10px;
-        margin-right: 10px;
-        border-radius: 15px;
-        transition: .5s;
-    }
-
-    .btnsturn .turno.selected {
-        background-color: #37109b;
-        color: white;
-        border: #32aa32 2px solid;
-    }
-
-    .container {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        gap: 0px 0px;
-        grid-template-areas:
-            ". . . ."
-            "horario horario horario horario"
-            "horario horario horario horario"
-            "horario horario horario horario"
-            ". . . .";
-    }
-    .hora{
-        font-weight: bolder;
-        max-width: 5rem;
-    }
-
-    table {
-        user-select: none;
-        width: 156%;
-        height: 98%;
+    
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        appearance: none;
         margin: 0;
-        margin-top: 20px;
+    }
+    
+    /* --------------------------- Table --------------------------- */
+    
+    #myTable {
+        width: 80%; /* Reduciendo el ancho de la tabla */
+        margin: 0 auto;
+        margin-top: 3vh; /* Reduciendo el espacio superior */
         border-collapse: collapse;
     }
-
-
-    table tr {
-        background-color: white;
-        border: none;
+    
+    #myTable th {
+        background-color: blueviolet;
+        padding: 8px; /* Reduciendo el relleno de las celdas de encabezado */
+        color: white;
+        font-weight: 100;
+        font-size: 14px; /* Reduciendo el tamaño de la fuente */
     }
-
-    table th,
-    table td {
-        border: 1px solid black;
-        /* Añade bordes a las celdas */
-        padding: 8px;
-        /* Ajusta el espacio interno de las celdas */
+    
+    #myTable td,
+    th {
+        border: 1px solid #ddd;
+        padding: 6px; /* Reduciendo el relleno de las celdas de datos */
     }
-
-    table th {
-        background-color: #ddd;
-        /* Color de fondo para las celdas de encabezado */
+    
+    #myTable td {
+        padding: 4px; /* Reduciendo el relleno de las celdas de datos */
     }
-
-    table td {
-        white-space: normal;
-        font-size: 12px;
-        width:10rem;
-        max-width: 10rem;
+    
+    #myTable tr:nth-child(even) {
+        background-color: #f2f2f2;
     }
-</style>
-
+    
+    #myTable tr:hover {
+        background-color: #352875;
+        color:white;
+        transition: 0.2s ease-in-out;
+        cursor: pointer;
+    }
+    
+    .remove-btn {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        border-width: 0px;
+        background-color: transparent;
+        cursor: pointer;
+    }
+    .flash {
+        background-color: #4CAF50;
+        /* Green */
+        color: white;
+    }
+    </style>
 {% endblock %}
-
-{% block body_class %}grupos{% endblock %}
-
-
 
 {% block content %}
 
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
-<div class="btns">
-    <button class="semestre" data-semestre="1">Semestre 1</button>
-    <button class="semestre" data-semestre="2">Semestre 2</button>
-    <button class="semestre" data-semestre="3">Semestre 3</button>
-    <button class="semestre" data-semestre="4">Semestre 4</button>
-    <button class="semestre" data-semestre="5">Semestre 5</button>
-    <button class="semestre" data-semestre="6">Semestre 6</button>
-    <button class="semestre" data-semestre="7">Semestre 7</button>
-    <button class="semestre" data-semestre="8">Semestre 8</button>
-    <button class="semestre" data-semestre="9">Semestre 9</button>
-</div>
-<div class="btnsturn">
-    <p>Grupo :</p>
-    <button class="turno" id="turnA">A</button>
-    <button class="turno" id="turnB">B</button>
-    <button class="turno" id="turnN">N</button>
-</div>
-<div class="container">
-    <div class="horario"></div>
-    <table id="TablaHorario">
+<section id="table">
+    <form action="/crear_grupo" method="POST" id="user-form">
+        <div id="input-data">
+            <input name="identificador" class="input-text" placeholder="identificador" type="text" required />
+            <input class="input-btn" type="submit" value="Agregar" />
+        </div>
+    </form>
+    
+    <table id="myTable">
         <tr>
-            <th>Horas</th>
-            <th>Lunes</th>
-            <th>Martes</th>
-            <th>Miercoles</th>
-            <th>Jueves</th>
-            <th>Viernes</th>
-            <th>Sábado</th>
+            <th>Nombre</th>
+            <th>semestres asignados</th>
         </tr>
-        <tr>
-            <td class="hora hora-1">7-8</td>
-            <td class="dia" id="0"></td>
-            <td class="dia" id="15"></td>
-            <td class="dia" id="30"></td>
-            <td class="dia" id="45"></td>
-            <td class="dia" id="60"></td>
-            <td class="dia" id="75"></td>
+        {% for grupo in grupos %}
+        <tr onclick="redirectToUserPage('{{ grupo.id }}')">
+            <td>{{ grupo.identificador }} </td>
+            <td>{{ grupo.ciclo_id }} </td>
         </tr>
-        <tr>
-            <td class="hora hora-2">8-9</td>
-            <td class="dia" id="1"></td>
-            <td class="dia" id="16"></td>
-            <td class="dia" id="31"></td>
-            <td class="dia" id="46"></td>
-            <td class="dia" id="61"></td>
-            <td class="dia" id="76"></td>
-        </tr>
-        <tr>
-            <td class="hora hora-3">9-10</td>
-            <td class="dia" id="2"></td>
-            <td class="dia" id="17"></td>
-            <td class="dia" id="32"></td>
-            <td class="dia" id="47"></td>
-            <td class="dia" id="62"></td>
-            <td class="dia" id="77"></td>
-        </tr>
-        <tr>
-            <td class="hora hora-4">10-11</td>
-            <td class="dia" id="3"></td>
-            <td class="dia" id="18"></td>
-            <td class="dia" id="33"></td>
-            <td class="dia" id="48"></td>
-            <td class="dia" id="63"></td>
-            <td class="dia" id="78"></td>
-        </tr>
-        <tr>
-            <td class="hora hora-5">11-12</td>
-            <td class="dia" id="4"></td>
-            <td class="dia" id="19"></td>
-            <td class="dia" id="34"></td>
-            <td class="dia" id="49"></td>
-            <td class="dia" id="64"></td>
-            <td class="dia" id="79"></td>
-        </tr>
-        <tr>
-            <td class="hora hora-6">12-13</td>
-            <td class="dia" id="5"></td>
-            <td class="dia" id="20"></td>
-            <td class="dia" id="35"></td>
-            <td class="dia" id="50"></td>
-            <td class="dia" id="65"></td>
-            <td class="dia" id="80"></td>
-        </tr>
-        <tr>
-            <td class="hora hora-7">13-14</td>
-            <td class="dia" id="6"></td>
-            <td class="dia" id="21"></td>
-            <td class="dia" id="36"></td>
-            <td class="dia" id="51"></td>
-            <td class="dia" id="66"></td>
-            <td class="dia" id="81"></td>
-        </tr>
-        <tr>
-            <td class="hora hora-8">14-15</td>
-            <td class="dia" id="7"></td>
-            <td class="dia" id="22"></td>
-            <td class="dia" id="37"></td>
-            <td class="dia" id="52"></td>
-            <td class="dia" id="67"></td>
-            <td class="dia" id="82"></td>
-        </tr>
+        {% endfor %}
     </table>
-
-    <div hidden style="overflow: hidden;">
-        {% for docente in docentes %}
-        <div class="docente" data-id-docente='{{docente.usuario.id}}' data-nombre="{{ docente.usuario.nombre }}"
-            data-apellido="{{ docente.usuario.apellido_pat }}" hidden>
-        </div>
-        {% endfor %}
-        {% for asignatura in asignaturas %}
-        <div class="materia" data-semestre="{{ asignatura.materia.semestre }}" data-id-materia='{{asignatura.materia.id}}'
-            data-credito="{{asignatura.materia.creditos}}" data-nombre="{{ asignatura.materia.nombre }}" hidden>
-        </div>
-        {% endfor %}
-        {% for aula in aulas %}
-        <div class="aula" data-id-aula="{{aula.id}}" data-nombre="{{ aula.nombre }}" hidden>
-        </div>
-        {% endfor %}
-    </div>
-</div>
+</section>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const diasOriginales = obtenerDiasOriginales();
-        const horasOriginales = obtenerHorasOriginales();
-        const turnA = document.getElementById("turnA");
-        const turnB = document.getElementById("turnB");
-        const turnN = document.getElementById("turnN");
-
-        turnA.classList.add('selected');
-
-        const turnos = [turnA, turnB, turnN];
-        turnos.forEach(turno => {
-            turno.addEventListener("click", () => {
-                restaurarHorasOriginales();
-                cambiarTurno(turno.id.replace("turn", ""));
-                limpiarCeldas();
-                getselecteditems();
-            });
-        });
-
-        document.querySelectorAll('.semestre').forEach(button => {
-            button.addEventListener('click', function () {
-                document.querySelectorAll('.semestre').forEach(btn => btn.classList.remove('selected'));
-                this.classList.add('selected');
-                limpiarCeldas();
-                getselecteditems();
-            });
-        });
-
-        const semestre1Btn = document.querySelector('.semestre[data-semestre="1"]');
-        if (semestre1Btn) semestre1Btn.click();
-
-        function cambiarTurno(turno) {
-            document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
-            document.getElementById(`turn${turno}`).classList.add('selected');
-            const dias = document.querySelectorAll(".dia");
-            if (turno === "N") {
-                dias.forEach((dia, index) => {
-                    const id = parseInt(diasOriginales[index]) + 7;
-                    dia.id = id.toString();
-                });
-                const horas = document.querySelectorAll(".hora");
-                horas.forEach((hora, index) => {
-                    let inicio = 14 + index;
-                    let fin = Math.min(22, 15 + index);
-                    hora.textContent = `${inicio.toString().padStart(2, '0')}-${fin.toString().padStart(2, '0')}`;
-                });
-            } else {
-                dias.forEach((dia, index) => {
-                    dia.id = diasOriginales[index];
-                });
-            }
-        }
-
-        function obtenerDiasOriginales() {
-            return Array.from(document.querySelectorAll(".dia")).map(dia => dia.id);
-        }
-
-        function obtenerHorasOriginales() {
-            return Array.from(document.querySelectorAll(".hora")).map(hora => hora.textContent);
-        }
-
-        function restaurarHorasOriginales() {
-            const horas = document.querySelectorAll(".hora");
-            horas.forEach((hora, index) => {
-                hora.textContent = horasOriginales[index];
-            });
-        }
-
-        function limpiarCeldas() {
-            document.querySelectorAll(".dia").forEach(cell => {
-                cell.textContent = "";
-                cell.style.backgroundColor = "";
-            });
-        }
-
-        function stringToColor(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                hash = str.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            const h = hash % 360;
-            const s = 60 + ((hash * 2) % 40);
-            const l = 40 + ((hash * 4) % 30);
-            return `hsl(${h}, ${s}%, ${l}%)`;
-        }
-
-        function getselecteditems() {
-            const semestreSeleccionado = document.querySelector('.semestre.selected')?.getAttribute('data-semestre');
-            const turnoSeleccionado = document.querySelector('.turno.selected')?.textContent.trim();
-            if (turnoSeleccionado && semestreSeleccionado) {
-                gethorario(turnoSeleccionado, semestreSeleccionado);
-            }
-        }
-
-        async function gethorario(turno, semestre) {
-            try {
-                const response = await fetch(`/get_horario?turno=${turno}&semestre=${semestre}`, {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-
-                if (!response.ok) throw new Error('Error al obtener los datos de la base de datos');
-
-                const data = await response.json();
-                if (!data.horario.docente || !data.horario.materia || !data.horario.aula || !data.horario.cell_ids) {
-                    console.log("No se recibieron datos de docente, materia, aula o cellIds.");
-                    return;
-                }
-
-                const { docente, materia, aula, cell_ids: cellIds } = data.horario;
-
-                limpiarCeldas();
-
-                cellIds.forEach((cellId, index) => {
-                    const cell = document.getElementById(cellId);
-                    if (cell) {
-                        const docenteId = docente[index];
-                        const materiaId = materia[index];
-                        const aulaId = aula[index];
-
-                        if (docenteId && materiaId && aulaId) {
-                            const docenteElem = document.querySelector(`.docente[data-id-docente="${docenteId}"]`);
-                            const docenteNombre = docenteElem.dataset.nombre;
-                            const docenteApellido = docenteElem.dataset.apellido;
-                            const nombreCompletoDocente = `${docenteNombre} ${docenteApellido}`;
-                            const materiaNombre = document.querySelector(`.materia[data-id-materia="${materiaId}"]`).dataset.nombre;
-                            const aulaNombre = document.querySelector(`.aula[data-id-aula="${aulaId}"]`).dataset.nombre;
-
-                            cell.append(createDiv(nombreCompletoDocente, docenteId), createDiv(materiaNombre, materiaId, materiaNombre), createDiv(aulaNombre, aulaId));
-                            cell.style.backgroundColor = stringToColor(`${docenteId}-${materiaId}-${aulaId}`);
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error al obtener los datos de la base de datos:', error);
-            }
-        }
-
-        function createDiv(text, id, title = '') {
-            const div = document.createElement('div');
-            div.textContent = text;
-            div.setAttribute('data-id', id);
-            if (title) div.setAttribute('title', title);
-            return div;
-        }
-    });
+    
+    function redirectToUserPage(grupoId) {
+        // Redirecciona a la página del usuario pasando su ID como parámetro
+        window.location.href = "/jefe/asignar_grupo_semestre/" + grupoId;
+    }
 </script>
-
 {% endblock %}

@@ -62,8 +62,7 @@ Table aula{
 table asignacion{
   id integer [primary key, increment]
   horario json
-  semestre integer(3) [not null]
-  grupo_id integer [ref: >grupo.id]
+  grupo_semestre_id integer [ref: >grupo_semestre.id]
   carrera_id integer [ref: > carrera.id]
   ciclo_id integer [ref: > ciclo.id]
 }
@@ -77,9 +76,13 @@ table ciclo{
 
 table grupo{
   id integer [primary key, increment]
-  semestre integer(3) [not null]
   identificador char(5) [not null]
   carrera_id integer [ref: > carrera.id]
   ciclo_id integer [ref: > ciclo.id] 
 }
 
+table grupo_semestre{
+  id integer [primary key, increment]
+  grupo_id integer [ref: > grupo.id]
+  semestre integer 
+}

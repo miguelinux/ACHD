@@ -1,0 +1,173 @@
+{% extends 'layout.html' %}
+{% block title %}Lista de semestre{% endblock %}
+
+{% block body_class %}lista-semestre{% endblock %}
+
+{% block css %}
+<style>
+    body {
+        font-family: Montserrat, Arial;
+    }
+
+    .container {
+        width: 80%;
+        margin: 0 auto;
+        margin-top: 3vh;
+    }
+
+    #table-container {
+        width: 99%;
+        margin: 0 auto;
+        margin-top: 3vh;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    .myTable {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .myTable th {
+        background-color: blueviolet;
+        padding: 8px;
+        color: white;
+        font-weight: 100;
+        font-size: 14px;
+    }
+
+    .myTable td,
+    th {
+        border: 1px solid #ddd;
+        padding: 6px;
+    }
+
+    .myTable td {
+        padding: 4px;
+    }
+
+    .myTable tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .myTable tr:hover {
+        background-color: #352875;
+        color: white;
+        transition: 0.2s ease-in-out;
+        cursor: pointer;
+    }
+
+    .action-btn {
+        width: auto;
+        height: 40px;
+        border-radius: 20px;
+        background-color: blueviolet;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-right: 10px;
+    }
+
+    .action-btn:last-child {
+        margin-right: 0;
+    }
+
+    .action-btn:hover {
+        background-color: #5d478b;
+    }
+
+    .save-btn {
+        width: 150px;
+        height: 40px;
+        border-radius: 20px;
+        background-color: green;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .save-btn:hover {
+        background-color: #007700;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Lista de semestre</h2>
+    <div id="table-container">
+        <table class="myTable">
+            <tr>
+                <th>Semestre</th>
+                <th>Seleccionar</th>
+            </tr>
+            {% for i in range(1, 10) %}
+            <tr data-id="{{ i }}" onclick="toggleCheckbox(this)">
+                <td>Semestre {{ i }}</td>
+                <td><input type="checkbox" {% if grupo_semestre(grupoId, i) %} checked {% endif %}></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <button id="saveButton" class="save-btn">Guardar</button>
+</div>
+
+<script>
+    function toggleCheckbox(row) {
+        var checkbox = row.querySelector('input[type="checkbox"]');
+        checkbox.checked = !checkbox.checked;
+    }
+    document.getElementById("saveButton").addEventListener("click", function () {
+        var selectedsemestre = [];
+        var deselectedsemestre = [];
+        var rows = document.querySelectorAll(".myTable tr[data-id]");
+        rows.forEach(function (row) {
+            var checkbox = row.querySelector('input[type="checkbox"]');
+            var semestreselec = row.dataset.id;
+            if (checkbox.checked) {
+                selectedsemestre.push(semestreselec);
+            } else if (!checkbox.checked) {
+                deselectedsemestre.push(semestreselec);
+            }
+        });
+
+        var grupoId = "{{ grupoId }}";
+        guardarSeleccion(grupoId, selectedsemestre, deselectedsemestre);
+    });
+
+    function guardarSeleccion(grupoId, semestreSeleccionados, semestreDeseleccionados) {
+        var data = {
+            grupoId: grupoId,
+            semestreSeleccionados: semestreSeleccionados,
+            semestreDeseleccionados: semestreDeseleccionados
+        };
+
+        fetch("/guardar_gruposemestre", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error al guardar los datos");
+                }
+                return response.json();
+            })
+            .then(data => {
+                window.location.href = "/jefeCarrera/grupos/";
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+    }
+</script>
+{% endblock %}

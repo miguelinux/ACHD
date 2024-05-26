@@ -40,15 +40,6 @@ CREATE TABLE `asignacion` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `asignacion`
---
-
-LOCK TABLES `asignacion` WRITE;
-/*!40000 ALTER TABLE `asignacion` DISABLE KEYS */;
-/*!40000 ALTER TABLE `asignacion` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `aula`
 --
 
@@ -64,15 +55,6 @@ CREATE TABLE `aula` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aula`
---
-
-LOCK TABLES `aula` WRITE;
-/*!40000 ALTER TABLE `aula` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aula` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `carrera`
 --
 
@@ -84,17 +66,8 @@ CREATE TABLE `carrera` (
   `nombre` varchar(50) NOT NULL,
   `plan_de_estudio` varchar(15) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `carrera`
---
-
-LOCK TABLES `carrera` WRITE;
-/*!40000 ALTER TABLE `carrera` DISABLE KEYS */;
-/*!40000 ALTER TABLE `carrera` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `ciclo`
@@ -109,17 +82,8 @@ CREATE TABLE `ciclo` (
   `estacion` char(2) NOT NULL,
   `actual` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ciclo`
---
-
-LOCK TABLES `ciclo` WRITE;
-/*!40000 ALTER TABLE `ciclo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ciclo` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `disponibilidad`
@@ -142,15 +106,6 @@ CREATE TABLE `disponibilidad` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `disponibilidad`
---
-
-LOCK TABLES `disponibilidad` WRITE;
-/*!40000 ALTER TABLE `disponibilidad` DISABLE KEYS */;
-/*!40000 ALTER TABLE `disponibilidad` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `docente_carrera`
 --
 
@@ -166,17 +121,8 @@ CREATE TABLE `docente_carrera` (
   KEY `usuario_id` (`usuario_id`),
   CONSTRAINT `docente_carrera_ibfk_1` FOREIGN KEY (`carrera_id`) REFERENCES `carrera` (`id`),
   CONSTRAINT `docente_carrera_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `docente_carrera`
---
-
-LOCK TABLES `docente_carrera` WRITE;
-/*!40000 ALTER TABLE `docente_carrera` DISABLE KEYS */;
-/*!40000 ALTER TABLE `docente_carrera` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `grupo`
@@ -187,7 +133,6 @@ DROP TABLE IF EXISTS `grupo`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `grupo` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `semestre` int NOT NULL,
   `identificador` char(5) NOT NULL,
   `carrera_id` int DEFAULT NULL,
   `ciclo_id` int DEFAULT NULL,
@@ -200,13 +145,21 @@ CREATE TABLE `grupo` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `grupo`
+-- Table structure for table `grupo_semestre`
 --
 
-LOCK TABLES `grupo` WRITE;
-/*!40000 ALTER TABLE `grupo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `grupo` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `grupo_semestre`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `grupo_semestre` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `grupo_id` int DEFAULT NULL,
+  `semestre` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `grupo_id` (`grupo_id`),
+  CONSTRAINT `grupo_semestre_ibfk_1` FOREIGN KEY (`grupo_id`) REFERENCES `grupo` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `materia`
@@ -228,15 +181,6 @@ CREATE TABLE `materia` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `materia`
---
-
-LOCK TABLES `materia` WRITE;
-/*!40000 ALTER TABLE `materia` DISABLE KEYS */;
-/*!40000 ALTER TABLE `materia` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `materias_carrera`
 --
 
@@ -254,15 +198,6 @@ CREATE TABLE `materias_carrera` (
   CONSTRAINT `materias_carrera_ibfk_2` FOREIGN KEY (`materia_id`) REFERENCES `materia` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `materias_carrera`
---
-
-LOCK TABLES `materias_carrera` WRITE;
-/*!40000 ALTER TABLE `materias_carrera` DISABLE KEYS */;
-/*!40000 ALTER TABLE `materias_carrera` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `usuario`
@@ -283,17 +218,8 @@ CREATE TABLE `usuario` (
   `habilitado` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `usuario`
---
-
-LOCK TABLES `usuario` WRITE;
-/*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -304,4 +230,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-25 18:58:04
+-- Dump completed on 2024-05-25 21:13:26

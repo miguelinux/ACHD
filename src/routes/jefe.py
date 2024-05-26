@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, request, jsonify
 from functions import verificate_session
-from models.tables_db import Usuarios, Materias, Aulas, Asignaciones, Ciclos
-from models.tables_db import DocenteCarreras, MateriasCarreras, Disponibilidades
+from models.tables_db import Usuarios, Materias, Aulas, Asignaciones, Ciclos, Grupo
+from models.tables_db import DocenteCarreras, MateriasCarreras, Disponibilidades, GrupoSemestre
 from extensions import db
 import json
 from sqlalchemy.orm import joinedload
@@ -159,8 +159,8 @@ def update_disp(user_id, indices_to_update, value):
         return True
     return False
 
-@jefe_bp.route("/jefeCarrera/grupos")
-def grupos():
+@jefe_bp.route("/jefeCarrera/semestres")
+def semestres():
     user = verificate_session()
     if user:
         username = user["username"]
@@ -168,5 +168,57 @@ def grupos():
         docentes = DocenteCarreras.query.filter_by(carrera_id=carrera).all()
         asignaturas = MateriasCarreras.query.filter_by(carrera_id=carrera).all()
         aula = Aulas.query.all()
-        return render_template("grupos.html", user=username, asignaturas=asignaturas, docentes=docentes, aulas=aula)
+        return render_template("semestres.html", user=username, asignaturas=asignaturas, docentes=docentes, aulas=aula)
     return redirect("/")
+
+@jefe_bp.route("/jefeCarrera/grupos")
+def grupos():
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        carrera = user["carrera"]
+        ciclo=Ciclos.query.filter_by(actual=True).first()
+        grupos = Grupo.query.filter_by(carrera_id=carrera,ciclo_id=ciclo.id).all()
+        return render_template("grupos.html", user=username, grupos=grupos)
+    return redirect("/")
+
+@jefe_bp.route("/crear_grupo", methods=["POST"])
+def crear_carrera():
+    """
+    Metodo para agregar una carrera a la base de datos
+    """
+    user = verificate_session()
+    if user:
+        carrera = user["carrera"]
+        ciclo=Ciclos.query.filter_by(actual=True).first()
+        form = request.form
+        identificador = form.get("identificador")
+        
+        nuevo_grupo = Grupo(
+            identificador = identificador,
+            carrera_id=carrera,
+            ciclo_id=ciclo.id
+        )
+        db.session.add(nuevo_grupo)
+        db.session.commit()
+        return redirect("/jefeCarrera/grupos")
+    else:
+        return redirect("/")
+
+def grupo_semestre(grupoid, semestre):
+    # Verificar si el docente está asociado a la carrera en la base de datos
+    return bool(GrupoSemestre.query.filter_by(grupo_id=grupoid, semestre=semestre).first())
+
+@jefe_bp.route("/jefe/asignar_grupo_semestre/<int:grupoId>", methods=['GET'])
+def grupos_semestre(grupoId):
+    user = verificate_session()
+    if user:
+        username = user["username"]
+        carrera = user["carrera"]
+        ciclo=Ciclos.query.filter_by(actual=True).first()
+        grupos = Grupo.query.filter_by(carrera_id=carrera,ciclo_id=ciclo.id).all()
+        return render_template("grupo_semestre.html", user=username, grupos=grupos,
+                    grupoId=grupoId,grupo_semestre=grupo_semestre)
+    return redirect("/")
+
+

@@ -368,8 +368,9 @@ def asociar_docentes(carreraId):
     """
     user = verificate_session()
     if user:
+        username = user["username"]
         docentes = Usuarios.query.filter(Usuarios.user_type != 1).order_by(Usuarios.apellido_pat).all()
-        return render_template("asociar_docentes.html", 
+        return render_template("asociar_docentes.html", user=username,
                 carreraId=carreraId, docentes=docentes, docente_asociado=docente_asociado)
     
     return redirect("/")
@@ -385,8 +386,9 @@ def asociar_materia(carreraId):
     """
     user = verificate_session()
     if user:
+        username = user["username"]
         materias = Materias.query.order_by(Materias.semestre).all()
-        return render_template("asociar_materias.html", 
+        return render_template("asociar_materias.html", user=username,
                 carreraId=carreraId, materias=materias, materia_asociado=materia_asociado)
     
     return redirect("/")

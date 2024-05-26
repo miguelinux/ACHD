@@ -93,7 +93,15 @@ class Ciclos(db.Model):
 class Grupo(db.Model):
     __tablename__ = 'grupo'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    semestre = db.Column(db.Integer, nullable=False)
     identificador = db.Column(db.String(5), nullable=False)
     carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
     ciclo_id = db.Column(db.Integer, db.ForeignKey('ciclo.id'))
+    
+    grupo_semestres = relationship("GrupoSemestre", backref="grupo", cascade="all, delete-orphan", single_parent=True)
+
+    
+class GrupoSemestre(db.Model):
+    __tablename__ = 'grupo_semestre'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
+    semestre = db.Column(db.Integer, nullable=False)
