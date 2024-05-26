@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
 }
+
 header {
     display: flex;
     align-items: center;
@@ -13,10 +14,12 @@ header {
     color: #fff;
     border-bottom: 2px solid #e60122;
 }
+
 header a img {
     width: 150px;
     height: auto;
 }
+
 header nav {
     font-family: 'Montserrat';
     display: flex;
@@ -24,6 +27,7 @@ header nav {
     justify-content: space-around;
     flex-grow: 1;
 }
+
 header nav a {
     color: #fff;
     text-decoration: none;
@@ -34,13 +38,16 @@ header nav a {
     margin-right: 10px;
     transition: .3s;
 }
+
 header nav a:hover {
     background-color: #e60122;
 }
+
 .dropdown {
     overflow: hidden;
     float: right;
 }
+
 .dropdown .dropbtn {
     font-size: 16px;
     border: none;
@@ -52,9 +59,11 @@ header nav a:hover {
     margin: 0;
     border-radius: 10px;
 }
+
 .dropdown:hover .dropbtn {
     background-color: #e60122;
 }
+
 .dropdown-content {
     display: none;
     position: absolute;
@@ -65,6 +74,7 @@ header nav a:hover {
     left: auto;
     right: 0;
 }
+
 .dropdown-content a {
     float: none;
     color: black;
@@ -73,29 +83,24 @@ header nav a:hover {
     display: block;
     text-align: left;
 }
+
 .dropdown-content a:hover {
     background-color: #ddd;
 }
+
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
 body {
-    background-image: radial-gradient(circle at 67% 83%, hsla(317,0%,96%,0.05) 0%,
-    hsla(317,0%,96%,0.05) 1%,transparent 1%, transparent 5%,transparent 5%, transparent 100%),
-    radial-gradient(circle at 24% 80%, hsla(317,0%,96%,0.05) 0%, hsla(317,0%,96%,0.05) 27%,
-    transparent 27%, transparent 63%,transparent 63%, transparent 100%),radial-gradient(circle at 23% 5%, hsla(317,0%,96%,0.05) 0%,
-     hsla(317,0%,96%,0.05) 26%,transparent 26%, transparent 82%,transparent 82%, transparent 100%),
-     radial-gradient(circle at 21% 11%, hsla(317,0%,96%,0.05) 0%, hsla(317,0%,96%,0.05) 35%,
-     transparent 35%, transparent 45%,transparent 45%, transparent 100%),
-     radial-gradient(circle at 10% 11%, hsla(317,0%,96%,0.05) 0%,
-      hsla(317,0%,96%,0.05) 21%,transparent 21%, transparent 81%,transparent 81%, transparent 100%),
-      radial-gradient(circle at 19% 61%, hsla(317,0%,96%,0.05) 0%, hsla(317,0%,96%,0.05) 20%,transparent 20%,
-       transparent 61%,transparent 61%, transparent 100%),radial-gradient(circle at 13% 77%,
-        hsla(317,0%,96%,0.05) 0%, hsla(317,0%,96%,0.05) 63%,transparent 63%, transparent 72%,
-        transparent 72%, transparent 100%),radial-gradient(circle at 30% 93%, hsla(317,0%,96%,0.05) 0%,
-         hsla(317,0%,96%,0.05) 33%,transparent 33%, transparent 82%,transparent 82%,
-          transparent 100%),linear-gradient(90deg, rgb(22, 176, 207),rgb(103, 7, 215));
+    background: #0f0c29;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #49497e, #302b63, #251e6d);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #49497e, #302b63, #251e6d);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
+
 footer {
     position: fixed;
     bottom: 0;
@@ -109,6 +114,7 @@ footer {
     justify-content: space-around;
 
 }
+
 footer a {
     color: #fff;
     text-decoration: none;
@@ -136,11 +142,13 @@ footer a {
     padding: 30px 40px;
     background-color: white;
 }
+
 .cambio_contra .main .input {
     width: 19rem;
     margin-top: 15px;
     margin-bottom: 15px;
 }
+
 .cambio_contra .input input {
     width: 80%;
     background: rgb(174, 190, 235);
@@ -151,9 +159,11 @@ footer a {
     color: black;
     padding: 20px 45px 20px 20px;
 }
+
 .cambio_contra .input input::placeholder {
     color: rgb(63, 39, 4);
 }
+
 .cambio_contra .main .Confirmar {
     width: 19.5rem;
     height: 50px;
@@ -166,15 +176,18 @@ footer a {
     color: #333;
     transition: .3s;
 }
+
 .cambio_contra .main .Confirmar:hover {
     background-color: #37109b;
     color: white;
 }
+
 .cambio_contra .main h1 {
     font-size: 35px;
     text-align: center;
     color: black;
 }
+
 .cambio_contra .main p {
     color: #333;
 }
@@ -212,6 +225,7 @@ footer a {
 .inicio * {
     font-family: 'Montserrat';
 }
+
 .inicio .parent {
     display: flex;
     align-items: center;
@@ -219,6 +233,7 @@ footer a {
     flex-wrap: wrap;
     margin-top: 10rem;
 }
+
 .inicio .box {
     border-radius: 1rem;
     width: 300px;
@@ -240,14 +255,17 @@ footer a {
     flex-direction: column;
     transition: .3s;
 }
+
 .inicio .box .imge {
     height: 150px;
 }
+
 .inicio .box:hover {
     background-color: #37109b;
-    color:white;
+    color: white;
 
 }
+
 .inicio i {
     font-size: 5rem;
 }

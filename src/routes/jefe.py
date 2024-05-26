@@ -5,7 +5,6 @@ from models.tables_db import DocenteCarreras, MateriasCarreras, Disponibilidades
 from extensions import db
 import json
 from sqlalchemy.orm import joinedload
-from functions import  docente
 
 jefe_bp = Blueprint('jefe', __name__)
 
@@ -41,28 +40,6 @@ def docentes():
     return redirect("/")
 
 
-@jefe_bp.route("/jefeCarrera/semestre")
-def semestre():
-    user = verificate_session()
-    if user:
-        try:
-            userid = request.args["userid"]
-        except KeyError:
-            userid = None
-        username = user["username"]
-        carrera = user["carrera"]
-        
-        semestre = (
-            DocenteCarreras.query
-            .join(Usuarios, DocenteCarreras.usuario_id == Usuarios.id)
-            .filter(DocenteCarreras.carrera_id == carrera)
-            .options(joinedload(DocenteCarreras.usuario))
-            .order_by(Usuarios.nombre)
-            .all()
-        )
-        return render_template("semestre.html", user=username, semestre=semestre, userid=userid)
-    return redirect("/")
-
 @jefe_bp.route("/jefeCarrera/materias")
 def materias():
     user = verificate_session()
@@ -88,19 +65,32 @@ def asignacion():
         username = user["username"]
         carrera = user["carrera"]
         ciclo = Ciclos.query.filter_by(actual=True).first()
-        semestre = (
-        DocenteCarreras.query
-        .filter(DocenteCarreras.carrera_id == carrera)
-        .outerjoin(Disponibilidades, DocenteCarreras.usuario_id == Disponibilidades.usuario_id)
-        .filter(Disponibilidades.usuario_id != None,
-                Disponibilidades.ciclo_id == ciclo.id)  # Filtra los semestre que no tienen disponibilidades
-        .all()
-        )
-        asignatura= MateriasCarreras.query.filter_by(carrera_id=carrera)
-        aula = Aulas.query.all()
-        return render_template("asignacion.html", user=username, asignaturas=asignatura, semestre=semestre, aulas=aula)
-    return redirect("/")
 
+        docentes = (
+            DocenteCarreras.query
+            .filter(DocenteCarreras.carrera_id == carrera)
+            .outerjoin(Disponibilidades, DocenteCarreras.usuario_id == Disponibilidades.usuario_id)
+            .filter(Disponibilidades.usuario_id != None,
+                    Disponibilidades.ciclo_id == ciclo.id)
+            .all()
+        )
+
+        asignaturas = MateriasCarreras.query.filter_by(carrera_id=carrera)
+        aulas = Aulas.query.all()
+
+        # Obtener los grupos y sus semestres
+        grupos_semestre = GrupoSemestre.query.all()
+        grupos_con_semestre = []
+        for gs in grupos_semestre:
+            grupo = Grupo.query.get(gs.grupo_id)
+            grupos_con_semestre.append({
+                'id': gs.id,
+                'identificador': grupo.identificador,
+                'semestre': gs.semestre
+            })
+
+        return render_template("asignacion.html", user=username, asignaturas=asignaturas, docentes=docentes, aulas=aulas, grupos=grupos_con_semestre)
+    return redirect("/")
 
 @jefe_bp.route("/setAsignacion", methods=["POST"])
 def set_asignacion():

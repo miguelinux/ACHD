@@ -103,7 +103,6 @@ def change_first():
 def get_dispo(idDocente):
     user = verificate_session()
     if user:
-        user_id = user["userid"]
         ciclo = Ciclos.query.filter_by(actual=True).first()
         dispo = Disponibilidades.query.filter_by(usuario_id=idDocente, ciclo_id=ciclo.id).first()
         if dispo:
