@@ -17,8 +17,8 @@ def jefe_carrera():
         return render_template("jefeCarrera.html", user=username)
     return redirect("/")
 
-@jefe_bp.route("/jefeCarrera/docentes")
-def docentes():
+@jefe_bp.route("/jefeCarrera/semestre")
+def semestre():
     user = verificate_session()
     if user:
         try:
@@ -28,7 +28,7 @@ def docentes():
         username = user["username"]
         carrera = user["carrera"]
         
-        docentes = (
+        semestre = (
             DocenteCarreras.query
             .join(Usuarios, DocenteCarreras.usuario_id == Usuarios.id)
             .filter(DocenteCarreras.carrera_id == carrera)
@@ -36,7 +36,7 @@ def docentes():
             .order_by(Usuarios.nombre)
             .all()
         )
-        return render_template("docentes.html", user=username, docentes=docentes, userid=userid)
+        return render_template("semestre.html", user=username, semestre=semestre, userid=userid)
     return redirect("/")
 
 @jefe_bp.route("/jefeCarrera/materias")
@@ -64,17 +64,17 @@ def asignacion():
         username = user["username"]
         carrera = user["carrera"]
         ciclo = Ciclos.query.filter_by(actual=True).first()
-        docentes = (
+        semestre = (
         DocenteCarreras.query
         .filter(DocenteCarreras.carrera_id == carrera)
         .outerjoin(Disponibilidades, DocenteCarreras.usuario_id == Disponibilidades.usuario_id)
         .filter(Disponibilidades.usuario_id != None,
-                Disponibilidades.ciclo_id == ciclo.id)  # Filtra los docentes que no tienen disponibilidades
+                Disponibilidades.ciclo_id == ciclo.id)  # Filtra los semestre que no tienen disponibilidades
         .all()
         )
         asignatura= MateriasCarreras.query.filter_by(carrera_id=carrera)
         aula = Aulas.query.all()
-        return render_template("asignacion.html", user=username, asignaturas=asignatura, docentes=docentes, aulas=aula)
+        return render_template("asignacion.html", user=username, asignaturas=asignatura, semestre=semestre, aulas=aula)
     return redirect("/")
 
 
@@ -105,32 +105,32 @@ def set_asignacion():
 
         db.session.commit()
         horarion = json.loads(asignacion.horario)
-        docentes = horarion.get("docente", [])
+        semestre = horarion.get("docente", [])
         cell_ids = horarion.get("cell_ids", [])
 
-        docentes_actualizados = 0
+        semestre_actualizados = 0
 
         if horariov:
             actualizar = detectar_cambios(horarion, horariov)
-            docentesold = actualizar.get("docente", [])
+            semestreold = actualizar.get("docente", [])
             cell_idsold = actualizar.get("cell_ids", [])
 
-            for i, doc_id in enumerate(docentesold):
+            for i, doc_id in enumerate(semestreold):
                 if doc_id != '':
                     cell_id = int(cell_idsold[i])
                     if update_disp(doc_id, [cell_id], 1):
-                        docentes_actualizados += 1
+                        semestre_actualizados += 1
 
-        for i, doc_id in enumerate(docentes):
+        for i, doc_id in enumerate(semestre):
             if doc_id != '':
                 cell_id = int(cell_ids[i])
                 if update_disp(doc_id, [cell_id], 3):
-                    docentes_actualizados += 1
+                    semestre_actualizados += 1
 
-        if docentes_actualizados > 0:
-            return jsonify({"success": True, "message": f"Disponibilidad actualizada para {docentes_actualizados} docente(s)"})
+        if semestre_actualizados > 0:
+            return jsonify({"success": True, "message": f"Disponibilidad actualizada para {semestre_actualizados} docente(s)"})
         else:
-            return jsonify({"success": False, "message": "No se encontraron docentes con disponibilidad para actualizar"})
+            return jsonify({"success": False, "message": "No se encontraron semestre con disponibilidad para actualizar"})
 
     return redirect("/")
 
@@ -165,10 +165,10 @@ def semestres():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        docentes = DocenteCarreras.query.filter_by(carrera_id=carrera).all()
+        semestre = DocenteCarreras.query.filter_by(carrera_id=carrera).all()
         asignaturas = MateriasCarreras.query.filter_by(carrera_id=carrera).all()
         aula = Aulas.query.all()
-        return render_template("semestres.html", user=username, asignaturas=asignaturas, docentes=docentes, aulas=aula)
+        return render_template("semestres.html", user=username, asignaturas=asignaturas, semestre=semestre, aulas=aula)
     return redirect("/")
 
 @jefe_bp.route("/jefeCarrera/grupos")
@@ -222,3 +222,27 @@ def grupos_semestre(grupoId):
     return redirect("/")
 
 
+@jefe_bp.route("/guardar_gruposemestre", methods=['POST'])
+def guardar_gruposemestre():
+    user = verificate_session()
+    if user:
+        data = request.json
+        grupoId = data["grupoId"]
+        semestre_seleccionados = data["semestreSeleccionados"]
+        semestre_deseleccionados = data["semestreDeseleccionados"]
+
+        if semestre_deseleccionados:
+            GrupoSemestre.query.filter(
+                GrupoSemestre.grupo_id == grupoId,
+                GrupoSemestre.semestre.in_(semestre_deseleccionados)
+            ).delete(synchronize_session=False)
+
+        if semestre_seleccionados:
+            for semestre in semestre_seleccionados:
+                if not GrupoSemestre.query.filter_by(grupo_id=grupoId, semestre=semestre).first():
+                    nueva_relacion = GrupoSemestre(grupo_id=grupoId, semestre=semestre)
+                    db.session.add(nueva_relacion)
+        db.session.commit()
+
+        return jsonify({"success": True})
+    return redirect("/")
