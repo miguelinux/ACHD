@@ -17,6 +17,30 @@ def jefe_carrera():
         return render_template("jefeCarrera.html", user=username)
     return redirect("/")
 
+
+@jefe_bp.route("/jefeCarrera/docentes")
+def docentes():
+    user = verificate_session()
+    if user:
+        try:
+            userid = request.args["userid"]
+        except KeyError:
+            userid = None
+        username = user["username"]
+        carrera = user["carrera"]
+        
+        docentes = (
+            DocenteCarreras.query
+            .join(Usuarios, DocenteCarreras.usuario_id == Usuarios.id)
+            .filter(DocenteCarreras.carrera_id == carrera)
+            .options(joinedload(DocenteCarreras.usuario))
+            .order_by(Usuarios.nombre)
+            .all()
+        )
+        return render_template("docentes.html", user=username, docentes=docentes, userid=userid)
+    return redirect("/")
+
+
 @jefe_bp.route("/jefeCarrera/semestre")
 def semestre():
     user = verificate_session()
@@ -177,10 +201,29 @@ def grupos():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        ciclo=Ciclos.query.filter_by(actual=True).first()
-        grupos = Grupo.query.filter_by(carrera_id=carrera,ciclo_id=ciclo.id).all()
+        ciclo = Ciclos.query.filter_by(actual=True).first()
+
+        # Realizar join entre Grupo y GrupoSemestre
+        resultados = db.session.query(Grupo, GrupoSemestre).outerjoin(GrupoSemestre, Grupo.id == GrupoSemestre.grupo_id)\
+            .filter(Grupo.carrera_id == carrera, Grupo.ciclo_id == ciclo.id).all()
+        
+        # Agrupar los semestres por grupo
+        grupos = {}
+        for grupo, grupo_semestre in resultados:
+            if grupo.id not in grupos:
+                grupos[grupo.id] = {
+                    'identificador': grupo.identificador,
+                    'semestres': []
+                }
+            if grupo_semestre:
+                grupos[grupo.id]['semestres'].append(grupo_semestre.semestre)
+
+        for grupo_id in grupos:
+            grupos[grupo_id]['semestres'].sort()
+
         return render_template("grupos.html", user=username, grupos=grupos)
     return redirect("/")
+
 
 @jefe_bp.route("/crear_grupo", methods=["POST"])
 def crear_carrera():
@@ -245,4 +288,20 @@ def guardar_gruposemestre():
         db.session.commit()
 
         return jsonify({"success": True})
+    return redirect("/")
+
+
+@jefe_bp.route("/delete/grupo", methods=["POST"])
+def delete_grupo():
+    """
+    Método para borrar un grupo de la base de datos
+    """
+    user = verificate_session()
+    if user:
+        grupoid = request.form.get("id")
+        grupo = Grupo.query.get(grupoid)
+        if grupo:
+            db.session.delete(grupo)
+            db.session.commit()
+        return redirect("/jefeCarrera/grupos")
     return redirect("/")

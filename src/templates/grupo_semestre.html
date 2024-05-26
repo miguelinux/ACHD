@@ -96,11 +96,48 @@
     .save-btn:hover {
         background-color: #007700;
     }
+    .action-btn {
+        width: 167px;
+        height: 46px;
+        border-radius: 23px;
+        background-color: blueviolet;
+        color: white;
+        font-size: 17px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .action-btn:last-child {
+        margin-right: 0;
+        /* Eliminar margen derecho del último botón */
+    }
+
+    .action-btn:hover {
+        background-color: #5d478b;
+    }
+
+    /* Estilos para los botones de la parte superior */
+    .top-buttons {
+        text-align: center;
+        width: 100%;
+        /* Ajustar al ancho máximo */
+        margin-bottom: 20px;
+        /* Espacio entre los botones y las tablas */
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
+    <div class="top-buttons">
+    <form action="/delete/grupo" method="post" style="margin-top: 10px;">
+        <input type="hidden" name="id" value="{{ grupoId }}">
+        <button class="action-btn" type="submit"
+            onclick="return confirm('¿Estás seguro de que deseas borrar este grupo?')">Borrar grupo</button>
+    </form>
+    </div>
     <h2>Lista de semestre</h2>
     <div id="table-container">
         <table class="myTable">

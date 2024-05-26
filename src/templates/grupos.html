@@ -141,12 +141,17 @@
     <table id="myTable">
         <tr>
             <th>Nombre</th>
-            <th>semestres asignados</th>
+            <th>Semestres Asignados</th>
         </tr>
-        {% for grupo in grupos %}
-        <tr onclick="redirectToUserPage('{{ grupo.id }}')">
-            <td>{{ grupo.identificador }} </td>
-            <td>{{ grupo.ciclo_id }} </td>
+        {% for grupo_id, grupo_info in grupos.items() %}
+        <tr onclick="redirectToUserPage('{{ grupo_id }}')">
+            <td>{{ grupo_info.identificador }}</td>
+            <td>
+                Semestres:
+                {% for semestre in grupo_info.semestres %}
+                    {{ semestre }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </td>
         </tr>
         {% endfor %}
     </table>
