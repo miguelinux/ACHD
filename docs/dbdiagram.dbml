@@ -10,9 +10,9 @@ Table usuario {
   password char (65) [not null]
   user_type integer(3) [not null]
   first_login bool [not null]
-  nombre varchar(20) [not null]
-  apellido_pat varchar(20) [not null]
-  apellido_mat varchar(20) [not null]
+  nombre varchar(50) [not null]
+  apellido_pat varchar(50) [not null]
+  apellido_mat varchar(50) [not null]
   habilitado bool [not null]
 }
 
@@ -32,14 +32,14 @@ table disponibilidad{
 
 Table carrera {
   id integer [primary key, increment]
-  nombre varchar (30) [not null]
+  nombre varchar (50) [not null]
   plan_de_estudio varchar(15) [not null]
 }
 
 Table materia{
   id integer [primary key, increment]
-  clave char(15) [not null]
-  nombre varchar(30) [not null]
+  clave char(30) [not null]
+  nombre varchar(60) [not null]
   semestre integer(3) [not null]
   horas_practica integer(2) [not null]
   horas_teoria integer(2) [not null]
@@ -63,7 +63,7 @@ table asignacion{
   id integer [primary key, increment]
   horario json
   semestre integer(3) [not null]
-  grupo char(5) [not null]
+  grupo_id integer [ref: >grupo.id]
   carrera_id integer [ref: > carrera.id]
   ciclo_id integer [ref: > ciclo.id]
 }
@@ -75,5 +75,11 @@ table ciclo{
   actual bool [not null]
 }
 
-
+table grupo{
+  id integer [primary key, increment]
+  semestre integer(3) [not null]
+  identificador char(5) [not null]
+  carrera_id integer [ref: > carrera.id]
+  ciclo_id integer [ref: > ciclo.id] 
+}
 

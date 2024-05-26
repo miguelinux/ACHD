@@ -41,6 +41,7 @@ class Carreras(db.Model):
     
     materias_carrera = relationship("MateriasCarreras", backref="carrera", cascade="all, delete-orphan", single_parent=True)
     docente_carreras = relationship("DocenteCarreras", backref="carrera", cascade="all, delete-orphan", single_parent=True)
+    grupo = relationship("Grupo", backref="carrera", cascade="all, delete-orphan", single_parent=True)
 
 class Materias(db.Model):
     __tablename__ = 'materia'
@@ -86,3 +87,13 @@ class Ciclos(db.Model):
     
     disponibilidades = relationship("Disponibilidades", backref="ciclo", cascade="all, delete-orphan", single_parent=True)
     asignaciones = relationship("Asignaciones", backref="ciclo", cascade="all, delete-orphan", single_parent=True)
+    Grupo = relationship("Grupo", backref="ciclo", cascade="all, delete-orphan", single_parent=True)
+    
+    
+class Grupo(db.Model):
+    __tablename__ = 'grupo'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    semestre = db.Column(db.Integer, nullable=False)
+    identificador = db.Column(db.String(5), nullable=False)
+    carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
+    ciclo_id = db.Column(db.Integer, db.ForeignKey('ciclo.id'))

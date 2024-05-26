@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: acdc
+-- Host: 127.0.0.1    Database: acdh
 -- ------------------------------------------------------
 -- Server version	8.3.0
 
@@ -26,14 +26,16 @@ CREATE TABLE `asignacion` (
   `id` int NOT NULL AUTO_INCREMENT,
   `horario` json DEFAULT NULL,
   `semestre` int NOT NULL,
-  `grupo` char(5) NOT NULL,
+  `grupo_id` int DEFAULT NULL,
   `carrera_id` int DEFAULT NULL,
   `ciclo_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `grupo_id` (`grupo_id`),
   KEY `carrera_id` (`carrera_id`),
   KEY `ciclo_id` (`ciclo_id`),
-  CONSTRAINT `asignacion_ibfk_1` FOREIGN KEY (`carrera_id`) REFERENCES `carrera` (`id`),
-  CONSTRAINT `asignacion_ibfk_2` FOREIGN KEY (`ciclo_id`) REFERENCES `ciclo` (`id`)
+  CONSTRAINT `asignacion_ibfk_1` FOREIGN KEY (`grupo_id`) REFERENCES `grupo` (`id`),
+  CONSTRAINT `asignacion_ibfk_2` FOREIGN KEY (`carrera_id`) REFERENCES `carrera` (`id`),
+  CONSTRAINT `asignacion_ibfk_3` FOREIGN KEY (`ciclo_id`) REFERENCES `ciclo` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -79,7 +81,7 @@ DROP TABLE IF EXISTS `carrera`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `carrera` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(30) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
   `plan_de_estudio` varchar(15) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -177,6 +179,36 @@ LOCK TABLES `docente_carrera` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `grupo`
+--
+
+DROP TABLE IF EXISTS `grupo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `grupo` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `semestre` int NOT NULL,
+  `identificador` char(5) NOT NULL,
+  `carrera_id` int DEFAULT NULL,
+  `ciclo_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `carrera_id` (`carrera_id`),
+  KEY `ciclo_id` (`ciclo_id`),
+  CONSTRAINT `grupo_ibfk_1` FOREIGN KEY (`carrera_id`) REFERENCES `carrera` (`id`),
+  CONSTRAINT `grupo_ibfk_2` FOREIGN KEY (`ciclo_id`) REFERENCES `ciclo` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `grupo`
+--
+
+LOCK TABLES `grupo` WRITE;
+/*!40000 ALTER TABLE `grupo` DISABLE KEYS */;
+/*!40000 ALTER TABLE `grupo` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `materia`
 --
 
@@ -185,7 +217,7 @@ DROP TABLE IF EXISTS `materia`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `materia` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `clave` char(20) NOT NULL,
+  `clave` char(30) NOT NULL,
   `nombre` varchar(60) NOT NULL,
   `semestre` int NOT NULL,
   `horas_practica` int NOT NULL,
@@ -272,4 +304,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-21 17:02:34
+-- Dump completed on 2024-05-25 18:58:04
