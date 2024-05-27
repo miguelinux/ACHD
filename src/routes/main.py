@@ -120,9 +120,8 @@ def get_horario():
     if user:
         carrera = user["carrera"]
         turno = request.args.get('turno')
-        semestre = request.args.get('semestre')
         ciclo = Ciclos.query.filter_by(actual=True).first()
-        asignacion = Asignaciones.query.filter_by(semestre=semestre, carrera_id=carrera, grupo=turno, ciclo_id=ciclo.id).first()
+        asignacion = Asignaciones.query.filter_by(carrera_id=carrera, grupo_id=turno, ciclo_id=ciclo.id).first()
         if asignacion:
             horarios = json.loads(asignacion.horario)
             return jsonify({"success": True, "horario": horarios})

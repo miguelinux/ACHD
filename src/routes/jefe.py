@@ -98,16 +98,15 @@ def set_asignacion():
     if user:
         user_carrera = user["carrera"]
         asignacion_propuesta = request.json
-        semestre = asignacion_propuesta.pop("semestre")
         turno = asignacion_propuesta.pop("turno")
         ciclo = Ciclos.query.filter_by(actual=True).first()
-        asignacion = Asignaciones.query.filter_by(carrera_id=user_carrera, semestre=semestre, grupo=turno, ciclo_id=ciclo.id).first()
-
+        grupsemestre = GrupoSemestre.query.filter_by(id=turno).first()
+        asignacion = Asignaciones.query.filter_by(carrera_id=user_carrera, grupo_id=grupsemestre.id, ciclo_id=ciclo.id).first()
+        print(turno)
         if not asignacion:
             asignacion = Asignaciones(
                 carrera_id=user_carrera,
-                semestre=semestre,
-                grupo=turno,
+                grupo_id=turno,
                 ciclo_id=ciclo.id,
                 horario=json.dumps(asignacion_propuesta.get("asignacion", {}))
             )

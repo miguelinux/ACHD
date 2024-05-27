@@ -82,6 +82,10 @@
     flex-wrap: wrap;
   }
 
+  .docentes::-webkit-scrollbar {
+    width: 5px;
+  }
+
   .aula.selected {
     border: #32aa32 2px solid;
     background: #37109b;
@@ -107,11 +111,22 @@
 
   .aulas {
     grid-area: aulas;
-    height: 22rem;
-    gap: 1rem;
+    max-height: 12rem;
+    /* Ajusta este valor según tus necesidades */
     display: flex;
-    text-align: center;
     flex-wrap: wrap;
+    /* Permitir que los elementos se envuelvan */
+    gap: 0.5rem;
+    text-align: center;
+    overflow-y: auto;
+    padding: 0.5rem;
+    /* Añadir padding para evitar que el contenido toque los bordes */
+    justify-content: flex-start;
+    /* Alinear elementos al inicio */
+  }
+
+  .aulas::-webkit-scrollbar {
+    width: 9px;
   }
 
   .docente.selected {
@@ -145,7 +160,8 @@
 
   .docente {
     color: black;
-    height: 30px;
+    height: 2rem;
+    width: 10rem;
     background-color: #897baf;
     border-radius: 10px;
     color: white;
@@ -187,19 +203,25 @@
   }
 
   .aula {
-    width: auto;
-    height: 55px;
+    width: 8rem;
+    height: 4rem;
     background-color: #897baf;
     border-radius: 5px;
     color: white;
-    margin-top: 5px;
     padding: 0.4rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+    text-align: center;
   }
 
   .aula p {
     user-select: none;
+    margin: 0.2rem 0;
     text-align: center;
-    margin-top: 5px;
   }
 
   table {
@@ -270,7 +292,6 @@
 
 <div class="container">
   <div class="docentes">
-    <p>Docentes</p>
     {% for docente in docentes %}
     <div class="docente" data-id-docente='{{docente.usuario.id}}' data-nombre="{{ docente.usuario.nombre }}"
       data-apellido="{{ docente.usuario.apellido_pat }}">
@@ -365,7 +386,6 @@
     </table>
   </div>
   <div class="materias">
-    <p>Materias</p>
     {% for asignatura in asignaturas %}
     <div class="materia" data-semestre="{{ asignatura.materia.semestre }}" data-id-materia='{{asignatura.materia.id}}'
       data-credito="{{asignatura.materia.creditos}}" data-nombre="{{ asignatura.materia.nombre }}">
@@ -375,7 +395,6 @@
     {% endfor %}
   </div>
   <div class="aulas">
-    <p><strong>Aulas</strong></p>
     {% for aula in aulas %}
     <div class="aula" data-id-aula="{{aula.id}}" data-nombre="{{ aula.nombre }}">
       <p>{{ aula.nombre }}</p>
@@ -678,62 +697,54 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.semestre').forEach(function (button) {
-        button.addEventListener('click', function () {
-            // Elimina la clase 'selected' de todos los botones de semestre
-            document.querySelectorAll('.semestre').forEach(function (btn) {
-                btn.classList.remove('selected');
-            });
-
-            // Agrega la clase 'selected' al botón de semestre seleccionado
-            this.classList.add('selected');
-
-            var semestre = this.getAttribute('data-semestre');
-
-            // Oculta todas las asignaturas
-            document.querySelectorAll('.materia').forEach(function (asignatura) {
-                asignatura.style.display = 'none';
-            });
-
-            document.querySelectorAll('.materia[data-semestre="' + semestre + '"]').forEach(function (asignatura) {
-                asignatura.style.display = 'block';
-            });
-
-            // Oculta todos los grupos y quita la clase selected
-            document.querySelectorAll('.turno').forEach(function (grupo) {
-                grupo.style.display = 'none';
-                grupo.classList.remove('selected'); // Eliminar la clase selected
-            });
-
-            // Muestra los grupos del semestre seleccionado
-            document.querySelectorAll('.turno[data-semestre="' + semestre + '"]').forEach(function (grupo) {
-                grupo.style.display = 'block';
-            });
-
-            // Restaurar los colores originales de fondo de las celdas .dia
-            document.querySelectorAll(".dia").forEach(function (cell) {
-                cell.textContent = "";
-                cell.style.backgroundColor = "";
-            });
-
-            resetElementCounts();
-
-            // Deseleccionar los elementos de docente, materia y aula
-            selectedElements = [];
-            document.querySelectorAll('.docente.selected, .materia.selected, .aula.selected').forEach(function (element) {
-                element.classList.remove('selected');
-            });
-
-            getselecteditems(); // Llama a esta función para obtener los elementos seleccionados
-
-            // Seleccionar el primer turno visible
-            var primerTurnoVisible = document.querySelector('.turno[data-semestre="' + semestre + '"][style="display: block;"]');
-            if (primerTurnoVisible) {
-                primerTurnoVisible.classList.add('selected');
-                cambiarValoresTabla(primerTurnoVisible.getAttribute('data-turno'));
-            }
+      button.addEventListener('click', function () {
+        // Elimina la clase 'selected' de todos los botones de semestre
+        document.querySelectorAll('.semestre').forEach(function (btn) {
+          btn.classList.remove('selected');
         });
+
+        // Agrega la clase 'selected' al botón de semestre seleccionado
+        this.classList.add('selected');
+
+        var semestre = this.getAttribute('data-semestre');
+
+        // Oculta todas las asignaturas
+        document.querySelectorAll('.materia').forEach(function (asignatura) {
+          asignatura.style.display = 'none';
+        });
+
+        document.querySelectorAll('.materia[data-semestre="' + semestre + '"]').forEach(function (asignatura) {
+          asignatura.style.display = 'block';
+        });
+
+        // Oculta todos los grupos y quita la clase selected
+        document.querySelectorAll('.turno').forEach(function (grupo) {
+          grupo.style.display = 'none';
+          grupo.classList.remove('selected'); // Eliminar la clase selected
+        });
+
+        // Muestra los grupos del semestre seleccionado
+        document.querySelectorAll('.turno[data-semestre="' + semestre + '"]').forEach(function (grupo) {
+          grupo.style.display = 'block';
+        });
+
+        // Restaurar los colores originales de fondo de las celdas .dia
+        document.querySelectorAll(".dia").forEach(function (cell) {
+          cell.textContent = "";
+          cell.style.backgroundColor = "";
+        });
+
+        resetElementCounts();
+
+        // Deseleccionar los elementos de docente, materia y aula
+        selectedElements = [];
+        document.querySelectorAll('.docente.selected, .materia.selected, .aula.selected').forEach(function (element) {
+          element.classList.remove('selected');
+        });
+      });
     });
-});
+  });
+
 
   document.querySelectorAll('.turno').forEach(function (button) {
     button.addEventListener('click', function () {
@@ -790,13 +801,9 @@
 
     // Agregar un event listener al botón
     botonGuardar.addEventListener('click', function () {
-      // Obtener el valor del semestre seleccionado
-      const semestreSeleccionadoElemento = document.querySelector('.semestre.selected');
-      const semestreSeleccionado = semestreSeleccionadoElemento ? semestreSeleccionadoElemento.getAttribute('data-semestre') : '';
-
-      // Obtener el valor del turno seleccionado
+      // Obtener el valor del id del turno seleccionado
       const turnoSeleccionadoElemento = document.querySelector('.turno.selected');
-      const turnoSeleccionado = turnoSeleccionadoElemento ? turnoSeleccionadoElemento.textContent.trim() : '';
+      const turnoSeleccionadoId = turnoSeleccionadoElemento ? turnoSeleccionadoElemento.getAttribute('id') : '';
 
       // Objeto para almacenar los datos recopilados
       const asignacion = {
@@ -827,7 +834,7 @@
       });
 
       // Convertir el objeto asignacion a JSON
-      const jsonData = JSON.stringify({ asignacion, semestre: semestreSeleccionado, turno: turnoSeleccionado });
+      const jsonData = JSON.stringify({ asignacion, turno: turnoSeleccionadoId });
 
       // Enviar los datos al servidor Flask usando fetch
       fetch('/setAsignacion', {
@@ -852,17 +859,16 @@
     });
   });
 
+
   function getselecteditems() {
-    const semestreSeleccionadoElemento = document.querySelector('.semestre.selected');
-    const semestreSeleccionado = semestreSeleccionadoElemento ? semestreSeleccionadoElemento.getAttribute('data-semestre') : '';
     const turnoSeleccionadoElemento = document.querySelector('.turno.selected');
-    const turnoSeleccionado = turnoSeleccionadoElemento ? turnoSeleccionadoElemento.textContent.trim() : '';
-    if (turnoSeleccionado && semestreSeleccionado) {
-      gethorario(turnoSeleccionado, semestreSeleccionado);
+    const turnoSeleccionado = turnoSeleccionadoElemento ? turnoSeleccionadoElemento.getAttribute('id') : '';
+    if (turnoSeleccionado) {
+      gethorario(turnoSeleccionado);
     }
   }
-  function gethorario(turno, semestre) {
-    fetch(`/get_horario?turno=${turno}&semestre=${semestre}`, {
+  function gethorario(turno) {
+    fetch(`/get_horario?turno=${turno}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

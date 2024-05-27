@@ -72,8 +72,7 @@ class Asignaciones(db.Model):
     __tablename__ = 'asignacion'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     horario = db.Column(JSON)
-    semestre = db.Column(INTEGER(3), nullable=False)
-    grupo = db.Column(CHAR(5), nullable=False)
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo_semestre.id'))
     carrera_id = db.Column(db.Integer, db.ForeignKey('carrera.id'))
     ciclo_id = db.Column(db.Integer, db.ForeignKey('ciclo.id'))
     
@@ -105,3 +104,6 @@ class GrupoSemestre(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
     semestre = db.Column(db.Integer, nullable=False)
+    
+    asignaciones = relationship("Asignaciones", backref="grupo_semestre", cascade="all, delete-orphan", single_parent=True)
+    
