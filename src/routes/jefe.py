@@ -178,10 +178,21 @@ def semestres():
     if user:
         username = user["username"]
         carrera = user["carrera"]
-        semestre = DocenteCarreras.query.filter_by(carrera_id=carrera).all()
+        docentes = DocenteCarreras.query.filter_by(carrera_id=carrera).all()
         asignaturas = MateriasCarreras.query.filter_by(carrera_id=carrera).all()
         aula = Aulas.query.all()
-        return render_template("semestres.html", user=username, asignaturas=asignaturas, semestre=semestre, aulas=aula)
+        
+        grupos_semestre = GrupoSemestre.query.all()
+        grupos_con_semestre = []
+        for gs in grupos_semestre:
+            grupo = Grupo.query.get(gs.grupo_id)
+            grupos_con_semestre.append({
+                'id': gs.id,
+                'identificador': grupo.identificador,
+                'semestre': gs.semestre
+            })
+        
+        return render_template("semestres.html", user=username, asignaturas=asignaturas, docentes=docentes, aulas=aula,grupos=grupos_con_semestre)
     return redirect("/")
 
 @jefe_bp.route("/jefeCarrera/grupos")
