@@ -285,7 +285,7 @@
 <div class="btnsturn">
   <p>Grupos:</p>
   {% for grupo in grupos %}
-  <button class="turno" id="{{ grupo.id }}" data-semestre="{{ grupo.semestre }}" data-turno="{{ grupo.identificador }}"
+  <button class="turno" data-idgrupo="{{ grupo.id }}" data-semestre="{{ grupo.semestre }}" data-turno="{{ grupo.identificador }}"
     style="display: none;">{{ grupo.identificador }}</button>
   {% endfor %}
 </div>
@@ -803,7 +803,7 @@
     botonGuardar.addEventListener('click', function () {
       // Obtener el valor del id del turno seleccionado
       const turnoSeleccionadoElemento = document.querySelector('.turno.selected');
-      const turnoSeleccionadoId = turnoSeleccionadoElemento ? turnoSeleccionadoElemento.getAttribute('id') : '';
+      const turnoSeleccionadoId = turnoSeleccionadoElemento ? turnoSeleccionadoElemento.getAttribute('data-idgrupo') : '';
 
       // Objeto para almacenar los datos recopilados
       const asignacion = {
@@ -862,7 +862,7 @@
 
   function getselecteditems() {
     const turnoSeleccionadoElemento = document.querySelector('.turno.selected');
-    const turnoSeleccionado = turnoSeleccionadoElemento ? turnoSeleccionadoElemento.getAttribute('id') : '';
+    const turnoSeleccionado = turnoSeleccionadoElemento ? turnoSeleccionadoElemento.getAttribute('data-idgrupo') : '';
     if (turnoSeleccionado) {
       gethorario(turnoSeleccionado);
     }

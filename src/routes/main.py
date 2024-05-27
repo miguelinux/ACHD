@@ -156,8 +156,6 @@ def set_disp():
     return redirect("/")
 
 
-
-
 @main_bp.route("/get_materia", methods=['GET'])
 def get_materias():
     user = verificate_session()
