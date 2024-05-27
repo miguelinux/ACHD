@@ -257,7 +257,8 @@
 <div class="btnsturn">
   <p>Grupos:</p>
   {% for grupo in grupos %}
-      <button class="grupo" data-semestre="{{ grupo.semestre }}" style="display: none;">{{ grupo.identificador }}</button>
+  <button class="grupo turno" id="{{ grupo.id }}" data-semestre="{{ grupo.semestre }}"
+    data-turno="{{ grupo.identificador }}" style="display: none;">{{ grupo.identificador }}</button>
   {% endfor %}
 </div>
 
@@ -387,25 +388,53 @@
   let disponibilidadGlobal = {};
   // Controlador de eventos para los botones de turno
   const horasOriginales = obtenerHorasOriginales();
-  const turnA = document.getElementById("turnA");
-  const turnB = document.getElementById("turnB");
-  const turnN = document.getElementById("turnN");
+  // Función para mostrar los grupos del semestre seleccionado
+  function mostrarGruposPorSemestre(semestreSeleccionado) {
+    // Obtener todos los botones de grupo
+    var botonesGrupo = document.querySelectorAll(".grupo");
+    botonesGrupo.forEach(function (botonGrupo) {
+      botonGrupo.style.display = "none";
+      // Mostrar solo los botones de grupo correspondientes al semestre seleccionado
+      if (botonGrupo.getAttribute("data-semestre") === semestreSeleccionado) {
+        botonGrupo.style.display = "block";
+      }
+    });
 
-  turnA.classList.add('selected');
+    // Buscar el primer botón de grupo visible y presionarlo
+    var primerBotonVisible = document.querySelector(".grupo[style='display: block;']");
+    if (primerBotonVisible) {
+      primerBotonVisible.click();
+    }
+  }
 
-  turnA.addEventListener("click", function () {
-    restaurarHorasOriginales();
-    cambiarTurno("A");
-  });
+  // Función para cambiar los valores de la tabla según el turno seleccionado
+  function cambiarValoresTabla(turno) {
+    const dias = document.querySelectorAll(".dia");
+    const horas = document.querySelectorAll(".hora");
 
-  turnB.addEventListener("click", function () {
-    restaurarHorasOriginales();
-    cambiarTurno("B");
-  });
-
-  turnN.addEventListener("click", function () {
-    cambiarTurno("N");
-  });
+    if (turno === "N" || turno === "O") {
+      dias.forEach(function (dia, index) {
+        const id = parseInt(diasOriginales[index]) + 7;
+        dia.id = id.toString();
+      });
+      horas.forEach(function (hora, index) {
+        let inicio = 14 + index;
+        let fin = 15 + index;
+        if (fin > 22) {
+          fin = 22;
+        }
+        hora.textContent = inicio.toString().padStart(2, '0') + '-' + fin.toString().padStart(2, '0');
+      });
+    } else {
+      dias.forEach(function (dia, index) {
+        dia.id = diasOriginales[index];
+      });
+      // Restaurar las horas en la tabla
+      horas.forEach(function (hora, index) {
+        hora.textContent = horasOriginales[index];
+      });
+    }
+  }
   function handleClickDocente() {
     const idDocente = this.getAttribute('data-id-docente');
 
@@ -455,31 +484,6 @@
       });
   }
 
-  function cambiarTurno(turno) {
-    document.querySelectorAll(".turno").forEach(btn => btn.classList.remove('selected'));
-    document.getElementById(`turn${turno}`).classList.add('selected');
-    const dias = document.querySelectorAll(".dia");
-    if (turno === "N") {
-      dias.forEach(function (dia, index) {
-        const id = parseInt(diasOriginales[index]) + 7;
-        dia.id = id.toString(); // Actualizar el ID del día
-      });
-      const horas = document.querySelectorAll(".hora");
-      horas.forEach(function (hora, index) {
-        let inicio = 14 + index;
-        let fin = 15 + index;
-        if (fin > 22) {
-          fin = 22;
-        }
-        hora.textContent = inicio.toString().padStart(2, '0') + '-' + fin.toString().padStart(2, '0');
-      });
-    } else {
-      // Restaurar los IDs originales
-      dias.forEach(function (dia, index) {
-        dia.id = diasOriginales[index]; // Restaurar el ID del día
-      });
-    }
-  }
   function actualizarColoresTablaPorDisponibilidad(disponibilidad) {
     // Obtener todos los elementos .dia de la tabla
     const dias = document.querySelectorAll(".dia");
@@ -734,6 +738,12 @@
             });
 
             getselecteditems(); // Llama a esta función para obtener los elementos seleccionados
+
+            // Obtener el turno seleccionado 
+            var primerTurno = document.querySelector(".turno");
+            var turnoSeleccionado = primerTurno.getAttribute("data-turno");
+            // Cambiar los valores de la tabla según el turno seleccionado
+            cambiarValoresTabla(turnoSeleccionado);
         });
     });
 });
@@ -770,6 +780,10 @@ function resetElementCounts() {
         element.classList.remove('selected');
       });
       getselecteditems();
+      
+      // Obtener el turno seleccionado
+      var turnoSeleccionado = this.getAttribute("data-turno");
+      cambiarValoresTabla(turnoSeleccionado);
     });
   });
 
