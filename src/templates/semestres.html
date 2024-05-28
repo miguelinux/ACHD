@@ -162,7 +162,7 @@
     <button class="semestre" data-semestre="9">Semestre 9</button>
 </div>
 <div class="btnsturn">
-    <p>Grupos:</p>
+    <p style="color: white;">Grupos:</p>
     {% for grupo in grupos %}
     <button class="turno" data-idgrupo="{{ grupo.id }}" data-semestre="{{ grupo.semestre }}"
         data-turno="{{ grupo.identificador }}" style="display: none;">{{ grupo.identificador }}</button>

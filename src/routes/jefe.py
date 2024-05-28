@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, request, jsonify,Response
+from flask import Blueprint, render_template, redirect, request, jsonify,Response,flash
 from functions import verificate_session
 from models.tables_db import Usuarios, Materias, Aulas, Asignaciones, Ciclos, Grupo
 from models.tables_db import DocenteCarreras, MateriasCarreras, Disponibilidades, GrupoSemestre
@@ -229,24 +229,32 @@ def grupos():
 
 
 @jefe_bp.route("/crear_grupo", methods=["POST"])
-def crear_carrera():
+def crear_grupo():
     """
-    Metodo para agregar una carrera a la base de datos
+    Metodo para agregar un grupo a la base de datos
     """
     user = verificate_session()
     if user:
         carrera = user["carrera"]
-        ciclo=Ciclos.query.filter_by(actual=True).first()
+        ciclo = Ciclos.query.filter_by(actual=True).first()
         form = request.form
         identificador = form.get("identificador")
         
+        # Validar si ya existe un grupo con el mismo identificador en la misma carrera y ciclo
+        grupo_existente = Grupo.query.filter_by(identificador=identificador, carrera_id=carrera, ciclo_id=ciclo.id).first()
+        
+        if grupo_existente:
+            flash("Ya existe un grupo con este identificador en la carrera y ciclo actuales.", "error")
+            return redirect("/jefeCarrera/grupos")
+
         nuevo_grupo = Grupo(
-            identificador = identificador,
+            identificador=identificador,
             carrera_id=carrera,
             ciclo_id=ciclo.id
         )
         db.session.add(nuevo_grupo)
         db.session.commit()
+        flash("Grupo creado exitosamente.", "success")
         return redirect("/jefeCarrera/grupos")
     else:
         return redirect("/")

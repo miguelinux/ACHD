@@ -104,6 +104,11 @@
         background-color: #f2f2f2;
     }
 
+    #myTable tr:nth-child(odd) {
+        background-color: #e0e0e0;
+        /* Fondo gris para las filas impares */
+    }
+
     #myTable tr:hover {
         background-color: #352875;
         color: white;
@@ -213,6 +218,7 @@
             width: 100%;
         }
     }
+
     .flash {
         background-color: #4CAF50;
         /* Green */
@@ -222,11 +228,11 @@
 {% endblock %}
 {% block content %}
 {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="flash">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+{% if messages %}
+{% for message in messages %}
+<div class="flash">{{ message }}</div>
+{% endfor %}
+{% endif %}
 {% endwith %}
 
 <section id="table">
@@ -254,7 +260,7 @@
             </tr>
             {% for usuario in usuarios %}
             <tr onclick="redirectToUserPage('{{ usuario.id }}')">
-                <td>{{ usuario.nombre }} {{ usuario.apellido_pat }} {{ usuario.apellido_mat }}</td>
+                <td>{{ usuario.apellido_pat }} {{ usuario.apellido_mat }} {{ usuario.nombre }}</td>
                 <td>{{ usuario.email }}</td>
                 <td>{% if usuario.user_type == 1 %}
                     Admin

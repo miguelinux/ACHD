@@ -22,6 +22,7 @@
         max-height: 60vh;
         overflow-y: auto;
     }
+
     .myTable {
         width: 100%;
         border-collapse: collapse;
@@ -48,6 +49,11 @@
 
     .myTable tr:nth-child(even) {
         background-color: #f2f2f2;
+    }
+
+    .myTable tr:nth-child(odd) {
+        background-color: #e0e0e0;
+        /* Fondo gris para las filas impares */
     }
 
     .myTable tr:hover {
@@ -100,31 +106,31 @@
 
 {% block content %}
 <div class="container">
-    <h2>Lista de Materias</h2>
+    <h2 style="color: white;">Lista de Materias</h2>
     <div id="table-container">
-    <table class="myTable">
-        <tr>
-            <th>Nombre</th>
-            <th>Clave</th>
-            <th>Semestre</th>
-            <th>Horas Práctica</th>
-            <th>Horas Teoría</th>
-            <th>Creditos</th>
-            <th>Seleccionar</th>
-        </tr>
-        <!-- Aquí se debe cargar dinámicamente la información de los materias -->
-        {% for materia in materias %}
-        <tr data-id="{{ materia.id }}" onclick="toggleCheckbox(this)">
-            <td>{{ materia.nombre }} </td>
-            <td>{{ materia.clave }} </td>
-            <td>{{ materia.semestre }} </td>
-            <td>{{ materia.horas_teoria }} </td>
-            <td>{{ materia.horas_practica }} </td>
-            <td>{{ materia.creditos }} </td>
-            <td><input type="checkbox" {% if materia_asociado(carreraId, materia.id) %} checked {% endif %}></td>
-        </tr>
-        {% endfor %}
-    </table>
+        <table class="myTable">
+            <tr>
+                <th>Nombre</th>
+                <th>Clave</th>
+                <th>Semestre</th>
+                <th>Horas Práctica</th>
+                <th>Horas Teoría</th>
+                <th>Creditos</th>
+                <th>Seleccionar</th>
+            </tr>
+            <!-- Aquí se debe cargar dinámicamente la información de los materias -->
+            {% for materia in materias %}
+            <tr data-id="{{ materia.id }}" onclick="toggleCheckbox(this)">
+                <td>{{ materia.nombre }} </td>
+                <td>{{ materia.clave }} </td>
+                <td>{{ materia.semestre }} </td>
+                <td>{{ materia.horas_teoria }} </td>
+                <td>{{ materia.horas_practica }} </td>
+                <td>{{ materia.creditos }} </td>
+                <td><input type="checkbox" {% if materia_asociado(carreraId, materia.id) %} checked {% endif %}></td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
     <button id="saveButton" class="save-btn">Guardar</button>
 </div>
@@ -134,20 +140,20 @@
         var checkbox = row.querySelector('input[type="checkbox"]');
         checkbox.checked = !checkbox.checked;
     }
-    document.getElementById("saveButton").addEventListener("click", function() {
+    document.getElementById("saveButton").addEventListener("click", function () {
         var selectedmaterias = [];
         var deselectedmaterias = [];
         var rows = document.querySelectorAll(".myTable tr[data-id]");
-        rows.forEach(function(row) {
+        rows.forEach(function (row) {
             var checkbox = row.querySelector('input[type="checkbox"]');
             var materiaId = row.dataset.id;
-            if (checkbox.checked ) {
+            if (checkbox.checked) {
                 selectedmaterias.push(materiaId);
-            } else if (!checkbox.checked ) {
+            } else if (!checkbox.checked) {
                 deselectedmaterias.push(materiaId);
             }
         });
-        
+
         var carreraId = "{{ carreraId }}";
         guardarSeleccion(carreraId, selectedmaterias, deselectedmaterias);
     });
@@ -166,18 +172,18 @@
             },
             body: JSON.stringify(data)
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Error al guardar los datos");
-            }
-            return response.json();
-        })
-        .then(data => {
-            window.location.href = "/admin/carrera/" + carreraId; 
-        })
-        .catch(error => {
-            console.error("Error:", error);
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error al guardar los datos");
+                }
+                return response.json();
+            })
+            .then(data => {
+                window.location.href = "/admin/carrera/" + carreraId;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
     }
 </script>
 {% endblock %}

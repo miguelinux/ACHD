@@ -50,7 +50,9 @@
     .myTable tr:nth-child(even) {
         background-color: #f2f2f2;
     }
-
+    .myTable tr:nth-child(odd) {
+        background-color: #e0e0e0; /* Fondo gris para las filas impares */
+    }
     .myTable tr:hover {
         background-color: #352875;
         color: white;
@@ -138,7 +140,7 @@
             onclick="return confirm('¿Estás seguro de que deseas borrar este grupo?')">Borrar grupo</button>
     </form>
     </div>
-    <h2>Lista de semestre</h2>
+    <h2 style="color: white;">Lista de semestre</h2>
     <div id="table-container">
         <table class="myTable">
             <tr>

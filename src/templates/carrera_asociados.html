@@ -21,20 +21,33 @@
         /* Permitir envolver en varias líneas si es necesario */
     }
 
-    .table-container {
+    .header-container {
         width: 48%;
-        /* El 48% para dejar espacio entre las dos tablas */
-    }
-
-    .table-container h2 {
+        /* Ajustar según sea necesario */
         text-align: center;
         margin-bottom: 10px;
+        /* Ajustar según sea necesario */
+    }
+
+    .content-container {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        /* Permitir envolver en varias líneas si es necesario */
+    }
+
+    .table-container {
+        width: 48%;
+        /* Ajustar según sea necesario */
+        max-height: 60vh;
+        overflow-y: auto;
+        margin-bottom: 20px;
     }
 
     .myTable {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 20px;
     }
 
     .myTable th {
@@ -57,6 +70,11 @@
 
     .myTable tr:nth-child(even) {
         background-color: #f2f2f2;
+    }
+
+    .myTable tr:nth-child(odd) {
+        background-color: #e0e0e0;
+        /* Fondo gris para las filas impares */
     }
 
     .action-btn {
@@ -89,6 +107,16 @@
         margin-bottom: 20px;
         /* Espacio entre los botones y las tablas */
     }
+
+    .button-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        /* Ajustar según sea necesario */
+        margin-bottom: 20px;
+        /* Ajustar según sea necesario */
+    }
 </style>
 {% endblock %}
 
@@ -98,45 +126,52 @@
         <button class="action-btn" id="modificarBtn" data-carrera-id="{{ carreraID }}">Modificar Carrera</button>
     </div>
     <div class="container">
-        <div class="table-container">
-            <h2>Docentes asociados a la carrera</h2>
-            <table class="myTable">
-                <tr>
-                    <th>Nombre</th>
-                </tr>
-                {% for docente in docentes %}
-                <tr>
-                    <td>{{ docente.usuario.nombre }} {{ docente.usuario.apellido_pat }} {{ docente.usuario.apellido_mat}}</td>
-                </tr>
-                {% endfor %}
-            </table>
+        <div class="header-container">
+            <h2 style="color: white;">Docentes asociados a la carrera</h2>
+        </div>
+        <div class="header-container">
+            <h2 style="color: white;">Materias asignadas a la carrera</h2>
+        </div>
+        <div class="content-container">
+            <div class="table-container">
+                <table class="myTable">
+                    <tr>
+                        <th>Nombre</th>
+                    </tr>
+                    {% for docente in docentes %}
+                    <tr>
+                        <td>{{ docente.usuario.apellido_pat }} {{
+                            docente.usuario.apellido_mat}} {{ docente.usuario.nombre }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="table-container">
+                <table class="myTable">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Clave</th>
+                        <th>Semestre</th>
+                        <th>Horas Práctica</th>
+                        <th>Horas Teoría</th>
+                        <th>Créditos</th>
+                    </tr>
+                    {% for materia in materias %}
+                    <tr>
+                        <td>{{ materia.materia.nombre }}</td>
+                        <td>{{ materia.materia.clave }}</td>
+                        <td>{{ materia.materia.semestre }}</td>
+                        <td>{{ materia.materia.horas_practica }}</td>
+                        <td>{{ materia.materia.horas_teoria }}</td>
+                        <td>{{ materia.materia.creditos }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="button-container">
             <button class="action-btn" onclick="location.href='/carrera/{{ carreraID }}/asociar/docentes'">Asociar
                 Docente</button>
-
-
-        </div>
-        <div class="table-container">
-            <h2>Materias asignadas a la carrera</h2>
-            <table class="myTable">
-                <tr>
-                    <th>Nombre</th>
-                    <th>Clave</th>
-                    <th>Semestre</th>
-                    <th>Horas Práctica</th>
-                    <th>Horas Teoría</th>
-                    <th>Créditos</th>
-                </tr>
-                {% for materia in materias %}
-                <tr>
-                    <td>{{ materia.materia.nombre }}</td>
-                    <td>{{ materia.materia.clave }}</td>
-                    <td>{{ materia.materia.semestre }}</td>
-                    <td>{{ materia.materia.horas_practica }}</td>
-                    <td>{{ materia.materia.horas_teoria }}</td>
-                    <td>{{ materia.materia.creditos }}</td>
-                </tr>
-                {% endfor %}
-            </table>
             <button class="action-btn" onclick="location.href='/carrera/{{ carreraID }}/asociar/materias'">Asociar
                 Materia</button>
         </div>
@@ -146,13 +181,13 @@
 <script>
 
     var modificarBtn = document.getElementById("modificarBtn");
-    modificarBtn.addEventListener("click", function() {
+    modificarBtn.addEventListener("click", function () {
         // Obtiene el ID de la carrera del atributo data-carrera-id del botón
         var carreraId = modificarBtn.getAttribute("data-carrera-id");
-        
+
         // Construye la URL con el ID de la carrera
         var url = "/admin/modificar/carrera/" + carreraId;
-        
+
         // Redirige a la URL construida
         window.location.href = url;
     });

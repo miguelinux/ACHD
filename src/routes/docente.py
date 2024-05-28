@@ -37,20 +37,36 @@ def horarioJefe():
         try:
             user_id = request.args["userid"]
             if not user_id or user_id == "None":
-                return "NO HA SELECCIONADO NINGÚN DOCENTE"
+                return """
+                <div style="color: white; font-weight: bold; font-family: Arial, sans-serif; background-color: red; padding: 10px; border-radius: 5px;">
+                    NO HA SELECCIONADO NINGÚN DOCENTE
+                </div>
+                """
         except KeyError:
-            return "NO HA SELECCIONADO NINGÚN DOCENTE"
-        ciclo=Ciclos.query.filter_by(actual=True).first()        
-        dispo = Disponibilidades.query.filter_by(usuario_id=user_id,ciclo_id=ciclo.id).first()
+            return """
+            <div style="color: white; font-weight: bold; font-family: Arial, sans-serif; background-color: red; padding: 10px; border-radius: 5px;">
+                NO HA SELECCIONADO NINGÚN DOCENTE
+            </div>
+            """
+        ciclo = Ciclos.query.filter_by(actual=True).first()        
+        dispo = Disponibilidades.query.filter_by(usuario_id=user_id, ciclo_id=ciclo.id).first()
         
         try:
             disponibilidad = dispo.horas
         except AttributeError:
-            return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
+            return """
+            <div style="color: white; font-weight: bold; font-family: Arial, sans-serif; background-color: red; padding: 10px; border-radius: 5px;">
+                EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE
+            </div>
+            """
         if not disponibilidad:
-            return "EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE"
+            return """
+            <div style="color: white; font-weight: bold; font-family: Arial, sans-serif; background-color: red; padding: 10px; border-radius: 5px;">
+                EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE
+            </div>
+            """
 
-        return render_template("horarioJ.html", user=user, disponibilidad=disponibilidad,usuario=dispo)
+        return render_template("horarioJ.html", user=user, disponibilidad=disponibilidad, usuario=dispo)
     return redirect("/")
 
 
