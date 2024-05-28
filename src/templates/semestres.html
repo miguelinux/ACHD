@@ -126,6 +126,19 @@
         width: 10rem;
         max-width: 10rem;
     }
+    .exportbtn {
+    width: 100px;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 15px;
+    transition: .5s;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 9999;
+  }
+    
 </style>
 
 {% endblock %}
@@ -258,8 +271,12 @@
         </div>
         {% endfor %}
     </div>
+    
 </div>
 
+<div class="btn">
+    <button class="exportbtn" id="exportarBtn">Exportar</button>
+  </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const diasOriginales = obtenerDiasOriginales();
@@ -457,6 +474,40 @@
             });
         }
     });
+    
+    document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('exportarBtn').addEventListener('click', function () {
+        fetch('/export/grupos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                // Aquí puedes agregar cualquier dato adicional que desees enviar al servidor
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.blob();  // Convertir la respuesta a blob
+            } else {
+                throw new Error('Error al exportar datos');
+            }
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'exportacion_grupos.xlsx';  // El nombre del archivo
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Error al exportar datos:', error);
+        });
+    });
+});
 </script>
 
 {% endblock %}

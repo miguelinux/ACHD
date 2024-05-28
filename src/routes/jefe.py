@@ -1,10 +1,13 @@
-from flask import Blueprint, render_template, redirect, request, jsonify
+from flask import Blueprint, render_template, redirect, request, jsonify,Response
 from functions import verificate_session
 from models.tables_db import Usuarios, Materias, Aulas, Asignaciones, Ciclos, Grupo
 from models.tables_db import DocenteCarreras, MateriasCarreras, Disponibilidades, GrupoSemestre
 from extensions import db
-import json
+import json, io
 from sqlalchemy.orm import joinedload
+from openpyxl import Workbook
+from openpyxl.styles import Alignment
+from openpyxl.worksheet.table import Table, TableStyleInfo
 
 jefe_bp = Blueprint('jefe', __name__)
 
@@ -304,4 +307,140 @@ def delete_grupo():
             db.session.delete(grupo)
             db.session.commit()
         return redirect("/jefeCarrera/grupos")
+    return redirect("/")
+
+
+
+@jefe_bp.route("/export/grupos", methods=["POST"])
+def exportar():
+    """
+    Método para exportar
+    """
+    user = verificate_session()
+    if user:
+        carrera = user["carrera"]
+        ciclo = Ciclos.query.filter_by(actual=True).first()
+        asignaciones = Asignaciones.query.filter_by(carrera_id=carrera, ciclo_id=ciclo.id).all()
+        aulas = Aulas.query.all()
+        aula_dict = {aula.id: aula.nombre for aula in aulas}
+        docentes_carrera = DocenteCarreras.query.filter_by(carrera_id=carrera).all()
+        usuario_ids = [docente.usuario_id for docente in docentes_carrera]
+        usuarios = Usuarios.query.filter(Usuarios.id.in_(usuario_ids)).all()
+        docente_dict = {usuario.id: f"{usuario.nombre} {usuario.apellido_pat}\n" for usuario in usuarios}
+        materias_carrera = MateriasCarreras.query.filter_by(carrera_id=carrera).all()
+        materia_ids = [materia.materia_id for materia in materias_carrera]
+        materias = Materias.query.filter(Materias.id.in_(materia_ids)).all()
+        materia_dict = {materia.id: f"{materia.nombre}\n" for materia in materias}
+        grupos_semestre = GrupoSemestre.query.all()
+        grupo_dict = {
+            grupo_semestre.id: {
+                "grupo": Grupo.query.filter_by(id=grupo_semestre.grupo_id).first().identificador,
+                "semestre": grupo_semestre.semestre
+            }
+            for grupo_semestre in grupos_semestre
+        }
+        grupos_asignaciones = {}
+        for asignacion in asignaciones:
+            grupo_id = asignacion.grupo_id
+            if grupo_id not in grupos_asignaciones:
+                grupos_asignaciones[grupo_id] = []
+            grupos_asignaciones[grupo_id].append(asignacion)
+        
+        # Crear un libro de trabajo de Excel
+        wb = Workbook()
+        ws_docentes = wb.active
+        ws_docentes.title = "Docentes"
+
+        # Inicializar el conteo de horas por docente
+        horas_docentes = {docente_id: 0 for docente_id in usuario_ids}
+        
+        semestres_dict = {i: [] for i in range(1, 10)}  # Crear un diccionario para los semestres del 1 al 9
+        
+        for grupo_id, asignaciones_grupo in grupos_asignaciones.items():
+            grupo_info = grupo_dict.get(grupo_id, {"grupo": "Desconocido", "semestre": "Desconocido"})
+            semestre = grupo_info["semestre"]
+            semestres_dict[semestre].append((grupo_id, asignaciones_grupo))
+        
+        for semestre, grupos in semestres_dict.items():
+            if grupos:
+                # Crear una hoja para cada semestre
+                ws = wb.create_sheet(title=f"Semestre {semestre}")
+                
+                current_row = 1  # Mantener la fila actual para separar las tablas
+
+                for grupo_id, asignaciones_grupo in grupos:
+                    grupo_info = grupo_dict.get(grupo_id, {"grupo": "Desconocido", "semestre": "Desconocido"})
+                    grupo_nombre = grupo_info["grupo"]
+                    
+                    # Escribir la información del grupo y semestre en la hoja
+                    ws.cell(row=current_row, column=1, value=f"Grupo {grupo_nombre} - Semestre {semestre}")
+                    current_row += 1
+                    dias_semana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
+                    for col, dia in enumerate(dias_semana, start=1):
+                        ws.cell(row=current_row, column=col, value=dia)
+                    current_row += 1  # Mover a la fila siguiente
+                    
+                    # Inicializar una lista para contener los valores de la tabla
+                    table_values = [["" for _ in range(6)] for _ in range(8)]  # 6 columnas, 8 filas
+                    
+                    for asignacion in asignaciones_grupo:
+                        horario_json = asignacion.horario
+                        horario_dict = json.loads(horario_json)
+                        docentes = horario_dict["docente"]
+                        materias_ids = horario_dict["materia"]
+                        aulas_ids = horario_dict["aula"]
+                        num_items = min(len(docentes), len(materias_ids), len(aulas_ids))
+                        for i in range(num_items):
+                            docente_id = docentes[i].strip()
+                            materia_id = materias_ids[i].strip()
+                            aula_id = aulas_ids[i].strip()
+                            aula_nombre = aula_dict.get(int(aula_id), "") if aula_id.isdigit() else ""
+                            docente_nombre = docente_dict.get(int(docente_id), "") if docente_id.isdigit() else ""
+                            materia_nombre = materia_dict.get(int(materia_id), "") if materia_id.isdigit() else ""
+                            cell_value = f"{docente_nombre}{materia_nombre}{aula_nombre}"
+                            row_index = i // 6
+                            col_index = i % 6
+                            table_values[row_index][col_index] = cell_value
+                            
+                            # Incrementar el conteo de horas del docente
+                            if docente_id.isdigit():
+                                horas_docentes[int(docente_id)] += 1
+                    
+                    # Escribir los valores de la tabla en la hoja
+                    for row_values in table_values:
+                        for col, value in enumerate(row_values, start=1):
+                            ws.cell(row=current_row, column=col, value=value)
+                        current_row += 1
+                    
+                    # Crear la tabla en Excel
+                    table_end_row = current_row - 1  # La fila final de la tabla
+                    tab = Table(displayName=f"TablaDatos{grupo_id}", ref=f"A{current_row-9}:F{table_end_row}")
+                    style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False,
+                                           showLastColumn=False, showRowStripes=True, showColumnStripes=True)
+                    tab.tableStyleInfo = style
+                    ws.add_table(tab)
+
+                    # Aplicar el formato de alineación para permitir saltos de línea en las celdas
+                    for row in ws.iter_rows(min_row=current_row-9, max_col=6, max_row=table_end_row):
+                        for cell in row:
+                            cell.alignment = Alignment(wrap_text=True)
+                    
+                    # Añadir una fila en blanco entre tablas de grupos diferentes
+                    current_row += 1
+                
+        # Escribir los valores en la hoja "Docentes"
+        ws_docentes.append(["Docente", "Horas"])
+        for docente_id, horas in horas_docentes.items():
+            ws_docentes.append([docente_dict.get(docente_id, "Desconocido"), horas])
+        
+        # Guardar el libro de trabajo en un objeto de archivo en memoria
+        excel_content = io.BytesIO()
+        wb.save(excel_content)
+        excel_content.seek(0)
+
+        # Configurar la respuesta HTTP para devolver el archivo Excel
+        response = Response(excel_content.getvalue(), mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response.headers['Content-Disposition'] = 'attachment; filename=exportacion_grupos.xlsx'
+        return response
+
     return redirect("/")
