@@ -25,18 +25,17 @@ DROP TABLE IF EXISTS `asignacion`;
 CREATE TABLE `asignacion` (
   `id` int NOT NULL AUTO_INCREMENT,
   `horario` json DEFAULT NULL,
-  `semestre` int NOT NULL,
   `grupo_id` int DEFAULT NULL,
   `carrera_id` int DEFAULT NULL,
   `ciclo_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `grupo_id` (`grupo_id`),
   KEY `carrera_id` (`carrera_id`),
   KEY `ciclo_id` (`ciclo_id`),
-  CONSTRAINT `asignacion_ibfk_1` FOREIGN KEY (`grupo_id`) REFERENCES `grupo` (`id`),
+  KEY `asignacion_ibfk_1_idx` (`grupo_id`),
+  CONSTRAINT `asignacion_ibfk_1` FOREIGN KEY (`grupo_id`) REFERENCES `grupo_semestre` (`id`),
   CONSTRAINT `asignacion_ibfk_2` FOREIGN KEY (`carrera_id`) REFERENCES `carrera` (`id`),
   CONSTRAINT `asignacion_ibfk_3` FOREIGN KEY (`ciclo_id`) REFERENCES `ciclo` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,7 +50,7 @@ CREATE TABLE `aula` (
   `nombre` char(10) NOT NULL,
   `edificio` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -82,7 +81,7 @@ CREATE TABLE `ciclo` (
   `estacion` char(2) NOT NULL,
   `actual` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +101,7 @@ CREATE TABLE `disponibilidad` (
   KEY `ciclo_id` (`ciclo_id`),
   CONSTRAINT `disponibilidad_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`),
   CONSTRAINT `disponibilidad_ibfk_2` FOREIGN KEY (`ciclo_id`) REFERENCES `ciclo` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,7 +120,7 @@ CREATE TABLE `docente_carrera` (
   KEY `usuario_id` (`usuario_id`),
   CONSTRAINT `docente_carrera_ibfk_1` FOREIGN KEY (`carrera_id`) REFERENCES `carrera` (`id`),
   CONSTRAINT `docente_carrera_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -141,7 +140,7 @@ CREATE TABLE `grupo` (
   KEY `ciclo_id` (`ciclo_id`),
   CONSTRAINT `grupo_ibfk_1` FOREIGN KEY (`carrera_id`) REFERENCES `carrera` (`id`),
   CONSTRAINT `grupo_ibfk_2` FOREIGN KEY (`ciclo_id`) REFERENCES `ciclo` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -158,7 +157,7 @@ CREATE TABLE `grupo_semestre` (
   PRIMARY KEY (`id`),
   KEY `grupo_id` (`grupo_id`),
   CONSTRAINT `grupo_semestre_ibfk_1` FOREIGN KEY (`grupo_id`) REFERENCES `grupo` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -177,7 +176,7 @@ CREATE TABLE `materia` (
   `horas_teoria` int NOT NULL,
   `creditos` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -196,7 +195,7 @@ CREATE TABLE `materias_carrera` (
   KEY `materia_id` (`materia_id`),
   CONSTRAINT `materias_carrera_ibfk_1` FOREIGN KEY (`carrera_id`) REFERENCES `carrera` (`id`),
   CONSTRAINT `materias_carrera_ibfk_2` FOREIGN KEY (`materia_id`) REFERENCES `materia` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -218,7 +217,7 @@ CREATE TABLE `usuario` (
   `habilitado` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -230,4 +229,4 @@ CREATE TABLE `usuario` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-25 21:13:26
+-- Dump completed on 2024-05-30 21:15:59
