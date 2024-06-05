@@ -1,5 +1,4 @@
 from extensions import db
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import INTEGER, CHAR, VARCHAR, BOOLEAN, JSON
 from sqlalchemy.orm import relationship
 

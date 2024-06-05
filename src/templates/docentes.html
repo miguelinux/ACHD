@@ -48,7 +48,8 @@
         max-height: 75vh;
         overflow-y: auto;
     }
-    .docentes::-webkit-scrollbar{
+
+    .docentes::-webkit-scrollbar {
         width: 9px;
     }
 
@@ -68,22 +69,35 @@
         color: black;
     }
 
-    #contenedor {
-        width: 100%;
-        /* Ancho del div contenedor */
-        height: 100vh;
-        /* Alto del div contenedor TOTAL */
-        border: none;
-        /* Borde para el div contenedor */
-    }
 
-    iframe {
-        width: 100%;
-        /* Para que el iframe ocupe todo el ancho del contenedor */
-        height: 100%;
-        /* Para que el iframe ocupe todo el alto del contenedor */
+    #contenedor iframe {
+        height: 80vh;
+        /* Establece la altura del iframe igual al alto de la ventana del navegador */
+        width: 100vh;
+        /* Ocupa todo el ancho disponible */
         border: none;
         /* Sin borde para el iframe */
+        overflow: hidden;
+        /* Oculta el contenido que exceda el tamaño del iframe */
+    }
+
+    .exportbtn {
+        width: 120px;
+        height: 40px;
+        margin-left: 10px;
+        margin-right: 10px;
+        border-radius: 15px;
+        transition: .5s;
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        z-index: 9999;
+    }
+
+    .exportbtn:hover {
+        background-color: #37109b;
+        border: none;
+        color: white;
     }
 </style>
 
@@ -118,6 +132,7 @@
 
         </div>
 
+        <button class="exportbtn" id="exportarBtn">Disponibilidad</button>
 
     </div>
 
@@ -142,7 +157,41 @@
 </div>
 
 
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('exportarBtn').addEventListener('click', function () {
+            fetch('/export/disponibilidades', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // Aquí puedes agregar cualquier dato adicional que desees enviar al servidor
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.blob();  // Convertir la respuesta a blob
+                    } else {
+                        throw new Error('Error al exportar datos');
+                    }
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'exportacion_grupos.xlsx';  // El nombre del archivo
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error('Error al exportar datos:', error);
+                });
+        });
+    });
+</script>
 
 
 

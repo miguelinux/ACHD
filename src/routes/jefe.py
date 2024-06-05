@@ -452,3 +452,78 @@ def exportar():
         return response
 
     return redirect("/")
+
+@jefe_bp.route("/export/disponibilidades", methods=["POST"])
+def exportar_disponibilidad():
+    """
+    Método para exportar disponibilidades de los docentes de una carrera en el ciclo actual.
+    """
+    user = verificate_session()
+    if user:
+        carrera_id = user["carrera"]
+        ciclo_actual = Ciclos.query.filter_by(actual=True).first()
+        
+        if not ciclo_actual:
+            return jsonify({"error": "No se encontró el ciclo actual"}), 404
+        
+        # Obtener los usuarios vinculados a la carrera
+        docentes_carrera = DocenteCarreras.query.filter_by(carrera_id=carrera_id).all()
+        usuario_ids = [docente.usuario_id for docente in docentes_carrera]
+        
+        # Filtrar usuarios que tienen disponibilidades en el ciclo actual
+        disponibilidades = Disponibilidades.query.filter(
+            Disponibilidades.usuario_id.in_(usuario_ids),
+            Disponibilidades.ciclo_id == ciclo_actual.id
+        ).options(joinedload(Disponibilidades.usuario)).all()
+        
+        # Crear un archivo Excel con openpyxl
+        workbook = Workbook()
+        sheet = workbook.active
+        sheet.title = "Disponibilidades"
+        
+        # Escribir el encabezado
+        sheet.append(["Nombre", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"])
+        
+        for disponibilidad in disponibilidades:
+            # Interpretar el JSON de disponibilidad
+            disponibilidades_json = json.loads(disponibilidad.horas)
+            disponibilidades_lista = disponibilidades_json["disponibilidad"]
+            
+            # Nombre completo del usuario
+            nombre_completo = f"{disponibilidad.usuario.apellido_pat} {disponibilidad.usuario.apellido_mat} {disponibilidad.usuario.nombre}"
+            
+            # Calcular los rangos de disponibilidad por día
+            rangos_disponibilidad = [""] * 7
+            for dia in range(7):
+                rangos_dia = []
+                inicio_disponibilidad = None
+                fin_disponibilidad = None
+                for hora in range(15):
+                    indice = 15 * dia + hora
+                    if indice < len(disponibilidades_lista) and disponibilidades_lista[indice] in [1, 3]:
+                        if inicio_disponibilidad is None:
+                            inicio_disponibilidad = hora
+                        fin_disponibilidad = hora + 1
+                    elif inicio_disponibilidad is not None:
+                        rangos_dia.append(f"{7 + inicio_disponibilidad}:00-{7 + fin_disponibilidad}:00")
+                        inicio_disponibilidad = None
+                if inicio_disponibilidad is not None:
+                    rangos_dia.append(f"{7 + inicio_disponibilidad}:00-{7 + fin_disponibilidad}:00")
+                rangos_disponibilidad[dia] = ", ".join(rangos_dia)
+            
+            # Escribir los datos en el archivo Excel
+            sheet.append([nombre_completo] + rangos_disponibilidad)
+        
+        # Guardar el archivo Excel en memoria
+        output = io.BytesIO()
+        workbook.save(output)
+        output.seek(0)
+        
+        # Crear la respuesta usando Response
+        response = Response(output.getvalue(),
+                            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                            headers={"Content-Disposition": "attachment;filename=disponibilidades.xlsx"})
+        
+        return response
+
+    return redirect("/")
