@@ -4,6 +4,7 @@ from models.tables_db import Usuarios, Materias, Aulas, Asignaciones, Ciclos, Gr
 from models.tables_db import DocenteCarreras, MateriasCarreras, Disponibilidades, GrupoSemestre
 from extensions import db
 import json, io
+from sqlalchemy import asc
 from sqlalchemy.orm import joinedload
 from openpyxl import Workbook
 from openpyxl.styles import Alignment
@@ -466,15 +467,20 @@ def exportar_disponibilidad():
         if not ciclo_actual:
             return jsonify({"error": "No se encontró el ciclo actual"}), 404
         
-        # Obtener los usuarios vinculados a la carrera
+        # Obtener los usuarios vinculados a la carrera y ordenarlos por apellido
         docentes_carrera = DocenteCarreras.query.filter_by(carrera_id=carrera_id).all()
         usuario_ids = [docente.usuario_id for docente in docentes_carrera]
         
-        # Filtrar usuarios que tienen disponibilidades en el ciclo actual
-        disponibilidades = Disponibilidades.query.filter(
-            Disponibilidades.usuario_id.in_(usuario_ids),
-            Disponibilidades.ciclo_id == ciclo_actual.id
-        ).options(joinedload(Disponibilidades.usuario)).all()
+        # Filtrar usuarios que tienen disponibilidades en el ciclo actual y ordenarlos por apellido
+        disponibilidades = (Disponibilidades.query
+                            .join(Usuarios)
+                            .filter(
+                                Disponibilidades.usuario_id.in_(usuario_ids),
+                                Disponibilidades.ciclo_id == ciclo_actual.id
+                            )
+                            .order_by(asc(Usuarios.apellido_pat), asc(Usuarios.apellido_mat), asc(Usuarios.nombre))
+                            .options(joinedload(Disponibilidades.usuario))
+                            .all())
         
         # Crear un archivo Excel con openpyxl
         workbook = Workbook()
@@ -482,7 +488,7 @@ def exportar_disponibilidad():
         sheet.title = "Disponibilidades"
         
         # Escribir el encabezado
-        sheet.append(["Nombre", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"])
+        sheet.append(["Docente", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"])
         
         for disponibilidad in disponibilidades:
             # Interpretar el JSON de disponibilidad
