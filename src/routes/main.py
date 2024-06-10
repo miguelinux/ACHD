@@ -1,7 +1,5 @@
-
-
 from flask import Blueprint, render_template, redirect, request, session, jsonify
-from functions import verificate_session, get_hex_digest
+from functions import verificate_session, get_hex_digest, admin, docente,jefe_de_carrera
 from models.tables_db import Usuarios, Ciclos, Asignaciones, Materias, Aulas,Disponibilidades
 from models.tables_db import Disponibilidades
 from extensions import db
@@ -13,7 +11,14 @@ main_bp = Blueprint('main', __name__)
 def index():
     user = verificate_session()
     if user:
-        return redirect("dashboard")
+        usernivel = user["nivel"]
+        if usernivel:
+            if usernivel == admin:
+                return redirect("/admin")
+            if usernivel == docente:
+                return redirect("/homeDocente")
+            if usernivel == jefe_de_carrera:
+                return redirect("/jefeCarrera")
     return render_template("index.html")
 
 @main_bp.route("/dashboard")

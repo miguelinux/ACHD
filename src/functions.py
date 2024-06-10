@@ -37,7 +37,8 @@ def verificate_session():
     if "user" in session:
         user_id = session["user"]["userid"]
         username = session["user"]["name"]
+        nivel = session["user"]["nivel"]
         usercarrer = session["user"]["carrera"]
-        return {"userid": user_id, "username": username, "carrera": usercarrer}
+        return {"userid": user_id, "username": username, "carrera": usercarrer, "nivel": nivel}
     return False
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +10,11 @@
     <script src="https://kit.fontawesome.com/80905f653a.js" crossorigin="anonymous"></script>
 
 </head>
+
 <body>
     <div class="main">
-        <img src="img/logo.png" >
-        <h1>{{mensaje}}</h1>
+        <img src="img/logo.png">
+        <h1 id="mensaje">{{mensaje}}</h1>
         <form action="/login" method="post">
             <div class="input">
                 <input type="email" placeholder="Correo" name="email" required>
@@ -22,7 +24,44 @@
             </div>
             <button class="btn" type="submit">Iniciar</button>
         </form>
-        <button id="google" class="fa-brands fa-google" > </button>
+        <button id="google" class="fa-brands fa-google"> </button>
     </div>
+    <script>
+        const mensajeElement = document.getElementById('mensaje');
+
+        googleLogin.addEventListener("click", function () {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    console.log(user);
+
+                    fetch('/check', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email: user.email })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.redirect) {
+                                window.location.href = data.redirect;
+                            } else if (data.message) {
+                                mensajeElement.textContent = data.message;
+                            } else {
+                                console.error('Error: Unable to redirect or show message');
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                }).catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.error('Error during sign-in:', errorMessage);
+                });
+        });
+    </script>
 </body>
+
 </html>

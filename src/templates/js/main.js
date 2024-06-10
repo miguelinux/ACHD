@@ -33,11 +33,14 @@ googleLogin.addEventListener("click", function () {
                 },
                 body: JSON.stringify({ email: user.email })
             })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url;
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else if (data.message) {
+                    alert(data.message); 
                 } else {
-                    console.error('Error: Unable to redirect');
+                    console.error('Error: Unable to redirect or show message');
                 }
             })
             .catch((error) => {
