@@ -3,32 +3,38 @@
 {% block title %}Modificar{% endblock %}
 {% block body_class %}modificador{% endblock %}
 
-
 {% block content %}
-
 <div class="main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <h2>Modificando a {{usuario.nombre}} {{usuario.apellido_pat}}</h2>
     <form action="/update/user" method="post">
         <input type="hidden" name="id" value="{{ usuario.id }}">
         <div class="input">
             <label for="nombre">Nombre: </label>
-            <input type="text" placeholder="Nombre" name="nombre" value="{{usuario.nombre}}">
+            <input type="text" placeholder="Nombre" name="nombre" value="{{usuario.nombre}}" required>
         </div>
         <div class="input">
             <label for="paterno">Apellido Paterno: </label>
-            <input type="text" placeholder="Apellido Paterno" name="paterno" value="{{usuario.apellido_pat}}">
+            <input type="text" placeholder="Apellido Paterno" name="paterno" value="{{usuario.apellido_pat}}" required>
         </div>
         <div class="input">
-            <label for="nombre">Apellido Materno: </label>
-            <input type="text" placeholder="Apellido Materno" name="materno" value="{{usuario.apellido_mat}}">
+            <label for="materno">Apellido Materno: </label>
+            <input type="text" placeholder="Apellido Materno" name="materno" value="{{usuario.apellido_mat}}" required>
         </div>
         <div class="input">
             <label for="email">Email: </label>
-            <input type="email" placeholder="Correo Electrónico" name="email" value="{{usuario.email}}">
+            <input type="email" placeholder="Correo Electrónico" name="email" value="{{usuario.email}}" required>
         </div>
         <div class="input">
             <label for="user_type" class="label">Tipo:</label>
-            <select id="user_type" name="user_type" class="input-field">
+            <select id="user_type" name="user_type" class="input-field" required>
                 <option value="1" {% if usuario.user_type==1 %} selected {% endif %}>Admin</option>
                 <option value="2" {% if usuario.user_type==2 %} selected {% endif %}>Jefe de carrera</option>
                 <option value="3" {% if usuario.user_type==3 %} selected {% endif %}>Docente</option>
@@ -36,7 +42,7 @@
         </div>
         <div class="input">
             <label for="habilitado" class="label">Estado:</label>
-            <select id="habilitado" name="habilitado" class="input-field">
+            <select id="habilitado" name="habilitado" class="input-field" required>
                 <option value="true" {% if usuario.habilitado %} selected {% endif %}>Habilitado</option>
                 <option value="false" {% if not usuario.habilitado %} selected {% endif %}>Deshabilitado</option>
             </select>
@@ -48,11 +54,5 @@
         <button class="btn btn-delete" type="submit"
             onclick="return confirm('¿Estás seguro de que deseas borrar este usuario?')">Borrar</button>
     </form>
-
 </div>
-
-
-<script>
-
-</script>
 {% endblock %}

@@ -1,14 +1,19 @@
 {% extends 'layout.html' %}
 
-{% block title %}Modificando{% endblock %}
-
+{% block title %}Modificando ciclo{% endblock %}
 
 {% block body_class %}modificador{% endblock %}
 
-
 {% block content %}
-
 <div class="main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <h2>Modificando ciclo {{ciclo.nombre}}</h2>
     <form action="/update/ciclo" method="post">
         <input type="hidden" name="id" value="{{ ciclo.id }}">
@@ -16,7 +21,6 @@
             <label for="anio">Año: </label>
             <input type="text" placeholder="Año" name="anio" value="{{ciclo.anio}}">
         </div>
-        
         <div class="input">
             <label for="estacion" class="label">Estación:</label>
             <select id="estacion" name="estacion" class="input-field">
@@ -27,22 +31,15 @@
         <div class="input">
             <label for="actual" class="label">Actual: </label>
             <select id="actual" name="actual" class="input-field">
-                <option value= "true" {% if ciclo.actual %} selected {% endif %}>Sí</option>
-                <option value= "false" {% if not ciclo.actual %} selected {% endif %}>No</option>
+                <option value="true" {% if ciclo.actual %} selected {% endif %}>Sí</option>
+                <option value="false" {% if not ciclo.actual %} selected {% endif %}>No</option>
             </select>
         </div>
         <button class="btn" type="submit">Confirmar</button>
     </form>
     <form action="/delete/ciclo" method="post" style="margin-top: 10px;">
         <input type="hidden" name="id" value="{{ ciclo.id }}">
-        <button class="btn btn-delete" type="submit"
-            onclick="return confirm('¿Estás seguro de que deseas borrar esta ciclo?')">Borrar</button>
+        <button class="btn btn-delete" type="submit" onclick="return confirm('¿Estás seguro de que deseas borrar este ciclo?')">Borrar</button>
     </form>
-
 </div>
-
-
-<script>
-
-</script>
 {% endblock %}

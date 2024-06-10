@@ -702,6 +702,32 @@ th {
 
 }
 
+.modificador .flash {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.modificador .flash.error {
+    background-color: #ff9999; 
+    color: #660000; 
+}
+
+.modificador .flash.success {
+    background-color: #99ff99; 
+    color: #006600; 
+}
+
+.modificador .flash.warning {
+    background-color: #ffff99; 
+    color: #666600; 
+}
+
+.modificador .flash.info {
+    background-color: #99ccff;
+    color: #003366; 
+}
+
 /*css para asociar */
 
 .asociar body {
@@ -982,10 +1008,14 @@ th {
 
 .asignacion .docentes {
     grid-area: docentes;
-    height: 2rem;
+    max-height: 12rem;
     display: flex;
-    text-align: center;
     flex-wrap: wrap;
+    gap: 0.5rem;
+    text-align: center;
+    overflow-y: auto;
+    padding: 0.5rem;
+    justify-content: flex-start;
 }
 
 .asignacion .docentes::-webkit-scrollbar {

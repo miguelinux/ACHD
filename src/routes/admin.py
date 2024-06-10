@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect,jsonify, flash
 from extensions import db
 
 import csv , io
+from string import capwords
 
 from sqlalchemy.orm import selectinload
 from models.tables_db import Usuarios, Materias, Aulas, Ciclos, Carreras
@@ -68,8 +69,13 @@ def update():
         email = form.get("email")
         user_type = form.get("user_type")
         habilitado = form.get("habilitado") == 'true'
-
         usuario = db.session.get(Usuarios, user_id)
+        
+        usuario_existente = Usuarios.query.filter_by(email=email).first()
+        if usuario_existente and usuario_existente.id != int(user_id):
+            flash("El correo electrónico ya está registrado por otro usuario.", "error")
+            return redirect(f"/admin/modificar/usuario/{user_id}")
+        
         if usuario:
             usuario.nombre = nombre
             usuario.apellido_pat = apellido_pat
@@ -78,9 +84,10 @@ def update():
             usuario.user_type = user_type
             usuario.habilitado = habilitado
             db.session.commit()
+            flash("Usuario actualizado correctamente.", "success")
         return redirect("/admin/usuarios")
-    
-    return redirect("/")
+    else:
+        return redirect("/")
 
 @admin_bp.route("/delete/user", methods=["POST"])
 def delete_user():
@@ -94,6 +101,7 @@ def delete_user():
         if usuario:
             db.session.delete(usuario)
             db.session.commit()
+        flash("Usuario borrado correctamente.", "success")
         return redirect("/admin/usuarios")
     
     return redirect("/")
@@ -115,6 +123,11 @@ def crear_usuario():
         first_login = True  
         habilitado = True
         
+        usuario_existente = Usuarios.query.filter_by(email=email).first()
+        if usuario_existente:
+            flash("El correo electrónico ya está registrado.", "error")
+            return redirect("/admin/usuarios")
+        
         nuevo_usuario = Usuarios(
             nombre=nombre,
             apellido_pat=apellido_pat,
@@ -127,6 +140,7 @@ def crear_usuario():
         )
         db.session.add(nuevo_usuario)
         db.session.commit()
+        flash("Usuario creado exitosamente.", "success")
         return redirect("/admin/usuarios")
     else:
         return redirect("/")
@@ -173,9 +187,20 @@ def update_materia():
         nombre = form.get("nombre")
         clave = form.get("clave")
         semestre = form.get("semestre")
-        hpracticas = int(form.get("Hpracticas")) if form.get("Hpracticas") else 0
-        hteoria = int(form.get("Hteoria")) if form.get("Hteoria") else 0   
-        creditos = hpracticas + hteoria
+        hpracticas = form.get("Hpracticas")
+        hteoria = form.get("Hteoria")
+
+        try:
+            hpracticas = int(hpracticas)
+            hteoria = int(hteoria)
+        except ValueError:
+            flash("Las horas de práctica y teoría deben ser números enteros.", "error")
+            return redirect(f"/admin/modificar/materia/{materia_id}")
+
+        materia_existente = Materias.query.filter_by(clave=clave).first()
+        if materia_existente and materia_existente.id != int(materia_id):
+            flash("La clave de la materia ya está en uso por otra materia.", "error")
+            return redirect(f"/admin/modificar/materia/{materia_id}")
 
         materia = db.session.get(Materias, materia_id)
         if materia:
@@ -184,11 +209,13 @@ def update_materia():
             materia.semestre = semestre
             materia.horas_practica = hpracticas
             materia.horas_teoria = hteoria
-            materia.creditos = creditos
+            materia.creditos = hpracticas + hteoria
             db.session.commit()
+            flash("Materia actualizada correctamente.", "success")
+
         return redirect("/admin/materias")
-    
-    return redirect("/")
+    else:
+        return redirect("/")
 
 @admin_bp.route("/delete/materia", methods=["POST"])
 def delete_materia():
@@ -212,29 +239,39 @@ def crear_materia():
     """
     user = verificate_session()
     if user:
-        # Obtener los datos del formulario
         form = request.form
         nombre = form.get("nombre")
         clave = form.get("clave")
         semestre = form.get("semestre")
-        hpracticas = int(form.get("Hpracticas")) if form.get("Hpracticas") else 0
-        hteoria = int(form.get("Hteoria")) if form.get("Hteoria") else 0   
-        creditos = hpracticas + hteoria
+        hpracticas = form.get("Hpracticas")
+        hteoria = form.get("Hteoria")
         
+        try:
+            hpracticas = int(hpracticas)
+            hteoria = int(hteoria)
+        except ValueError:
+            flash("Las horas de práctica y teoría deben ser números enteros.", "error")
+            return redirect("/admin/materias")
+
+        materia_existente = Materias.query.filter_by(clave=clave).first()
+        if materia_existente:
+            flash("La clave de la materia ya está en uso.", "error")
+            return redirect("/admin/materias")  
+
         nueva_materia = Materias(
-            clave = clave,
-            nombre = nombre,
-            semestre = semestre,
-            horas_practica = hpracticas,
-            horas_teoria = hteoria,
-            creditos = creditos,
+            clave=clave,
+            nombre=nombre,
+            semestre=semestre,
+            horas_practica=hpracticas,
+            horas_teoria=hteoria,
+            creditos=hpracticas + hteoria,
         )
         db.session.add(nueva_materia)
         db.session.commit()
+        flash("Materia creada correctamente.", "success")
         return redirect("/admin/materias")
     else:
         return redirect("/")
-
 
 @admin_bp.route("/admin/aulas")
 def admin_aulas():
@@ -278,14 +315,21 @@ def update_aula():
         nombre = form.get("nombre")
         edificio = form.get("edificio")
 
+        aula_existente = Aulas.query.filter_by(nombre=nombre).first()
+        if aula_existente and aula_existente.id != int(aula_id):
+            flash("El nombre del aula ya está en uso por otra aula.", "error")
+            return redirect(f"/admin/modificar/aula/{aula_id}")
+
         aula = db.session.get(Aulas, aula_id)
         if aula:
             aula.nombre = nombre
             aula.edificio = edificio
             db.session.commit()
+            flash("Aula actualizada correctamente.", "success")
+
         return redirect("/admin/aulas")
-    
-    return redirect("/")
+    else:
+        return redirect("/")
 
 @admin_bp.route("/delete/aula", methods=["POST"])
 def delete_aula():
@@ -309,21 +353,26 @@ def crear_aula():
     """
     user = verificate_session()
     if user:
-        # Obtener los datos del formulario
         form = request.form
         nombre = form.get("nombre")
         edificio = form.get("edificio")
         
+        # Verificar que el nombre no esté en uso por otra aula
+        aula_existente = Aulas.query.filter_by(nombre=nombre).first()
+        if aula_existente:
+            flash("El nombre del aula ya está en uso.", "error")
+            return redirect("/admin/aulas")
+
         nueva_aula = Aulas(
-            nombre = nombre,
-            edificio = edificio
+            nombre=nombre,
+            edificio=edificio
         )
         db.session.add(nueva_aula)
         db.session.commit()
+        flash("Aula creada correctamente.", "success")
         return redirect("/admin/aulas")
     else:
         return redirect("/")
-
 
 
 @admin_bp.route("/admin/carreras")
@@ -471,14 +520,21 @@ def update_carrera():
         nombre = form.get("nombre")
         plan = form.get("plan")
 
+        carrera_existente = Carreras.query.filter_by(plan_de_estudio=plan).first()
+        if carrera_existente and carrera_existente.id != int(carrera_id):
+            flash("El plan de estudio ya está en uso por otra carrera.", "error")
+            return redirect(f"/admin/modificar/carrera/{carrera_id}")
+
         carrera = db.session.get(Carreras, carrera_id)
         if carrera:
             carrera.nombre = nombre
             carrera.plan_de_estudio = plan
             db.session.commit()
+            flash("Carrera actualizada correctamente.", "success")
+
         return redirect("/admin/carreras")
-    
-    return redirect("/")
+    else:
+        return redirect("/")
 
 @admin_bp.route("/delete/carrera", methods=["POST"])
 def delete_carrera():
@@ -502,17 +558,22 @@ def crear_carrera():
     """
     user = verificate_session()
     if user:
-        # Obtener los datos del formulario
         form = request.form
         nombre = form.get("nombre")
         plan = form.get("plan")
         
+        carrera_existente = Carreras.query.filter_by(plan_de_estudio=plan).first()
+        if carrera_existente:
+            flash("El plan de estudio ya está en uso.", "error")
+            return redirect("/admin/carreras")
+
         nueva_carrera = Carreras(
-            nombre = nombre,
-            plan_de_estudio = plan
+            nombre=nombre,
+            plan_de_estudio=plan
         )
         db.session.add(nueva_carrera)
         db.session.commit()
+        flash("Carrera creada correctamente.", "success")
         return redirect("/admin/carreras")
     else:
         return redirect("/")    
@@ -560,8 +621,13 @@ def update_ciclo():
         estacion = form.get("estacion")
         actua = form.get("actual") == 'true'
         
+        ciclo_existente = Ciclos.query.filter_by(anio=anio, estacion=estacion).first()
+        if ciclo_existente and ciclo_existente.id != int(ciclo_id):
+            flash("Ya existe un ciclo con el mismo año y estación.", "error")
+            return redirect(f"/admin/modificar/ciclo/{ciclo_id}")
+
         if actua:
-            change = Ciclos.query.filter_by(actual= True).first()
+            change = Ciclos.query.filter_by(actual=True).first()
             if change:
                 change.actual = False
                 db.session.commit()
@@ -573,9 +639,11 @@ def update_ciclo():
             ciclo.actual = actua
             
             db.session.commit()
+            flash("Ciclo actualizado correctamente.", "success")
+
         return redirect("/admin/ciclos")
-    
-    return redirect("/")
+    else:
+        return redirect("/")
 
 @admin_bp.route("/delete/ciclo", methods=["POST"])
 def delete_ciclo():
@@ -599,37 +667,42 @@ def crear_ciclo():
     """
     user = verificate_session()
     if user:
-        # Obtener los datos del formulario
         form = request.form
         anio = form.get("anio")
         estacion = form.get("estacion")
         actua = form.get("actual") == 'true'
         
+        ciclo_existente = Ciclos.query.filter_by(anio=anio, estacion=estacion).first()
+        if ciclo_existente:
+            flash("Ya existe un ciclo con el mismo año y estación.", "error")
+            return redirect("/admin/ciclos")
+
         if actua:
-            change = Ciclos.query.filter_by(actual= True).first()
+            change = Ciclos.query.filter_by(actual=True).first()
             if change:
                 change.actual = False
                 db.session.commit()
             
         nuevo_ciclo = Ciclos(
-            anio = anio,
-            estacion = estacion,
-            actual = actua
+            anio=anio,
+            estacion=estacion,
+            actual=actua
         )
         db.session.add(nuevo_ciclo)
         db.session.commit()
+        flash("Ciclo creado correctamente.", "success")
         return redirect("/admin/ciclos")
     else:
         return redirect("/")
     
 @admin_bp.route('/upload_csv_usuario', methods=['POST'])   
 def upload_csv_usuario():
-    user = verificate_session()  # Verifica la sesión del usuario
+    user = verificate_session()  
     if user:
         file = request.files['file']
         
         if file.filename == '':
-            flash('No se selecciono un archivo')
+            flash('No se seleccionó un archivo')
             return redirect("/admin/usuarios")  
         
         if file and file.filename.endswith('.csv'):
@@ -640,15 +713,25 @@ def upload_csv_usuario():
                 headers = next(csv_input)
                 expected_headers = ['nombre', 'apellido paterno', 'apellido materno', 'email', 'tipo de usuario']
                 if headers != expected_headers:
-                    flash('El encabezado del csv no coincide, vea la guia')
+                    flash('El encabezado del CSV no coincide, vea la guía')
                     return redirect("/admin/usuarios")  
-
+                
                 for row in csv_input:
                     if len(row) != 5:
-                        flash('el CSV cuenta con mas columnas de las que deberia')
+                        flash('El CSV cuenta con más columnas de las que debería')
                         return redirect("/admin/usuarios")  
-                    
+
                     nombre, apellido_pat, apellido_mat, email, user_type = row
+
+                    nombre = capwords(nombre)
+                    apellido_pat = capwords(apellido_pat)
+                    apellido_mat = capwords(apellido_mat)
+                    email = email.lower()
+
+                    existing_user = Usuarios.query.filter_by(email=email).first()
+                    if existing_user:
+                        continue  
+
                     password = get_hex_digest(str(random_number()))
                     first_login = True  
                     habilitado = True
@@ -664,21 +747,20 @@ def upload_csv_usuario():
                         habilitado=habilitado
                     )
                     db.session.add(nuevo_usuario)
-                
+
                 db.session.commit()
-                flash('Guardado correcto')
+                flash('Guardado correctamente')
                 return redirect("/admin/usuarios")  
             except Exception as e:
                 flash(f'Error al procesar el CSV: {e}')
                 return redirect('/admin/usuarios')  
         else:
-            flash('Formato invalido, seleccione un archivo CSV porfavor.')
+            flash('Formato inválido, seleccione un archivo CSV por favor.')
             return redirect("/admin/usuarios")  
     else:
-        return redirect("/admin/usuarios")  
+        return redirect("/admin/usuarios")
     
     
-
 @admin_bp.route('/upload_csv_materia', methods=['POST'])   
 def upload_csv_materia():
     user = verificate_session()  # Verifica la sesión del usuario
@@ -686,7 +768,7 @@ def upload_csv_materia():
         file = request.files['file']
         
         if file.filename == '':
-            flash('No se selecciono un archivo')
+            flash('No se seleccionó un archivo')
             return redirect("/admin/materias")  
         
         if file and file.filename.endswith('.csv'):
@@ -697,15 +779,25 @@ def upload_csv_materia():
                 headers = next(csv_input)
                 expected_headers = ['nombre', 'clave', 'semestre', 'horas practica', 'horas teoria']
                 if headers != expected_headers:
-                    flash('El encabezado del csv no coincide, vea la guia')
+                    flash('El encabezado del csv no coincide, vea la guía')
                     return redirect("/admin/materias")  
+
+                # Lista para almacenar las claves de materias existentes
+                materias_existentes = []
 
                 for row in csv_input:
                     if len(row) != 5:
-                        flash('el CSV cuenta con mas columnas de las que deberia')
+                        flash('El CSV cuenta con más columnas de las que debería')
                         return redirect("/admin/materias")  
                     
                     nombre, clave, semestre, horas_practica, horas_teoria = row
+
+                    nombre = capwords(nombre)
+                    
+                    existing_materia = Materias.query.filter_by(clave=clave).first()
+                    if existing_materia:
+                        continue 
+
                     horas_practica = int(horas_practica)
                     horas_teoria = int(horas_teoria)
                     creditos = horas_practica + horas_teoria
@@ -718,16 +810,16 @@ def upload_csv_materia():
                         creditos=creditos
                     )
                     db.session.add(nueva_materia)
+                    materias_existentes.append(clave)  
                 
                 db.session.commit()
-                flash('Guardado correcto')
+                flash('Guardado correctamente')
                 return redirect("/admin/materias")  
             except Exception as e:
                 flash(f'Error al procesar el CSV: {e}')
                 return redirect("/admin/materias")  
         else:
-            flash('Formato invalido, seleccione un archivo CSV porfavor.')
+            flash('Formato inválido, seleccione un archivo CSV por favor.')
             return redirect("/admin/materias")  
     else:
-        return redirect("/admin/materias")  
-
+        return redirect("/admin/materias")

@@ -2,26 +2,31 @@
 
 {% block title %}Modificando aula{% endblock %}
 
-
 {% block body_class %}modificador{% endblock %}
 
-
 {% block content %}
-
 <div class="main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <h2>Modificando la aula {{aula.nombre}}</h2>
     <form action="/update/aula" method="post">
         <input type="hidden" name="id" value="{{ aula.id }}">
         <div class="input">
             <label for="nombre">Nombre: </label>
-            <input type="text" placeholder="nombre" name="nombre" value="{{aula.nombre}}">
+            <input type="text" placeholder="nombre" name="nombre" value="{{aula.nombre}}" required>
         </div>
         
         <div class="input">
             <label for="edificio" class="label">Edificio:</label>
             <select id="edificio" name="edificio" class="input-field">
                 <option value="sistemas" {% if aula.edificio == "sistemas" %} selected {% endif %}>sistemas</option>
-                <option value="sasicas" {% if aula.edificio == "basicas" %} selected {% endif %}>basicas</option>
+                <option value="basicas" {% if aula.edificio == "basicas" %} selected {% endif %}>basicas</option>
                 <option value="industrial" {% if aula.edificio == "industrial" %} selected {% endif %}>industrial</option>
                 <option value="Posgrado" {% if aula.edificio == "Posgrado" %} selected {% endif %}>Posgrado</option>
                 <option value="Electronica" {% if aula.edificio == "Electronica" %} selected {% endif %}>Electronica</option>
@@ -36,11 +41,5 @@
         <button class="btn btn-delete" type="submit"
             onclick="return confirm('¿Estás seguro de que deseas borrar esta aula?')">Borrar</button>
     </form>
-
 </div>
-
-
-<script>
-
-</script>
 {% endblock %}
