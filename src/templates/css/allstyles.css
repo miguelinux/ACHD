@@ -264,6 +264,11 @@ body {
 .inicio i {
     font-size: 5rem;
 }
+.inicio .flash {
+    background-color: #4CAF50;
+    /* Green */
+    color: white;
+}
 
 /* CSS de Homme jefe de carrera*/
 .jefe_carrera .main1 {
@@ -1008,7 +1013,7 @@ th {
 
 .asignacion .docentes {
     grid-area: docentes;
-    max-height: 12rem;
+    max-height: 15rem;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -1046,7 +1051,7 @@ th {
 
 .asignacion .aulas {
     grid-area: aulas;
-    max-height: 12rem;
+    max-height: 20rem;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;

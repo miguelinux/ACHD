@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, request
+from flask import Blueprint, render_template, redirect, flash
 from functions import verificate_session
 from models.tables_db import Usuarios, Materias, Disponibilidades,Asignaciones, Ciclos
 from extensions import db
@@ -30,45 +30,6 @@ def horario():
         return render_template("horario.html", user=user, disponibilidad=disponibilidad)
     return redirect("/")
 
-@docente_bp.route("/horarioJ")
-def horarioJefe():
-    user = verificate_session()
-    if user:
-        try:
-            user_id = request.args["userid"]
-            if not user_id or user_id == "None":
-                return """
-                <div style="color: white; font-weight: bold; font-family: Arial, sans-serif; background-color: red; padding: 10px; border-radius: 5px;">
-                    NO HA SELECCIONADO NINGÚN DOCENTE
-                </div>
-                """
-        except KeyError:
-            return """
-            <div style="color: white; font-weight: bold; font-family: Arial, sans-serif; background-color: red; padding: 10px; border-radius: 5px;">
-                NO HA SELECCIONADO NINGÚN DOCENTE
-            </div>
-            """
-        ciclo = Ciclos.query.filter_by(actual=True).first()        
-        dispo = Disponibilidades.query.filter_by(usuario_id=user_id, ciclo_id=ciclo.id).first()
-        
-        try:
-            disponibilidad = dispo.horas
-        except AttributeError:
-            return """
-            <div style="color: white; font-weight: bold; font-family: Arial, sans-serif; background-color: red; padding: 10px; border-radius: 5px;">
-                EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE
-            </div>
-            """
-        if not disponibilidad:
-            return """
-            <div style="color: white; font-weight: bold; font-family: Arial, sans-serif; background-color: red; padding: 10px; border-radius: 5px;">
-                EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE
-            </div>
-            """
-
-        return render_template("horarioJ.html", user=user, disponibilidad=disponibilidad, usuario=dispo)
-    return redirect("/")
-
 
 @docente_bp.route("/mi-horario")
 def clases():
@@ -95,5 +56,7 @@ def clases():
                             materias_asignadas.add(materia)  # Añadimos la materia asignada al conjunto
 
             return render_template("clases.html", user=user_name, materias=list(materias_asignadas))
+        flash('Aun no se ha cargado un horario')
+        return redirect("/homeDocente")
         
     return redirect("/")

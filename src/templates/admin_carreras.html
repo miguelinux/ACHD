@@ -4,6 +4,13 @@
 {% block body_class %}admilistas{% endblock %}
 
 {% block content %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 <section id="table">
     <form action="/crear_carrera" method="POST" id="user-form">
         <div id="input-data">

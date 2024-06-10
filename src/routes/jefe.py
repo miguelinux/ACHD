@@ -44,6 +44,47 @@ def docentes():
     return redirect("/")
 
 
+@jefe_bp.route("/horarioJ")
+def horarioJefe():
+    user = verificate_session()
+    if user:
+        try:
+            user_id = request.args["userid"]
+            if not user_id or user_id == "None":
+                return """
+                <div style="color: white; font-weight: bold; font-family: Arial, sans-serif; background-color: red; padding: 10px; border-radius: 5px;">
+                    NO HA SELECCIONADO NINGÚN DOCENTE
+                </div>
+                """
+        except KeyError:
+            return """
+            <div style="color: white; font-weight: bold; font-family: Arial, sans-serif; background-color: red; padding: 10px; border-radius: 5px;">
+                NO HA SELECCIONADO NINGÚN DOCENTE
+            </div>
+            """
+        ciclo = Ciclos.query.filter_by(actual=True).first()        
+        dispo = Disponibilidades.query.filter_by(usuario_id=user_id, ciclo_id=ciclo.id).first()
+        
+        try:
+            disponibilidad = dispo.horas
+        except AttributeError:
+            return """
+            <div style="color: white; font-weight: bold; font-family: Arial, sans-serif; background-color: red; padding: 10px; border-radius: 5px;">
+                EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE
+            </div>
+            """
+        if not disponibilidad:
+            return """
+            <div style="color: white; font-weight: bold; font-family: Arial, sans-serif; background-color: red; padding: 10px; border-radius: 5px;">
+                EL HORARIO AÚN NO HA SIDO CARGADO POR EL DOCENTE
+            </div>
+            """
+
+        return render_template("horarioJ.html", user=user, disponibilidad=disponibilidad, usuario=dispo)
+    return redirect("/")
+
+
+
 @jefe_bp.route("/jefeCarrera/materias")
 def materias():
     user = verificate_session()
