@@ -19,8 +19,8 @@
 <div class="btnsturn">
   <p style="color: white;">Grupos:</p>
   {% for grupo in grupos %}
-  <button class="turno" data-idgrupo="{{ grupo.id }}" data-semestre="{{ grupo.semestre }}" data-turno="{{ grupo.identificador }}"
-    style="display: none;">{{ grupo.identificador }}</button>
+  <button class="turno" data-idgrupo="{{ grupo.id }}" data-semestre="{{ grupo.semestre }}"
+    data-turno="{{ grupo.identificador }}" style="display: none;">{{ grupo.identificador }}</button>
   {% endfor %}
 </div>
 
@@ -337,8 +337,8 @@
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
     let h = hash % 360; // Asegúrate de que el matiz esté en el rango [0, 360)
-    let s = 60 + ((hash * 2) % 40); // Saturación variable entre 60% y 100%
-    let l = 40 + ((hash * 4) % 30); // Luminosidad variable entre 40% y 70%
+    let s = 60 + ((hash * 2) % 20); // Saturación variable entre 60% y 80%
+    let l = 70 + ((hash * 4) % 10); // Luminosidad variable entre 70% y 80%
 
     return `hsl(${h}, ${s}%, ${l}%)`;
   }
