@@ -286,7 +286,7 @@ def crear_grupo():
         grupo_existente = Grupo.query.filter_by(identificador=identificador, carrera_id=carrera, ciclo_id=ciclo.id).first()
         
         if grupo_existente:
-            flash("Ya existe un grupo con este identificador en la carrera y ciclo actuales.", "error")
+            flash("Ya existe un grupo con este identificador en el ciclo actual.", "error")
             return redirect("/jefeCarrera/grupos")
 
         nuevo_grupo = Grupo(
