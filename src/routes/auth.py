@@ -24,8 +24,14 @@ def login():
         "userid": user.id,
         "name": user.nombre,
         "nivel": user.user_type,
-        "carrera": user.docente_carreras[0].carrera.id if user.user_type == docente or user.user_type == jefe_de_carrera else None,
+        "carrera": None
     }
+    if user.user_type == docente or user.user_type == jefe_de_carrera:
+        if not user.docente_carreras:
+            session.pop("user", None)
+            return render_template("index.html", mensaje="Usuario sin carrera, informe al administrador")
+        else:
+            session["user"]["carrera"] = user.docente_carreras[0].carrera.id
 
     if user.user_type == admin:
         return redirect("/admin")
@@ -50,8 +56,14 @@ def check_email():
         "userid": usuario.id,
         "name": usuario.nombre,
         "nivel": usuario.user_type,
-        "carrera": usuario.docente_carreras[0].carrera.id if usuario.user_type == docente or usuario.user_type == jefe_de_carrera else None,
+        "carrera": None
     }
+    if usuario.user_type == docente or usuario.user_type == jefe_de_carrera:
+        if not usuario.docente_carreras:
+            session.pop("user", None)
+            return jsonify({'message': 'Usuario sin carrera, informe al administrador'}), 403
+        else:
+            session["user"]["carrera"] = usuario.docente_carreras[0].carrera.id
     
     if usuario.first_login:
         return jsonify({'redirect': '/firstlogin'})

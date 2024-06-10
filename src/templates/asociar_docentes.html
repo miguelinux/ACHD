@@ -18,7 +18,7 @@
             <!-- Aquí se debe cargar dinámicamente la información de los docentes -->
             {% for docente in docentes %}
             <tr data-id="{{ docente.id }}" onclick="toggleCheckbox(this)">
-                <td>{{ docente.nombre }} {{ docente.apellido_pat }} {{ docente.apellido_mat }}</td>
+                <td> {{ docente.apellido_pat }} {{ docente.apellido_mat }} {{ docente.nombre }}</td>
                 <td>{% if docente.user_type == 1 %}
                     Admin
                     {% elif docente.user_type == 2 %}
