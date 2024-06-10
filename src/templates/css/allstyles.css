@@ -94,11 +94,8 @@ header nav a:hover {
 
 body {
     background: #0f0c29;
-    /* fallback for old browsers */
     background: -webkit-linear-gradient(to left, #49497e, #302b63, #251e6d);
-    /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to left, #49497e, #302b63, #251e6d);
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 /* Css de Dashboard */
@@ -168,7 +165,6 @@ body {
     color: #333;
 }
 
-
 .cambio_contra .popup {
     display: none;
     position: fixed;
@@ -195,6 +191,29 @@ body {
     color: #f80000;
 }
 
+/* Css de Perfil */
+
+.my_account .main {
+    font-family: Montserrat, Arial;
+    font-size: initial;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+    border-radius: 1rem;
+    max-width: 100%;
+}
+
+.my_account .seccion {
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1rem;
+    width: 25%;
+
+    box-shadow: #717171 0px 0px 5px 0px;
+}
 
 /* CSS de HomeDocente*/
 
@@ -244,4 +263,1291 @@ body {
 
 .inicio i {
     font-size: 5rem;
+}
+
+/* CSS de Homme jefe de carrera*/
+.jefe_carrera .main1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-height: 100%;
+    align-items: center;
+}
+
+.jefe_carrera .docentes {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 1rem;
+    overflow-y: auto;
+}
+
+.jefe_carrera .asignaturas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem;
+    overflow-y: auto;
+}
+
+.jefe_carrera .docente {
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    background: aliceblue;
+    font-family: 'Montserrat';
+    width: 25rem;
+}
+
+.jefe_carrera .asignatura {
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    background: aliceblue;
+    font-family: 'Montserrat';
+
+}
+
+.jefe_carrera .boton {
+    background: rgb(168, 187, 241);
+    padding: 2rem;
+    border-radius: 1rem;
+    display: flex;
+    font-size: 1.2rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    width: 10%;
+    text-decoration: none;
+    color: black;
+}
+
+.jefe_carrera .boton i {
+    font-size: 5rem;
+}
+
+.jefe_carrera .boton:hover {
+    transition: ease .3s;
+    background: #37109b;
+    color: white;
+    text-emphasis: white;
+}
+
+.jefe_carrera .botones {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-top: 10rem;
+}
+
+/* CSS de Home admin*/
+
+.admin_home .boton {
+    background: rgb(168, 187, 241);
+    padding: 2rem;
+    border-radius: 1rem;
+    display: flex;
+    font-size: 1.2rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    width: 10%;
+    text-decoration: none;
+    color: black;
+}
+
+.admin_home .boton i {
+    font-size: 5rem;
+}
+
+.admin_home .boton:hover {
+    transition: ease .3s;
+    background: #37109b;
+    color: white;
+    text-emphasis: white;
+}
+
+.admin_home .botones {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-top: 10rem;
+}
+
+/* CSS de admin usuarios*/
+
+.admilistas body {
+    font-family: Montserrat, Arial;
+}
+
+.admilistas #input-data {
+    width: 80vw;
+    font-family: Montserrat, Arial;
+    margin: 0 auto;
+    margin-top: 3vh;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.admilistas .input-text {
+    flex: 1;
+    min-width: 180px;
+    margin: 3px;
+    box-shadow: #797979 0 0 3px 0px;
+    border: none;
+    height: 30px;
+    font-family: Montserrat, Arial;
+    padding-left: 5px;
+    border-radius: 8px;
+    border-width: 1px;
+    border-color: #262626;
+    transition: 0.2s;
+    outline: none;
+    font-size: 14px;
+}
+
+.admilistas .input-text:focus {
+    border-color: blueviolet;
+}
+
+.admilistas .input-btn {
+    flex: 1;
+    margin: 3px;
+    height: 34px;
+    border-radius: 8px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #262626;
+    cursor: pointer;
+    transition: 0.2s all ease;
+    font-size: 14px;
+}
+
+.admilistas .input-btn:hover {
+    background-color: #383838;
+    border-color: #383838;
+    color: white;
+}
+
+.admilistas input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+.admilistas #table-container {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 3vh;
+    max-height: 60vh;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+
+.admilistas #myTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admilistas #myTable th {
+    background-color: blueviolet;
+    padding: 8px;
+    color: white;
+    font-weight: 100;
+    font-size: 14px;
+}
+
+.admilistas #myTable td,
+th {
+    border: 1px solid #ddd;
+    padding: 6px;
+}
+
+.admilistas #myTable td {
+    padding: 4px;
+}
+
+.admilistas #myTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.admilistas #myTable tr:nth-child(odd) {
+    background-color: #e0e0e0;
+}
+
+.admilistas #myTable tr:hover {
+    background-color: #352875;
+    color: white;
+    transition: 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.admilistas .remove-btn {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    border-width: 0px;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.admilistas #button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin: 20px auto;
+}
+
+.admilistas .btn {
+    height: 34px;
+    border-radius: 8px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #262626;
+    cursor: pointer;
+    transition: 0.2s all ease;
+    font-size: 14px;
+    padding: 0 10px;
+}
+
+.admilistas .btn:hover {
+    background-color: #383838;
+    border-color: #383838;
+    color: white;
+}
+
+.admilistas .btn-left {
+    margin-right: auto;
+}
+
+.admilistas .btn-right {
+    margin-left: 10px;
+    background: white;
+}
+
+.admilistas #file-upload {
+    display: none;
+}
+
+.admilistas .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+}
+
+.admilistas .modal-content {
+    margin: 5% auto;
+    display: block;
+    width: 80%;
+    max-width: 5000px;
+}
+
+.admilistas .close {
+    position: absolute;
+    right: 25px;
+    top: 0;
+    color: #fff;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.admilistas .close:hover,
+.close:focus {
+    color: #999;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.admilistas #caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+}
+
+.admilistas @media only screen and (max-width: 700px) {
+    .modal-content {
+        width: 100%;
+    }
+}
+
+.admilistas .flash {
+    background-color: #4CAF50;
+    /* Green */
+    color: white;
+}
+
+/* CSS de admin Modificar*/
+
+.modificador .main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat';
+    margin: auto;
+    margin-top: 100px;
+    width: 400px;
+    border: 2px solid rgba(255, 255, 255, .2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    color: white;
+    border-radius: 10px;
+    padding: 30px 40px;
+    background-color: white;
+}
+
+.modificador .main .input {
+    width: 19rem;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.modificador .input input {
+    width: 80%;
+    background: rgb(174, 190, 235);
+    box-shadow: 0 0 10px rgba(85, 76, 141, 0.349);
+    border-radius: 40px;
+    border: solid 2px rgba(255, 255, 255, .2);
+    font-size: 15px;
+    color: black;
+    padding: 20px 45px 20px 20px;
+}
+
+.modificador .input input::placeholder {
+    color: rgb(63, 39, 4);
+}
+
+.modificador .main .btn {
+    width: 19.5rem;
+    height: 50px;
+    margin-bottom: 10px;
+    background: white;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    cursor: pointer;
+    font-size: 15px;
+    color: #333;
+    transition: .3s;
+}
+
+.modificador .main .btn:hover {
+    background-color: #37109b;
+    color: white;
+}
+
+.modificador .main .btn-delete:hover {
+    background-color: darkred;
+}
+
+.modificador .main h2 {
+    font-size: 25px;
+    text-align: center;
+    color: black;
+}
+
+.modificador .main p {
+    color: #333;
+}
+
+.modificador label {
+    color: black;
+    margin-bottom: 5px;
+}
+
+.modificador .input-field {
+    width: 64%;
+    background: rgb(174, 190, 235);
+    box-shadow: 0 0 10px rgba(85, 76, 141, 0.349);
+    border-radius: 40px;
+    border: solid 2px rgba(255, 255, 255, .2);
+    font-size: 16px;
+    color: black;
+    padding: 7px 24px 11px 33px;
+    margin-top: 5px;
+
+}
+
+.modificador .input-field-carrera {
+    width: 117%;
+    background: rgb(174, 190, 235);
+    box-shadow: 0 0 10px rgba(85, 76, 141, 0.349);
+    border-radius: 40px;
+    border: solid 2px rgba(255, 255, 255, .2);
+    font-size: 16px;
+    color: black;
+    padding: 7px 0px 11px 21px;
+    margin-top: 5px;
+
+}
+
+/*css para asociar */
+
+.asociar body {
+    font-family: Montserrat, Arial;
+}
+
+.asociar .container {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 3vh;
+}
+
+.asociar #table-container {
+    width: 99%;
+    margin: 0 auto;
+    margin-top: 3vh;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.asociar .myTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.asociar .myTable th {
+    background-color: blueviolet;
+    padding: 8px;
+    color: white;
+    font-weight: 100;
+    font-size: 14px;
+}
+
+.asociar .myTable td,
+th {
+    border: 1px solid #ddd;
+    padding: 6px;
+}
+
+.asociar .myTable td {
+    padding: 4px;
+}
+
+.asociar .myTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.asociar .myTable tr:nth-child(odd) {
+    background-color: #e0e0e0;
+}
+
+.asociar .myTable tr:hover {
+    background-color: #352875;
+    color: white;
+    transition: 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.asociar .action-btn {
+    width: auto;
+    height: 40px;
+    border-radius: 20px;
+    background-color: blueviolet;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+}
+
+.asociar .action-btn:last-child {
+    margin-right: 0;
+}
+
+.asociar .action-btn:hover {
+    background-color: #5d478b;
+}
+
+.asociar .save-btn {
+    width: 150px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: green;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.asociar .save-btn:hover {
+    background-color: #007700;
+}
+
+.asociar .top-buttons {
+    text-align: center;
+    width: 100%;
+    /* Ajustar al ancho máximo */
+    margin-bottom: 20px;
+    /* Espacio entre los botones y las tablas */
+}
+
+/* Carrera - asociados*/
+
+.admincarreras body {
+    font-family: Montserrat, Arial;
+}
+
+.admincarreras .container {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 3vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.admincarreras .header-container {
+    width: 48%;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.admincarreras .content-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.admincarreras .table-container {
+    width: 48%;
+    max-height: 60vh;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.admincarreras .myTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admincarreras .myTable th {
+    background-color: blueviolet;
+    padding: 8px;
+    color: white;
+    font-weight: 100;
+    font-size: 14px;
+}
+
+.admincarreras .myTable td,
+th {
+    border: 1px solid #ddd;
+    padding: 6px;
+}
+
+.admincarreras .myTable td {
+    padding: 4px;
+}
+
+.admincarreras .myTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.admincarreras .myTable tr:nth-child(odd) {
+    background-color: #e0e0e0;
+}
+
+.admincarreras .action-btn {
+    width: 167px;
+    height: 46px;
+    border-radius: 23px;
+    background-color: blueviolet;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.admincarreras .action-btn:last-child {
+    margin-right: 0;
+}
+
+.admincarreras .action-btn:hover {
+    background-color: #5d478b;
+}
+
+.admincarreras .top-buttons {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.admincarreras .button-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* asignacion */
+
+.asignacion .btns {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5rem;
+}
+
+.asignacion .btns .semestre {
+    width: 100px;
+    height: 30px;
+    margin-left: 10px;
+    border: none;
+    margin-right: 10px;
+    border-radius: 15px;
+    transition: .5s;
+}
+
+.asignacion .materia.selected {
+    border: #32aa32 2px solid;
+    background: #37109b;
+}
+
+.asignacion .btns .semestre:hover {
+    background-color: #37109b;
+    color: white;
+}
+
+.asignacion .btnsturn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Montserrat;
+}
+
+.asignacion .btnsturn .turno:hover {
+    background-color: #37109b;
+    border: none;
+    color: white;
+}
+
+.asignacion .btnsturn .turno {
+    width: 100px;
+    border: none;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 15px;
+    transition: .5s;
+}
+
+.asignacion .btnsturn .turno.selected {
+    background-color: #37109b;
+    color: white;
+    border: #32aa32 2px solid;
+}
+
+.asignacion .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 0.5fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "docentes horario"
+        "materias aulas";
+    font-family: Montserrat;
+}
+
+.asignacion .docentes {
+    grid-area: docentes;
+    height: 2rem;
+    display: flex;
+    text-align: center;
+    flex-wrap: wrap;
+}
+
+.asignacion .docentes::-webkit-scrollbar {
+    width: 5px;
+}
+
+.asignacion .aula.selected {
+    border: #32aa32 2px solid;
+    background: #37109b;
+    color: white;
+}
+
+.asignacion .horario {
+    grid-area: horario;
+    height: 22rem;
+    text-align: center;
+}
+
+.asignacion .materias {
+    grid-area: materias;
+    height: 22rem;
+    display: flex;
+    align-content: flex-start;
+    text-align: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.asignacion .aulas {
+    grid-area: aulas;
+    max-height: 12rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    text-align: center;
+    overflow-y: auto;
+    padding: 0.5rem;
+    justify-content: flex-start;
+}
+
+.asignacion .aulas::-webkit-scrollbar {
+    width: 9px;
+}
+
+.asignacion .docente.selected {
+    border: #37109b 2px solid;
+}
+
+.asignacion .btn {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+
+.asignacion .savebtn {
+    width: 100px;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 15px;
+    transition: .5s;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 9999;
+}
+
+.asignacion .semestre.selected {
+    background-color: blue;
+    border: #32aa32 2px solid;
+    color: white;
+}
+
+.asignacion .docente {
+    color: black;
+    height: 2rem;
+    width: 10rem;
+    background-color: #897baf;
+    border-radius: 10px;
+    color: white;
+    margin: 5px;
+    font-synthesis: none;
+    padding: 0.3rem;
+    font-family: Montserrat;
+    font-style: initial;
+
+}
+
+.asignacion .docente.selected {
+    background: #37109b;
+    color: white;
+    border: #32aa32 2px solid;
+}
+
+.asignacion .docente p {
+    user-select: none;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.asignacion .materia {
+    width: auto;
+    height: 55px;
+    background-color: #897baf;
+    color: white;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 0.4rem;
+}
+
+.asignacion .materia p {
+    user-select: none;
+    text-align: center;
+    color: white;
+    margin-top: 5px;
+}
+
+.asignacion .aula {
+    width: 8rem;
+    height: 4rem;
+    background-color: #897baf;
+    border-radius: 5px;
+    color: white;
+    padding: 0.4rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+.asignacion .aula p {
+    user-select: none;
+    margin: 0.2rem 0;
+    text-align: center;
+}
+
+.asignacion table {
+    user-select: none;
+    background-color: black;
+    width: 50rem;
+    height: 20rem;
+
+}
+
+.asignacion table tr {
+    background-color: white;
+    border: none;
+}
+
+.asignacion table td {
+    border: 0px solid;
+    border-radius: 1px;
+}
+
+.asignacion table th {
+    background-color: #ddd;
+}
+
+.asignacion table td {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10px;
+}
+
+.asignacion .semestre.selected {
+    background-color: #37109b;
+    border: #32aa32 2px solid;
+    color: white;
+}
+
+.asignacion .selected {
+    background-color: lightblue;
+}
+
+/* mihorario clases.html*/
+
+.mihorario .principal {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    font-family: Montserrat, Arial;
+    margin: 0;
+}
+
+.mihorario .seccion {
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+    gap: 0rem;
+    flex-wrap: wrap;
+}
+
+.mihorario .materia {
+    padding: 0.8rem;
+    background: white;
+    color: black;
+    border-radius: 0.5rem;
+    margin: 0.9rem;
+    max-width: 25rem;
+    text-decoration: none;
+    display: block;
+}
+
+.mihorario .materia:hover {
+    transition: ease 0.3s;
+    background: #a98bf5;
+}
+
+.mihorario #contenedor {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.mihorario iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.mihorario table {
+    user-select: none;
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    border-radius: 3rem;
+}
+
+.mihorario table tr {
+    background-color: white;
+    border: none;
+}
+
+.mihorario table td,
+table th {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.mihorario table th {
+    background-color: #ddd;
+}
+
+.mihorario table td {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    /* Permite el ajuste de línea */
+    word-wrap: break-word;
+    /* Rompe las palabras largas */
+    font-size: 12px;
+}
+
+/* docentes.html*/
+
+.docentes_carrera .principal {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.docentes_carrera .seccion {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    gap: 3rem;
+}
+
+.docentes_carrera .subseccion {
+    width: 100%;
+}
+
+.docentes_carrera .docente {
+    padding: 0.8rem;
+    background: white;
+    color: black;
+    border-radius: 0.5rem;
+    margin: 0.9rem;
+    max-width: 25rem;
+    text-decoration: none;
+}
+
+.docentes_carrera .boton i {
+    font-size: 5rem;
+}
+
+.docentes_carrera .boton:hover {
+    transition: ease .3s;
+    background: #a98bf5;
+}
+
+.docentes_carrera .docentes {
+    margin: 1rem;
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+.docentes_carrera .docentes::-webkit-scrollbar {
+    width: 9px;
+}
+
+.docentes_carrera .boton {
+    background: rgb(168, 187, 241);
+    padding: 2rem;
+    border-radius: 1rem;
+    display: flex;
+    font-size: 1.2rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    width: 90%;
+    text-decoration: none;
+    color: black;
+}
+
+.docentes_carrera #contenedor iframe {
+    height: 80vh;
+    width: 100vh;
+    border: none;
+    overflow: hidden;
+}
+
+.docentes_carrera .exportbtn {
+    width: 120px;
+    height: 40px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 15px;
+    transition: .5s;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 9999;
+}
+
+.docentes_carrera .exportbtn:hover {
+    background-color: #37109b;
+    border: none;
+    color: white;
+}
+
+/* materias.html*/
+
+.materias-carrera .principal {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.materias-carrera .seccion {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 3rem;
+}
+
+.materias-carrera .subseccion {
+    width: 100%;
+}
+
+.materias-carrera .materia {
+    padding: 0.8rem;
+    background: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color: black;
+    border-radius: 0.5rem;
+    margin: 0.9rem;
+    max-width: 35rem;
+    text-decoration: none;
+}
+
+.materias-carrera .materia:hover {
+    transition: 0.2s ease-in-out;
+    background: #37109b;
+    color: white;
+}
+
+.materias-carrera .boton i {
+    font-size: 5rem;
+}
+
+.materias-carrera .boton:hover {
+    transition: ease .3s;
+    background: #a98bf5;
+}
+
+.materias-carrera .docentes {
+    margin: 1rem;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.materias-carrera .docentes::-webkit-scrollbar {
+    width: 9px;
+}
+
+.materias-carrera .boton {
+    background: rgb(168, 187, 241);
+    padding: 2rem;
+    border-radius: 1rem;
+    display: flex;
+    font-size: 1.2rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    width: 90%;
+    text-decoration: none;
+    color: black;
+}
+
+.materias-carrera #contenedor {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+
+/* semestres html*/
+
+.semestres html {
+    font-family: Montserrat, Arial;
+}
+
+.semestres #TablaHorario {
+    font-size: small;
+}
+
+.semestres body {
+    font-family: Montserrat, Arial;
+}
+
+.semestres .btns {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5rem;
+}
+
+.semestres .btns .semestre {
+    width: 100px;
+    height: 30px;
+    margin-left: 10px;
+    border: none;
+    margin-right: 10px;
+    border-radius: 15px;
+    transition: .5s;
+}
+
+.semestres .btns .semestre:hover {
+    background-color: #37109b;
+    color: white;
+}
+
+.semestres .semestre.selected {
+    background-color: blue;
+    border: #32aa32 2px solid;
+    color: white;
+}
+
+.semestres .btnsturn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Montserrat;
+}
+
+.semestres .btnsturn .turno:hover {
+    background-color: #37109b;
+    border: none;
+    color: white;
+}
+
+.semestres .btnsturn .turno {
+    width: 100px;
+    border: none;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 15px;
+    transition: .5s;
+}
+
+.semestres .btnsturn .turno.selected {
+    background-color: #37109b;
+    color: white;
+    border: #32aa32 2px solid;
+}
+
+.semestres .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        ". . . ."
+        "horario horario horario horario"
+        "horario horario horario horario"
+        "horario horario horario horario"
+        ". . . .";
+}
+
+.semestres .hora {
+    font-weight: bolder;
+    max-width: 5rem;
+}
+
+.semestres table {
+    user-select: none;
+    width: 156%;
+    height: 98%;
+    margin: 0;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.semestres table tr {
+    background-color: white;
+    border: none;
+}
+
+.semestres table th,
+table td {
+    border: 1px solid black;
+    /* Añade bordes a las celdas */
+    padding: 8px;
+    /* Ajusta el espacio interno de las celdas */
+}
+
+.semestres table th {
+    background-color: #ddd;
+    /* Color de fondo para las celdas de encabezado */
+}
+
+.semestres table td {
+    white-space: normal;
+    font-size: 12px;
+    width: 10rem;
+    max-width: 10rem;
+}
+.semestres .exportbtn {
+width: 100px;
+height: 30px;
+margin-left: 10px;
+margin-right: 10px;
+border-radius: 15px;
+transition: .5s;
+position: fixed;
+bottom: 10px;
+right: 10px;
+z-index: 9999;
 }
