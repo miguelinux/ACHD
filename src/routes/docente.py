@@ -23,10 +23,9 @@ def horario():
         ciclo=Ciclos.query.filter_by(actual=True).first()        
         d = Disponibilidades.query.filter_by(usuario_id=user_id,ciclo_id=ciclo.id).first()
         if not d:
-            d = Disponibilidades(usuario_id=user_id, ciclo_id=ciclo.id, horas={'disponibilidad': [0]*90})
-            db.session.add(d)
-            db.session.commit()
-        disponibilidad = d.horas
+            disponibilidad = {"disponibilidad": [0] * 90}
+        else:
+            disponibilidad = d.horas
         return render_template("horario.html", user=user, disponibilidad=disponibilidad)
     return redirect("/")
 
