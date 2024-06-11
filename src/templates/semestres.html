@@ -130,12 +130,12 @@
         </div>
         {% endfor %}
     </div>
-    
+
 </div>
 
 <div class="btn">
     <button class="exportbtn" id="exportarBtn">Exportar</button>
-  </div>
+</div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const diasOriginales = obtenerDiasOriginales();
@@ -222,9 +222,10 @@
             for (let i = 0; i < str.length; i++) {
                 hash = str.charCodeAt(i) + ((hash << 5) - hash);
             }
-            const h = hash % 360;
-            const s = 60 + ((hash * 2) % 40);
-            const l = 40 + ((hash * 4) % 30);
+            let h = hash % 360; // Asegúrate de que el matiz esté en el rango [0, 360)
+            let s = 60 + ((hash * 2) % 20); // Saturación variable entre 60% y 80%
+            let l = 70 + ((hash * 4) % 10); // Luminosidad variable entre 70% y 80%
+
             return `hsl(${h}, ${s}%, ${l}%)`;
         }
 
@@ -333,40 +334,40 @@
             });
         }
     });
-    
+
     document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('exportarBtn').addEventListener('click', function () {
-        fetch('/export/grupos', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                // Aquí puedes agregar cualquier dato adicional que desees enviar al servidor
+        document.getElementById('exportarBtn').addEventListener('click', function () {
+            fetch('/export/grupos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // Aquí puedes agregar cualquier dato adicional que desees enviar al servidor
+                })
             })
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.blob();  // Convertir la respuesta a blob
-            } else {
-                throw new Error('Error al exportar datos');
-            }
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'exportacion_grupos.xlsx';  // El nombre del archivo
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => {
-            console.error('Error al exportar datos:', error);
+                .then(response => {
+                    if (response.ok) {
+                        return response.blob();  // Convertir la respuesta a blob
+                    } else {
+                        throw new Error('Error al exportar datos');
+                    }
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'exportacion_grupos.xlsx';  // El nombre del archivo
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error('Error al exportar datos:', error);
+                });
         });
     });
-});
 </script>
 
 {% endblock %}
